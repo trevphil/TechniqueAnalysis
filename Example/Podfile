@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'TechniqueAnalysis_Example' do
+  pod 'TechniqueAnalysis', :path => '../'
+
+  target 'TechniqueAnalysis_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
