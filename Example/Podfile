@@ -6,6 +6,5 @@ target 'TechniqueAnalysis_Example' do
   target 'TechniqueAnalysis_Tests' do
     inherit! :search_paths
 
-    
   end
 end

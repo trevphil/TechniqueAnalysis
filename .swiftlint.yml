@@ -1,0 +1,87 @@
+disabled_rules:
+  - force_cast
+  - type_body_length
+  - trailing_semicolon
+  - valid_docs
+  - unused_closure_parameter
+  - large_tuple
+  - void_return
+  - for_where
+  - mark
+  - explicit_acl
+  - discouraged_object_literal
+  - redundant_optional_initialization
+
+opt_in_rules:
+  - sorted_first_last
+  - unavailable_function
+  - unneeded_break_in_switch
+  - switch_case_alignment
+  - unused_optional_binding
+  - multiple_closures_with_trailing_closure
+  - identifier_name
+  - colon
+  - redundant_nil_coalescing
+  - fallthrough
+  - force_unwrapping
+  - explicit_init
+  - conditional_returns_on_newline
+  - closure_spacing
+  - prohibited_super_call
+  - overridden_super_call
+  - private_outlet
+  - discarded_notification_center_observer
+  - redundant_discardable_let
+  - block_based_kvo
+  - shorthand_operator
+  - xctfail_message
+  - type_name
+  - closure_parameter_position
+  - private_action
+  - yoda_condition
+  - required_enum_case
+  - literal_expression_end_indentation
+  - prefixed_toplevel_constant
+  - empty_string
+  - modifier_order
+  - large_tuple
+  - first_where
+  - joined_default_parameter
+  - unused_closure_parameter
+
+function_body_length:
+  - 50    
+
+cyclomatic_complexity:
+  warning: 20
+  error: 30
+
+line_length:
+  - 150 # warning
+  - 150 # error
+
+file_length:
+  - 600 # warning
+  - 600 # error
+
+force_try:
+  severity: error
+
+trailing_whitespace:
+  ignores_empty_lines: true
+  severity: error
+
+type_name:
+  min_length: 3
+  max_length: 58
+
+custom_rules:
+  comments_space: # From https://github.com/brandenr/swiftlintconfig
+    name: "Space After Comment"
+    regex: '^ *//\w+'
+    message: "There should be a space after //"
+    severity: error
+
+nesting:
+  type_level:
+    warning: 2

@@ -1,0 +1,6 @@
+framework module Pods_TechniqueAnalysis_Example {
+  umbrella header "Pods-TechniqueAnalysis_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

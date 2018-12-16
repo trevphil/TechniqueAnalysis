@@ -1,0 +1,6 @@
+framework module Pods_TechniqueAnalysis_Tests {
+  umbrella header "Pods-TechniqueAnalysis_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

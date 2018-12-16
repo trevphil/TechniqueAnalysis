@@ -1,0 +1,6 @@
+framework module TechniqueAnalysis {
+  umbrella header "TechniqueAnalysis-umbrella.h"
+
+  export *
+  module * { export * }
+}

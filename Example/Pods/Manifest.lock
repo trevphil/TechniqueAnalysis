@@ -1,0 +1,16 @@
+PODS:
+  - TechniqueAnalysis (0.1.0)
+
+DEPENDENCIES:
+  - TechniqueAnalysis (from `../`)
+
+EXTERNAL SOURCES:
+  TechniqueAnalysis:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  TechniqueAnalysis: 82264d11c3d3dd2b1a8a188e033217c574ca9cf2
+
+PODFILE CHECKSUM: 39d39af5a7ad45d0d677d6ad1f94fac39e3e2527
+
+COCOAPODS: 1.5.3
