@@ -1,5 +1,5 @@
 //
-//  Measure.swift
+//  PerformanceTool.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 04.12.18.
