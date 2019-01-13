@@ -4,14 +4,12 @@ from PIL import Image
 
 class VideoProcessor:
     
-    def __init__(self, labeled_data, reduce_size=True):
+    def __init__(self, labeled_data):
         prefix = './labeled/' if labeled_data else './unlabeled'
         self.labeled = labeled_data
         self.cache_dir = path.abspath(path.join(prefix, 'data/'))
         self.img_base = path.abspath(path.join(prefix, 'images/'))
         self.vid_base = path.abspath(path.join(prefix, 'videos/'))
-        # `True` to reduce the number of generated images by half
-        self.reduce_size = reduce_size
     
     def _supported_file(self, f):
         return len(f.split('.')) > 1 and f.split('.')[-1].lower() in ['mp4', 'mov', 'gif']
@@ -25,20 +23,25 @@ class VideoProcessor:
             shutil.rmtree(directory_path)
         # Make the directory
         makedirs(directory_path)
+        
+    def _skip_rate(file_path):
+        filesize = path.getsize(file_path) / (2 ** 20) # Divide by size of 1MB
+        return 2
 
     def _video_as_images(self, video_path):
         # Directory containing images will be the same as the name of the video (minus extension)
         img_dir = path.join(self.img_base, video_path.split('.')[-2].split('/')[-1])
         self._make_dir(img_dir)
-    
+        
         vidcap = cv2.VideoCapture(video_path)
         success, image = vidcap.read()
-        i = 0
+        frame_num, i = (0, 0)
         while success:
-            file_name = 'frame_{}.jpg'.format(i)
+            file_name = 'frame_{}.jpg'.format(frame_num)
             p = path.join(img_dir, file_name)
-            if self.reduce_size == False or i % 2 == 0:
+            if i % self._skip_rate(video_path) == 0:
                 cv2.imwrite(p, image)
+                frame_num += 1
             success, image = vidcap.read()
             i += 1
     
@@ -49,12 +52,13 @@ class VideoProcessor:
         img_dir = path.join(self.img_base, gif_path.split('.')[-2].split('/')[-1])
         self._make_dir(img_dir)
     
-        i = 0
+        frame_num, i = (0, 0)
         frame = Image.open(gif_path)
         while frame:
-            p = path.join(img_dir, 'frame_{}.png'.format(i))
-            if self.reduce_size == False or i % 2 == 0:
+            p = path.join(img_dir, 'frame_{}.png'.format(frame_num))
+            if i % self._skip_rate(gif_path) == 0:
                 frame.save(p)
+                frame_num += 1
             i += 1
             try: frame.seek(i);
             except EOFError: break;
