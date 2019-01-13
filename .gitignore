@@ -9,3 +9,5 @@
 *.mobileprovision
 *.ipa
 *.dsym.zip
+*.pyc
+
