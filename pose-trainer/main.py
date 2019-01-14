@@ -71,7 +71,6 @@ def _create_data(labeled, skip_cached=True, include_reflection=False):
 #       to blow up for a comparison, causing the comparison to not be selected. Better to ignore the frame.
 # - How should the warping window be set? http://alumni.cs.ucr.edu/~xxi/495.pdf
 # - Should we only care about certain body parts, e.g. head + hips + hands + feet ?
-# - Reduce size of videos, or take a sample from them
 
 if __name__ == '__main__':
     labeled_items = _create_data(True, include_reflection=True)
@@ -79,6 +78,11 @@ if __name__ == '__main__':
     
     algo = KnnDtw(warping_window=1000)
     
+    def remove_section_suffix(string):
+        sec_suffix = string.rfind('-section')
+        return string if sec_suffix == -1 else string[:sec_suffix]
+    
     for unknown, unlabeled_series in unlabeled_items.iteritems():
         guess, score = algo.nearest_neighbor(labeled_items, unlabeled_series)
+        guess = remove_section_suffix(guess)
         print('Best guess for {} is {} (score={:.1f})'.format(unknown, guess, score))
