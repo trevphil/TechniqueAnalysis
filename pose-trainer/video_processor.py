@@ -7,6 +7,7 @@ class VideoProcessor:
     
     def __init__(self, labeled_data):
         prefix = './labeled/' if labeled_data else './unlabeled'
+        self.labeled_data = labeled_data
         self.cache_dir = path.abspath(path.join(prefix, 'data/'))
         self.img_base = path.abspath(path.join(prefix, 'images/'))
         self.vid_base = path.abspath(path.join(prefix, 'videos/'))
@@ -121,7 +122,7 @@ class VideoProcessor:
         
         for f in [v for v in listdir(self.vid_base) if use_video(v)]:
             f = path.join(self.vid_base, f)
-            if self._is_gif(f):
+            if self._is_gif(f) or self.labeled_data is False:
                 videos.append(f)
             else:
                 sections = self._make_sections(f)
