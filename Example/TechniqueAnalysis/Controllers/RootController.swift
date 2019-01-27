@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TechniqueAnalysis
 
 class RootController: UITabBarController {
 
@@ -28,6 +29,29 @@ class RootController: UITabBarController {
 
         configureControllers()
         configureTabBar()
+
+        do {
+            let processor = try VideoProcessor(sampleLength: 3, insetPercent: 0.1, fps: 20, modelType: .cpm)
+            guard let url = Bundle.main.url(forResource: "pull-up-correct_front", withExtension: "mov") else {
+                print("Resource not found!")
+                return
+            }
+
+            let meta = Timeseries.Meta(isLabeled: true,
+                                       exerciseName: "pull-ups",
+                                       exerciseDetail: "correct-form",
+                                       angle: .front)
+            processor.makeTimeseries(videoURL: url,
+                                     meta: meta,
+                                     onFinish: { timeseries in
+                                        print(timeseries)
+            },
+                                     onFailure: { error in
+                                        print(error)
+            })
+        } catch {
+            print(error)
+        }
     }
 
     // MARK: - Private Functions

@@ -79,6 +79,17 @@ public class PoseEstimationModel {
         videoCapture.previewLayer?.removeFromSuperlayer()
     }
 
+    // MARK: - Internal Functions
+
+    func predictUsingVision(pixelBuffer: CVPixelBuffer) {
+        guard let request = request else {
+            return
+        }
+
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
+        try? handler.perform([request])
+    }
+
     // MARK: - Private Functions
 
     private func visionRequestDidComplete(request: VNRequest, error: Error?) {
@@ -93,15 +104,6 @@ public class PoseEstimationModel {
             delegate?.visionRequestDidFail(error: error)
             performanceTool.stop()
         }
-    }
-
-    private func predictUsingVision(pixelBuffer: CVPixelBuffer) {
-        guard let request = request else {
-            return
-        }
-
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
-        try? handler.perform([request])
     }
 
     private func configureCPMModel() -> Bool {

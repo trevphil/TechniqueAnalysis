@@ -10,17 +10,17 @@ INPUT_SHAPE = (192, 192)
 OUTPUT_SHAPE = (96, 96, 14)
 OUTPUT_NODES = 'Convolutional_Pose_Machine/stage_5_out'
 
+with tf.gfile.GFile(MODEL, "rb") as f:
+    graph_def = tf.GraphDef()
+    graph_def.ParseFromString(f.read())
+
+tf.import_graph_def(graph_def, input_map=None, return_elements=None, name='')
+
+graph = tf.get_default_graph()
+image = graph.get_tensor_by_name('image:0')
+output = graph.get_tensor_by_name('%s:0' % OUTPUT_NODES)
+
 def extract_features(img_path):
-    with tf.gfile.GFile(MODEL, "rb") as f:
-        graph_def = tf.GraphDef()
-        graph_def.ParseFromString(f.read())
-
-    tf.import_graph_def(graph_def, input_map=None, return_elements=None, name='')
-
-    graph = tf.get_default_graph()
-    image = graph.get_tensor_by_name('image:0')
-    output = graph.get_tensor_by_name('%s:0' % OUTPUT_NODES)
-
     image_0 = cv2.imread(img_path)
     assert image_0 is not None
     

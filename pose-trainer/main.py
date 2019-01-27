@@ -6,24 +6,21 @@ from video_processor import VideoProcessor
 from feature_extractor import extract_features, OUTPUT_SHAPE
 from knn_dtw import KnnDtw
 from visualizer import animate
+from file_helper import *
 
 def _load_cache(cache_dir):
     cache = {}
-    is_numpy_data = lambda f: len(f.split('.')) > 1 and f.split('.')[-1].lower() == 'npy'
     
     for data_file in [path.join(cache_dir, f) for f in listdir(cache_dir) if is_numpy_data(f)]:
         cached = np.load(data_file)
-        label = data_file.split('/')[-1].split('.')[0]
+        label = unique_id(data_file)
         cache[label] = cached
-    
+
     return cache
     
 def _generate_timeseries(img_set):
-    is_img = lambda f: len(f.split('.')) > 1 and f.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']
-    frame_num = lambda x: int(x[x.rfind('_') + 1:].split('.')[0])
-    
-    label = img_set.split('/')[-1]
-    images = sorted([path.join(img_set, f) for f in listdir(img_set) if is_img(f)], key=frame_num)
+    label = unique_id(img_set)
+    images = sorted([path.join(img_set, f) for f in listdir(img_set) if is_img(f)], key=frame_number)
     timeseries_shape = (len(images), ) + OUTPUT_SHAPE
     timeseries = np.zeros(timeseries_shape)
     
@@ -43,23 +40,25 @@ def _create_data(labeled, skip_cached=True, include_reflection=False):
 
     data = _load_cache(vp.cache_dir)
     if len(data) > 0:
-        print('INFO: The following items have been loaded from a saved state: {}'
-            .format(', '.join(data.keys())))
+        print('INFO: The following items have been loaded from a saved state:\n\t{}'
+            .format('\n\t'.join(sorted(data.keys()))))
     
     try:
         for img_dir in image_directories:
-            name, timeseries = _generate_timeseries(img_dir)
-            print('\nINFO: Saving timeseries for "{}"\n'.format(name))
-            np.save(path.join(vp.cache_dir, '{}.npy'.format(name)), timeseries)
-            data[name] = timeseries
+            label, timeseries = _generate_timeseries(img_dir)
+            print('\nINFO: Saving timeseries for "{}"\n'.format(label))
+            np.save(path.join(vp.cache_dir, '{}.npy'.format(label)), timeseries)
+            data[label] = timeseries
     finally:
         vp.cleanup()
-        
+    
     if include_reflection:
-        # Add the reflection across the y-axis for each time series, for more robustness
+        # Add the reflection across the y-axis for side angles, for more robustness
         reflected = {}
         for label, series in data.iteritems():
-            reflected[label + '_reflected'] = np.flip(series, axis=2)
+            if 'side' in camera_angle(label):
+                opposite = opposite_side(label)
+                reflected[opposite] = np.flip(series, axis=2)
         data.update(reflected)
     
     return data
@@ -73,16 +72,18 @@ def _create_data(labeled, skip_cached=True, include_reflection=False):
 # - Should we only care about certain body parts, e.g. head + hips + hands + feet ?
 
 if __name__ == '__main__':
-    labeled_items = _create_data(True, include_reflection=True)
-    unlabeled_items = _create_data(False)
+    spacer = '-' * 20
+    print('\n{} PROCESSING LABELED DATA {}\n'.format(spacer, spacer))
+    labeled_items = _create_data(labeled=True, include_reflection=True)
+    print('\n{} PROCESSING UNLABELED DATA {}\n'.format(spacer, spacer))
+    unlabeled_items = _create_data(labeled=False)
     
     algo = KnnDtw(warping_window=1000)
     
-    def remove_section_suffix(string):
-        sec_suffix = string.rfind('-section')
-        return string if sec_suffix == -1 else string[:sec_suffix]
-    
     for unknown, unlabeled_series in unlabeled_items.iteritems():
         guess, score = algo.nearest_neighbor(labeled_items, unlabeled_series)
-        guess = remove_section_suffix(guess)
+        
+        guess = exercise_name_and_angle(guess)
+        unknown = exercise_name_and_angle(unknown)
+        
         print('Best guess for {} is {} (score={:.1f})'.format(unknown, guess, score))
