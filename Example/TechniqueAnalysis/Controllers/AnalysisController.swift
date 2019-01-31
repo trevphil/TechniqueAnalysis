@@ -69,6 +69,8 @@ class AnalysisController: UIViewController {
 
         setupSampleVideo()
         setupHeatmapView()
+
+        _ = VideoManager()
     }
 
     deinit {
