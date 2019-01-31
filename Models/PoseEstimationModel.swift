@@ -31,7 +31,7 @@ public class PoseEstimationModel {
     private var videoCapture: VideoCapture
     private let performanceTool = PerformanceTool()
     private var request: VNCoreMLRequest?
-
+    private var visionModel: VNCoreMLModel!
     public var videoPreviewLayer: CALayer? {
         return videoCapture.previewLayer
     }
@@ -41,20 +41,20 @@ public class PoseEstimationModel {
     public init?(type: ModelType) {
         self.videoCapture = VideoCapture(fps: 30)
 
-        let success: Bool
         switch type {
         case .cpm:
-            success = configureCPMModel()
+            visionModel = configuredCPMModel()
         case .hourglass:
-            success = configureHourglassModel()
+            visionModel = configuredHourglassModel()
         }
 
-        if !success {
+        guard let visionModel = visionModel else {
             return nil
         }
 
         self.performanceTool.delegate = self
         self.videoCapture.delegate = self
+        self.configureRequest(with: visionModel)
     }
 
     // MARK: - Public Functions
@@ -90,6 +90,22 @@ public class PoseEstimationModel {
         try? handler.perform([request])
     }
 
+    func predictUsingVision(cgImage: CGImage,
+                            onSuccess: @escaping ((MLMultiArray) -> ()),
+                            onFailure: @escaping ((Error?) -> ())) {
+        let completion: VNRequestCompletionHandler = { (request, error) in
+            if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+                let heatmap = observations.first?.featureValue.multiArrayValue {
+                onSuccess(heatmap)
+            } else {
+                onFailure(error)
+            }
+        }
+        let request = VNCoreMLRequest(model: visionModel, completionHandler: completion)
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        try? handler.perform([request])
+    }
+
     // MARK: - Private Functions
 
     private func visionRequestDidComplete(request: VNRequest, error: Error?) {
@@ -106,7 +122,7 @@ public class PoseEstimationModel {
         }
     }
 
-    private func configureCPMModel() -> Bool {
+    private func configuredCPMModel() -> VNCoreMLModel? {
         do {
             let mlModel: MLModel
             if #available(iOS 12.0, *) {
@@ -117,16 +133,14 @@ public class PoseEstimationModel {
             } else {
                 mlModel = try CPMEstimationModel(contentsOf: CPMEstimationModel.urlOfModelInThisBundle).model
             }
-            let visionModel = try VNCoreMLModel(for: mlModel)
-            configureRequest(with: visionModel)
-            return true
+            return try VNCoreMLModel(for: mlModel)
         } catch {
             print("ERROR: - Unable to create CoreML model, \(error.localizedDescription)")
-            return false
+            return nil
         }
     }
 
-    private func configureHourglassModel() -> Bool {
+    private func configuredHourglassModel() -> VNCoreMLModel? {
         do {
             let url = HourglassEstimationModel.urlOfModelInThisBundle
             let mlModel: MLModel
@@ -137,12 +151,10 @@ public class PoseEstimationModel {
             } else {
                 mlModel = try HourglassEstimationModel(contentsOf: url).model
             }
-            let visionModel = try VNCoreMLModel(for: mlModel)
-            configureRequest(with: visionModel)
-            return true
+            return try VNCoreMLModel(for: mlModel)
         } catch {
             print("ERROR: - Unable to create CoreML model, \(error.localizedDescription)")
-            return false
+            return nil
         }
     }
 

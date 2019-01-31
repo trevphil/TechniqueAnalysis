@@ -10,4 +10,5 @@
 *.ipa
 *.dsym.zip
 *.pyc
-
+*.xcworkspacedata
+Example/build*

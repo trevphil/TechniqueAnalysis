@@ -25,6 +25,10 @@
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* AnalysisController.swift */; };
+		6935FF242200AE00005E4FAA /* AnalysisController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6935FF232200AE00005E4FAA /* AnalysisController.xib */; };
+		6935FF292201B27D005E4FAA /* bw-squat-correct_side1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6935FF282201B27D005E4FAA /* bw-squat-correct_side1.mov */; };
+		6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF2A2202F438005E4FAA /* Array+Additions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +63,10 @@
 		607FACE51AFB9204008FA782 /* TechniqueAnalysis_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TechniqueAnalysis_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		6935FF212200A02D005E4FAA /* AnalysisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisController.swift; sourceTree = "<group>"; };
+		6935FF232200AE00005E4FAA /* AnalysisController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalysisController.xib; sourceTree = "<group>"; };
+		6935FF282201B27D005E4FAA /* bw-squat-correct_side1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = "bw-squat-correct_side1.mov"; path = "../../pose-trainer/labeled/videos/bw-squat-correct_side1.mov"; sourceTree = "<group>"; };
+		6935FF2A2202F438005E4FAA /* Array+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
 		6E75238D061C1DCA3A28F1F5 /* Pods_TechniqueAnalysis_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TechniqueAnalysis_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A49583CD828D24657F9D442 /* Pods-TechniqueAnalysis_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TechniqueAnalysis_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TechniqueAnalysis_Tests/Pods-TechniqueAnalysis_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		7BAD2021A5C84470F9DC56C3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -91,9 +99,10 @@
 		0F9A693C21C7083A000502B7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A693D21C7083A000502B7 /* RootController.swift */,
+				6935FF212200A02D005E4FAA /* AnalysisController.swift */,
 				0F9A693E21C7083A000502B7 /* HeatmapController.swift */,
 				0F9A693F21C7083A000502B7 /* JointController.swift */,
+				0F9A693D21C7083A000502B7 /* RootController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -101,12 +110,13 @@
 		0F9A694021C7083A000502B7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A694121C7083A000502B7 /* LabelCell.xib */,
-				0F9A694221C7083A000502B7 /* RootController.xib */,
-				0F9A694321C7083A000502B7 /* LaunchScreen.xib */,
+				6935FF232200AE00005E4FAA /* AnalysisController.xib */,
 				0F9A694521C7083A000502B7 /* HeatmapController.xib */,
-				0F9A694621C7083A000502B7 /* LabelCell.swift */,
 				0F9A694721C7083A000502B7 /* JointController.xib */,
+				0F9A694621C7083A000502B7 /* LabelCell.swift */,
+				0F9A694121C7083A000502B7 /* LabelCell.xib */,
+				0F9A694321C7083A000502B7 /* LaunchScreen.xib */,
+				0F9A694221C7083A000502B7 /* RootController.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -157,8 +167,10 @@
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6935FF2A2202F438005E4FAA /* Array+Additions.swift */,
 				0F9A695421C7085A000502B7 /* BodyPart+Additions.swift */,
 				0FFCFF1D21FE25E10034AF09 /* pull-up-correct_front.mov */,
+				6935FF282201B27D005E4FAA /* bw-squat-correct_side1.mov */,
 				607FACD41AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -302,11 +314,13 @@
 			files = (
 				0F9A695021C7083A000502B7 /* HeatmapController.xib in Resources */,
 				0F9A694D21C7083A000502B7 /* LabelCell.xib in Resources */,
+				6935FF292201B27D005E4FAA /* bw-squat-correct_side1.mov in Resources */,
 				0FFCFF1E21FE25E10034AF09 /* pull-up-correct_front.mov in Resources */,
 				0F9A695221C7083A000502B7 /* JointController.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				0F9A694F21C7083A000502B7 /* LaunchScreen.xib in Resources */,
 				0F9A694E21C7083A000502B7 /* RootController.xib in Resources */,
+				6935FF242200AE00005E4FAA /* AnalysisController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,10 +425,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */,
 				0F9A694C21C7083A000502B7 /* JointController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				0F9A694B21C7083A000502B7 /* HeatmapController.swift in Sources */,
 				0F9A695121C7083A000502B7 /* LabelCell.swift in Sources */,
+				6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */,
 				0F9A694A21C7083A000502B7 /* RootController.swift in Sources */,
 				0F9A695321C7083A000502B7 /* RootCoordinator.swift in Sources */,
 				0F9A695521C7085A000502B7 /* BodyPart+Additions.swift in Sources */,
