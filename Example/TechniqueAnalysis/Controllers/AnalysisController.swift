@@ -27,14 +27,17 @@ class AnalysisController: UIViewController {
     // Array of `Timeseries` objects derived from a sample video
     private var timeseriesArray = [Timeseries]()
     /// The index of timeseries from `timeseriesArray` to be shown in a heatmap
-    private let selectedTimeseries: Int = 0
+    private var selectedTimeseries: Int {
+        let desired = 0
+        return min(desired, timeseriesArray.count - 1)
+    }
     /// The "time slice" within the selected timeseries which is currently being shown
     private var sampleIndex: Int = 0
     /// Timer to continuously update the heatmap with various time slices
     private var timer: Timer?
 
     private var sampleVideoURL: URL? {
-        return Bundle.main.url(forResource: "bw-squat-correct_side1", withExtension: "mov")
+        return Bundle.main.url(forResource: "pull-up-correct_front", withExtension: "mov")
     }
 
     private lazy var sampleMeta: Timeseries.Meta = {
@@ -85,7 +88,7 @@ class AnalysisController: UIViewController {
         do {
             processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
         } catch {
-            print("Error while initializing VideoProcessor: \(error.localizedDescription)")
+            print("Error while initializing VideoProcessor: \(error)")
             return
         }
 
@@ -99,7 +102,7 @@ class AnalysisController: UIViewController {
                                  onFailure: { errors in
                                     print("Video Processor finished with errors:")
                                     for error in errors {
-                                        print("\t\(error.localizedDescription)")
+                                        print("\t\(error)")
                                     }
         })
     }

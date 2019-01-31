@@ -60,12 +60,14 @@ public struct Timeseries {
             throw TimeseriesError.indexOutOfBoundsError(message)
         }
 
-        let offset = data.strides[0].intValue * index
+        let offset = data.strides[0].intValue * data.unitStride * index
         let shape = Array(data.shape[1...])
         let strides = Array(data.strides[1...])
         let pointer = UnsafeMutableRawPointer(data.dataPointer + offset)
 
         do {
+            // Do not pass a deallocation block, because this MLMultiArray references memory
+            // of the `data` MLMultiArray which will be automatically deallocated with ARC
             return try MLMultiArray(dataPointer: pointer,
                                     shape: shape,
                                     dataType: data.dataType,

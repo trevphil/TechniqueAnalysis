@@ -35,8 +35,8 @@ public class VideoProcessor {
         guard let poseEstimationModel = PoseEstimationModel(type: modelType) else {
             throw VideoProcessorError.initializationError("Could not initialize underlying Pose Estimation Model")
         }
-        
-        guard let path = try? FileManager.default.url(for: .sharedPublicDirectory,
+
+        guard let path = try? FileManager.default.url(for: .documentDirectory,
                                                       in: .allDomainsMask, appropriateFor: nil, create: true) else {
             throw VideoProcessorError.filesystemAccessError("Could not create URL path for generating video subclips")
         }
@@ -257,7 +257,7 @@ public class VideoProcessor {
         let base = multi.dataPointer
         for (idx, heatmap) in heatmaps.enumerated() {
             let src = heatmap.dataPointer
-            let dest = base + idx * multi.strides[0].intValue
+            let dest = base + idx * heatmap.totalSize
             memcpy(dest, src, heatmap.totalSize)
         }
         
