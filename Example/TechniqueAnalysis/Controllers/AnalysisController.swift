@@ -16,6 +16,7 @@ class AnalysisController: UIViewController {
     // MARK: - Properties
 
     private let avpController: AVPlayerViewController
+    private let processor: VideoProcessor?
     @IBOutlet private weak var videoViewContainer: UIView!
     @IBOutlet private weak var poseViewContainer: UIView!
     @IBOutlet private weak var videoSelectionContainer: UIView!
@@ -44,7 +45,14 @@ class AnalysisController: UIViewController {
     // MARK: - Initialization
 
     init() {
-        avpController = AVPlayerViewController()
+        self.avpController = AVPlayerViewController()
+        do {
+            self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+        } catch {
+            print("Error while initializing VideoProcessor: \(error)")
+            self.processor = nil
+        }
+
         super.init(nibName: nil, bundle: nil)
         self.title = "Analysis"
     }
@@ -134,22 +142,14 @@ class AnalysisController: UIViewController {
     }
 
     private func processVideo(videoURL: URL, meta: Timeseries.Meta) {
-        let processor: VideoProcessor
-        do {
-            processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
-        } catch {
-            print("Error while initializing VideoProcessor: \(error)")
-            return
-        }
-
-        processor.makeTimeseries(videoURL: videoURL,
-                                 meta: meta,
-                                 onFinish: { [weak self] timeseriesArray in
+        processor?.makeTimeseries(videoURL: videoURL,
+                                  meta: meta,
+                                  onFinish: { [weak self] timeseriesArray in
                                     DispatchQueue.main.async {
                                         self?.finishedProcessing(results: timeseriesArray)
                                     }
             },
-                                 onFailure: { errors in
+                                  onFailure: { errors in
                                     print("Video Processor finished with errors:")
                                     for error in errors {
                                         print("\t\(error)")
