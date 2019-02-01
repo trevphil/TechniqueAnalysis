@@ -99,13 +99,12 @@ extension JointController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell",
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: LabelCell.identifier,
                                                        for: indexPath) as? LabelCell,
-            tableData.indices.contains(indexPath.row) else {
+            let bodyPoint = tableData.element(atIndex: indexPath.row) else {
                 return UITableViewCell()
         }
 
-        let bodyPoint = tableData[indexPath.row]
         cell.configure(mainText: bodyPoint.bodyPart?.asString ?? "Unknown",
                        subText: text(for: bodyPoint))
         return cell

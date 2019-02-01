@@ -16,7 +16,7 @@ public enum TimeseriesError: Error {
 
 public struct Timeseries {
 
-    public enum CameraAngle {
+    public enum CameraAngle: String {
         case front, back, left, right
     }
 
@@ -32,6 +32,10 @@ public struct Timeseries {
             self.exerciseName = exerciseName
             self.exerciseDetail = exerciseDetail
             self.angle = angle
+        }
+        
+        public var description: String {
+            return "<Meta: labeled=\(isLabeled); name=\(exerciseName); detail=\(exerciseDetail); angle=\(angle.rawValue); uuid=\(uuid)>"
         }
     }
 
