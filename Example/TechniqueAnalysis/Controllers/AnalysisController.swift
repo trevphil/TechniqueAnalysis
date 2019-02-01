@@ -15,29 +15,29 @@ class AnalysisController: UIViewController {
 
     // MARK: - Properties
 
-    private var player: AVPlayer?
     private let avpController: AVPlayerViewController
-    private var sampleVideoURL: URL?
-
     @IBOutlet private weak var videoViewContainer: UIView!
     @IBOutlet private weak var poseViewContainer: UIView!
     @IBOutlet private weak var videoSelectionContainer: UIView!
     @IBOutlet private weak var videoSelectionContainerHeight: NSLayoutConstraint!
     private var videoSectionCollapsed = true
     @IBOutlet private weak var selectVideoButton: UIButton!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView?
-    @IBOutlet private weak var infoLabel: UILabel?
-    private var heatmapView: HeatmapView?
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var infoLabel: UILabel!
+    private weak var heatmapView: HeatmapView?
 
     // Array of `Timeseries` objects derived from a sample video
     private var timeseriesArray = [Timeseries]()
+
     /// The index of timeseries from `timeseriesArray` to be shown in a heatmap
     private var selectedTimeseries: Int {
         let desired = 0
         return min(desired, timeseriesArray.count - 1)
     }
+
     /// The "time slice" within the selected timeseries which is currently being shown
     private var sampleIndex: Int = 0
+
     /// Timer to continuously update the heatmap with various time slices
     private var timer: Timer?
 
@@ -47,8 +47,6 @@ class AnalysisController: UIViewController {
         avpController = AVPlayerViewController()
         super.init(nibName: nil, bundle: nil)
         self.title = "Analysis"
-
-        // setupVideoProcessor()
     }
 
     @available(*, unavailable)
@@ -61,9 +59,20 @@ class AnalysisController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        addChild(avpController)
+        videoViewContainer.addSubview(avpController.view)
+        avpController.view.translatesAutoresizingMaskIntoConstraints = false
+        avpController.view.leftAnchor.constraint(equalTo: videoViewContainer.leftAnchor).isActive = true
+        avpController.view.rightAnchor.constraint(equalTo: videoViewContainer.rightAnchor).isActive = true
+        avpController.view.topAnchor.constraint(equalTo: videoViewContainer.topAnchor).isActive = true
+        avpController.view.bottomAnchor.constraint(equalTo: videoViewContainer.bottomAnchor).isActive = true
+
         addVideoSelectionController()
-        videoSelectionContainerHeight.constant = 0
+        videoSelectionContainerHeight?.constant = 0
         videoSectionCollapsed = true
+
+        activityIndicator.isHidden = true
+        infoLabel.text = "Select\na Video"
     }
 
     deinit {
@@ -73,28 +82,28 @@ class AnalysisController: UIViewController {
 
     // MARK: - Actions
 
-    @IBAction private func selectVideo(_ sender: Any) {
+    @IBAction private func toggleVideoSelection(_ sender: UIButton?) {
         let animationDuration: TimeInterval = 0.5
         let maxContainerHeight: CGFloat = 250
 
         func collapse() {
-            videoSelectionContainerHeight.constant = 0
+            videoSelectionContainerHeight?.constant = 0
             UIView.animate(withDuration: animationDuration, animations: { [weak self] in
                 self?.view.layoutIfNeeded()
                 },
                            completion: { [weak self] _ in
-                            self?.selectVideoButton.setTitle("Show Video Selection", for: .normal)
+                            self?.selectVideoButton?.setTitle("Show Video Selection", for: .normal)
                             self?.videoSectionCollapsed = true
             })
         }
 
         func expand() {
-            videoSelectionContainerHeight.constant = maxContainerHeight
+            videoSelectionContainerHeight?.constant = maxContainerHeight
             UIView.animate(withDuration: animationDuration, animations: { [weak self] in
                 self?.view.layoutIfNeeded()
                 },
                            completion: { [weak self] _ in
-                            self?.selectVideoButton.setTitle("Hide Video Selection", for: .normal)
+                            self?.selectVideoButton?.setTitle("Hide Video Selection", for: .normal)
                             self?.videoSectionCollapsed = false
             })
         }
@@ -105,7 +114,16 @@ class AnalysisController: UIViewController {
     // MARK: - Private Functions
 
     private func addVideoSelectionController() {
-        let controller = VideoSelectionController()
+        let controller = VideoSelectionController(onVideoSelected: { (url, meta) in
+            self.heatmapView?.removeFromSuperview()
+            self.activityIndicator.isHidden = false
+            self.infoLabel.isHidden = false
+            self.infoLabel.text = "Processing\nVideo"
+            self.toggleVideoSelection(nil)
+            self.showVideoPreview(videoURL: url)
+            self.processVideo(videoURL: url, meta: meta)
+        })
+
         addChild(controller)
         videoSelectionContainer.addSubview(controller.view)
         controller.view.translatesAutoresizingMaskIntoConstraints = false
@@ -115,13 +133,7 @@ class AnalysisController: UIViewController {
         controller.view.bottomAnchor.constraint(equalTo: videoSelectionContainer.bottomAnchor).isActive = true
     }
 
-/*
-    private func setupVideoProcessor() {
-        guard let url = sampleVideoURL else {
-            print("URL resource not available!")
-            return
-        }
-
+    private func processVideo(videoURL: URL, meta: Timeseries.Meta) {
         let processor: VideoProcessor
         do {
             processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
@@ -130,8 +142,8 @@ class AnalysisController: UIViewController {
             return
         }
 
-        processor.makeTimeseries(videoURL: url,
-                                 meta: sampleMeta,
+        processor.makeTimeseries(videoURL: videoURL,
+                                 meta: meta,
                                  onFinish: { [weak self] timeseriesArray in
                                     DispatchQueue.main.async {
                                         self?.finishedProcessing(results: timeseriesArray)
@@ -144,10 +156,11 @@ class AnalysisController: UIViewController {
                                     }
         })
     }
-*/
+
     private func finishedProcessing(results timeseriesArray: [Timeseries]) {
         self.timeseriesArray = timeseriesArray
 
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
             if let strongSelf = self,
                 let timeseries = strongSelf.timeseriesArray.element(atIndex: strongSelf.selectedTimeseries) {
@@ -156,19 +169,18 @@ class AnalysisController: UIViewController {
             }
         }
 
-        // setupHeatmapView()
+        configureHeatmapView()
     }
-/*
-    private func setupHeatmapView() {
-        guard !didSetupHeatmapView,
-            let timeseries = timeseriesArray.element(atIndex: selectedTimeseries),
+
+    private func configureHeatmapView() {
+        guard let timeseries = timeseriesArray.element(atIndex: selectedTimeseries),
             poseViewContainer != nil else {
             return
         }
 
-        activityIndicator?.stopAnimating()
-        activityIndicator?.removeFromSuperview()
-        infoLabel?.removeFromSuperview()
+        activityIndicator.isHidden = true
+        infoLabel.isHidden = true
+        heatmapView?.removeFromSuperview()
 
         do {
             let slice = try timeseries.timeSlice(forSample: sampleIndex)
@@ -186,26 +198,16 @@ class AnalysisController: UIViewController {
             heatmapView.topAnchor.constraint(equalTo: poseViewContainer.topAnchor).isActive = true
             heatmapView.bottomAnchor.constraint(equalTo: poseViewContainer.bottomAnchor).isActive = true
             self.heatmapView = heatmapView
-            self.didSetupHeatmapView = true
         } catch {
             print(error)
         }
     }
 
-    private func setupSampleVideo() {
-        guard let path = sampleVideoURL else {
-            activityIndicator?.removeFromSuperview()
-            infoLabel?.text = "Video not found"
-            return
-        }
-
-        player = AVPlayer(url: path)
+    private func showVideoPreview(videoURL: URL) {
+        let player = AVPlayer(url: videoURL)
         avpController.player = player
-        avpController.view.frame = videoViewContainer.bounds
-        addChild(avpController)
-        videoViewContainer.addSubview(avpController.view)
     }
-*/
+
     private func updateHeatmapView(with timeseries: Timeseries) {
         guard let slice = try? timeseries.timeSlice(forSample: sampleIndex),
             let model = HeatmapViewModel(heatmap: slice) else {

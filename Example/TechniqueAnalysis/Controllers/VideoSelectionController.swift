@@ -14,12 +14,14 @@ class VideoSelectionController: UIViewController {
     // MARK: - Properties
 
     let videos: [(url: URL, meta: Timeseries.Meta)]
+    let onVideoSelected: ((URL, Timeseries.Meta) -> Void)
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - Initialization
 
-    init() {
-        videos = VideoManager.shared.unlabeledVideos
+    init(onVideoSelected: @escaping ((URL, Timeseries.Meta) -> Void)) {
+        self.videos = VideoManager.shared.unlabeledVideos
+        self.onVideoSelected = onVideoSelected
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,6 +71,13 @@ extension VideoSelectionController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let video = videos.element(atIndex: indexPath.row) else {
+            return
+        }
+        onVideoSelected(video.url, video.meta)
     }
 
 }

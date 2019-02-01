@@ -47,7 +47,6 @@ struct VideoManager {
         return contents.filter { item -> Bool in
             let numChars = item.count
             let idx = item.index(item.startIndex, offsetBy: numChars - 3)
-            print(numChars > 4 && supportedFormats.contains(String(item[idx...]).lowercased()))
             return numChars > 4 && supportedFormats.contains(String(item[idx...]).lowercased())
         }
     }

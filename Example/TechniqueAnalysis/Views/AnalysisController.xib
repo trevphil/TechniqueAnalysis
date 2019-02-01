@@ -40,7 +40,7 @@
                                         <color key="titleColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
                                     <connections>
-                                        <action selector="selectVideo:" destination="-1" eventType="touchUpInside" id="W4w-eo-B6z"/>
+                                        <action selector="toggleVideoSelection:" destination="-1" eventType="touchUpInside" id="7ec-O9-RyN"/>
                                     </connections>
                                 </button>
                             </subviews>

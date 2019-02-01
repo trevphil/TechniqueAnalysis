@@ -29,7 +29,6 @@ opt_in_rules:
   - fallthrough
   - force_unwrapping
   - explicit_init
-  - conditional_returns_on_newline
   - closure_spacing
   - prohibited_super_call
   - overridden_super_call
