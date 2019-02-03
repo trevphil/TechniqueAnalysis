@@ -20,21 +20,13 @@ struct VideoManager {
         "avi", "flv", "wmv", "mov", "mp4"
     ]
 
-    let labeledVideos: [(url: URL, meta: Timeseries.Meta)]
-    let unlabeledVideos: [(url: URL, meta: Timeseries.Meta)]
+    let labeledVideos: [(url: URL, meta: Timeseries.Meta)] = {
+        return VideoManager.labeledVideos()
+    }()
 
-    // MARK: - Initialization
-
-    private init() {
-        labeledVideos = VideoManager.labeledVideos()
-        unlabeledVideos = VideoManager.unlabeledVideos()
-    }
-
-    // MARK: - Public Functions
-
-    static func setup() {
-        // Empty (used to automatically initialize Singleton in memory)
-    }
+    let unlabeledVideos: [(url: URL, meta: Timeseries.Meta)] = {
+        return VideoManager.unlabeledVideos()
+    }()
 
     // MARK: - Private Functions
 

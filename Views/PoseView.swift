@@ -105,7 +105,7 @@ public class PoseView: UIView {
         
         for (index, estimate) in pointEstimates.enumerated() {
             guard let view = views.element(atIndex: index) else {
-                continue
+                break
             }
             
             view.center = CGPoint(x: estimate.point.x * imageFrame.width, y: estimate.point.y * imageFrame.height)

@@ -22,8 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
         self.window = window
 
-        VideoManager.setup()
-
         return true
     }
 

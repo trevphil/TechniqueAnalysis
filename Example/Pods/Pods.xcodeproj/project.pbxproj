@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F5192B02200F087004F3637 /* MLMultiArray+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5192AF2200F087004F3637 /* MLMultiArray+Additions.swift */; };
 		0F9A692E21C707C9000502B7 /* VideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691C21C707C9000502B7 /* VideoCapture.swift */; };
-		0F9A692F21C707C9000502B7 /* NSObject+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */; };
 		0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691E21C707C9000502B7 /* Array+Additions.swift */; };
 		0F9A693121C707C9000502B7 /* PerformanceTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691F21C707C9000502B7 /* PerformanceTool.swift */; };
 		0F9A693221C707C9000502B7 /* PoseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692121C707C9000502B7 /* PoseViewModel.swift */; };
@@ -53,10 +51,8 @@
 
 /* Begin PBXFileReference section */
 		0243C7F3D9A6FBEBC2FAA467D7152585 /* TechniqueAnalysis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TechniqueAnalysis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0F5192AF2200F087004F3637 /* MLMultiArray+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MLMultiArray+Additions.swift"; sourceTree = "<group>"; };
 		0F6A58AF4BF33225ABF5048551F40371 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0F9A691C21C707C9000502B7 /* VideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCapture.swift; sourceTree = "<group>"; };
-		0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Additions.swift"; sourceTree = "<group>"; };
 		0F9A691E21C707C9000502B7 /* Array+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
 		0F9A691F21C707C9000502B7 /* PerformanceTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTool.swift; sourceTree = "<group>"; };
 		0F9A692121C707C9000502B7 /* PoseViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseViewModel.swift; sourceTree = "<group>"; };
@@ -146,8 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				0F9A691E21C707C9000502B7 /* Array+Additions.swift */,
-				0F5192AF2200F087004F3637 /* MLMultiArray+Additions.swift */,
-				0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */,
 				0F9A691F21C707C9000502B7 /* PerformanceTool.swift */,
 				0F9A691C21C707C9000502B7 /* VideoCapture.swift */,
 				0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */,
@@ -491,8 +485,6 @@
 				0FFCFF1A21FCF4EF0034AF09 /* VideoProcessor.swift in Sources */,
 				0F9A693421C707C9000502B7 /* PoseView.swift in Sources */,
 				0F9A693821C707C9000502B7 /* hourglass_model.mlmodel in Sources */,
-				0F9A692F21C707C9000502B7 /* NSObject+Additions.swift in Sources */,
-				0F5192B02200F087004F3637 /* MLMultiArray+Additions.swift in Sources */,
 				0F9A693321C707C9000502B7 /* HeatmapViewModel.swift in Sources */,
 				0F9A693921C707C9000502B7 /* PoseEstimationModel.swift in Sources */,
 				0FFCFF1821FCE7070034AF09 /* Timeseries.swift in Sources */,

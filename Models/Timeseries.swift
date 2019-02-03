@@ -11,9 +11,10 @@ import CoreML
 public enum TimeseriesError: Error {
     case invalidShapeError(String)
     case indexOutOfBoundsError(String)
-    case multiArrayError(String)
 }
 
+// TODO: - Consider making a compressed version of this where each item in `data`
+// is a MLMultiArray of shape 14x1x1
 public struct Timeseries {
 
     public enum CameraAngle: String {
@@ -35,51 +36,35 @@ public struct Timeseries {
         }
         
         public var description: String {
-            return "<Meta: labeled=\(isLabeled); name=\(exerciseName); detail=\(exerciseDetail); angle=\(angle.rawValue); uuid=\(uuid)>"
+            return "<Meta: labeled=\(isLabeled); name=\(exerciseName); " +
+            "detail=\(exerciseDetail); angle=\(angle.rawValue); uuid=\(uuid)>"
         }
     }
 
-    public let data: MLMultiArray
+    public let data: [MLMultiArray]
     public let meta: Meta
-    private let shape: [Int]
 
     public var numSamples: Int {
-        return shape[0]
+        return data.count
     }
 
-    public init(data: MLMultiArray, meta: Meta) throws {
-        guard data.shape.count == 4 else {
-            let message = "Timeseries initialized with a MLMultiArray of shape \(data.intShape)"
+    public init(data: [MLMultiArray], meta: Meta) throws {
+        guard data.count > 0 && data.filter({ $0.shape.count != 3 }).count == 0 else {
+            let message = "Timeseries initialized with invalid MLMultiArrays"
             throw TimeseriesError.invalidShapeError(message)
         }
 
         self.data = data
         self.meta = meta
-        self.shape = data.intShape
     }
 
     public func timeSlice(forSample index: Int) throws -> MLMultiArray {
-        guard index >= 0 && index < numSamples else {
+        guard let slice = data.element(atIndex: index) else {
             let message = "Index \(index) is not within the number of samples for the timeseries"
             throw TimeseriesError.indexOutOfBoundsError(message)
         }
 
-        let offset = data.strides[0].intValue * data.unitStride * index
-        let shape = Array(data.shape[1...])
-        let strides = Array(data.strides[1...])
-        let pointer = UnsafeMutableRawPointer(data.dataPointer + offset)
-
-        do {
-            // Do not pass a deallocation block, because this MLMultiArray references memory
-            // of the `data` MLMultiArray which will be automatically deallocated with ARC
-            return try MLMultiArray(dataPointer: pointer,
-                                    shape: shape,
-                                    dataType: data.dataType,
-                                    strides: strides,
-                                    deallocator: nil)
-        } catch {
-            throw TimeseriesError.multiArrayError("Unable to initialize MLMultiArray at address \(pointer)")
-        }
+        return slice
     }
 
 }

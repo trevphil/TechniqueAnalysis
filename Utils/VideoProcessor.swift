@@ -11,7 +11,6 @@ import AVKit
 public enum VideoProcessorError: Error {
     case initializationError(String)
     case noDataError(String)
-    case multiArrayError(String)
     case filesystemAccessError(String)
 }
 
@@ -86,19 +85,20 @@ public class VideoProcessor {
                 
                 dispatchGroup.enter() // ENTER 2
                 self.makeImages(from: asset) { images in
-                    
+
                     dispatchGroup.enter() // ENTER 3
-                    self.makeTimeseries(from: images, meta: meta) { series, error in
-                        
+                    self.makeTimeseries(from: &images, meta: meta) { series, error in
+
                         if let series = series { timeseries[idx] = series }
                         if let error = error { errors[idx] = error }
                         dispatchGroup.leave() // LEAVE 3
                     }
-                    
+
                     dispatchGroup.leave() // LEAVE 2
                 }
             }
-            
+            self.cleanupSections(sectionURLs)
+
             dispatchGroup.leave() // LEAVE 1
         }
         
@@ -163,6 +163,16 @@ public class VideoProcessor {
         }
     }
 
+    private func cleanupSections(_ sectionURLs: [URL]) {
+        for url in sectionURLs {
+            do {
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                print("Error: Unable to remove generated section subclip: \(error)")
+            }
+        }
+    }
+
     private func samples(for video: AVAsset) -> [NSValue] {
         let numSeconds = TimeInterval(video.duration.value) / TimeInterval(video.duration.timescale)
         let numSamples = Int(numSeconds * fps)
@@ -177,8 +187,9 @@ public class VideoProcessor {
         return sampleTimes
     }
 
-    private func makeImages(from asset: AVAsset, onFinish: @escaping (([CGImage]) -> ())) {
+    private func makeImages(from asset: AVAsset, onFinish: @escaping ((inout [CGImage]) -> ())) {
         var images = [Double: CGImage]()
+        var sortedImages = [CGImage]()
         let sampleTimes = samples(for: asset)
 
         let generator = AVAssetImageGenerator(asset: asset)
@@ -191,6 +202,7 @@ public class VideoProcessor {
         let handler: AVAssetImageGeneratorCompletionHandler = { _, image, time, _, _ in
             if let image = image {
                 images[time.seconds] = image
+                sortedImages = images.keys.sorted().compactMap { images[$0] }
             }
             dispatchGroup.leave()
         }
@@ -198,30 +210,35 @@ public class VideoProcessor {
         generator.generateCGImagesAsynchronously(forTimes: sampleTimes, completionHandler: handler)
 
         dispatchGroup.notify(queue: workerQueue) {
-            let sorted = images.keys.sorted().compactMap { images[$0] }
-            onFinish(sorted)
+            onFinish(&sortedImages)
         }
     }
     
-    private func makeTimeseries(from images: [CGImage],
+    private func makeTimeseries(from images: inout [CGImage],
                                 meta: Timeseries.Meta,
                                 onFinish: @escaping ((Timeseries?, Error?) -> ())) {
         var heatmaps = [Int: MLMultiArray]()
         let dispatchGroup = DispatchGroup()
         
         for _ in (0..<images.count) { dispatchGroup.enter() }
-        
-        for (idx, image) in images.enumerated() {
-            makeHeatmap(from: image) { heatmap in
-                if let heatmap = heatmap { heatmaps[idx] = heatmap }
-                dispatchGroup.leave()
+
+        var idx: Int = 0
+        while !images.isEmpty {
+            autoreleasepool {
+                // Iterate in this way to reduce CGImage memory allocations as we process them
+                let image = images.removeFirst()
+                makeHeatmap(from: image) { heatmap in
+                    if let heatmap = heatmap { heatmaps[idx] = heatmap }
+                    dispatchGroup.leave()
+                }
             }
+            idx += 1
         }
         
         dispatchGroup.notify(queue: workerQueue) {
             do {
                 let sortedHeatmaps = heatmaps.keys.sorted().compactMap { heatmaps[$0] }
-                let timeseries = try self.configuredTimeseries(meta: meta, heatmaps: sortedHeatmaps)
+                let timeseries = try Timeseries(data: sortedHeatmaps, meta: meta)
                 onFinish(timeseries, nil)
             } catch {
                 onFinish(nil, error)
@@ -236,32 +253,6 @@ public class VideoProcessor {
         }
         
         poseEstimationModel.predictUsingVision(cgImage: image, onSuccess: onFinish, onFailure: failure)
-    }
-    
-    private func configuredTimeseries(meta: Timeseries.Meta, heatmaps: [MLMultiArray]) throws -> Timeseries {
-        guard let sampleItem = heatmaps.element(atIndex: 0) else {
-            throw VideoProcessorError.noDataError("No heatmaps given for timeseries!")
-        }
-        
-        guard sampleItem.strides.count == 3 && sampleItem.shape.count == 3 else {
-            let errorMessage = "Timeseries slice has an invalid shape: \(sampleItem.intShape)"
-            throw VideoProcessorError.multiArrayError(errorMessage)
-        }
-        
-        let shape = [NSNumber(value: heatmaps.count)] + sampleItem.shape
-        guard let multi = try? MLMultiArray(shape: shape, dataType: sampleItem.dataType) else {
-            let errorMessage = "Error while initializing MLMultiArray with shape \(shape.map { $0.intValue })"
-            throw VideoProcessorError.multiArrayError(errorMessage)
-        }
-        
-        let base = multi.dataPointer
-        for (idx, heatmap) in heatmaps.enumerated() {
-            let src = heatmap.dataPointer
-            let dest = base + idx * heatmap.totalSize
-            memcpy(dest, src, heatmap.totalSize)
-        }
-        
-        return try Timeseries(data: multi, meta: meta)
     }
 
 }
