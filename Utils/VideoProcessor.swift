@@ -224,13 +224,11 @@ public class VideoProcessor {
 
         var idx: Int = 0
         while !images.isEmpty {
-            autoreleasepool {
-                // Iterate in this way to reduce CGImage memory allocations as we process them
-                let image = images.removeFirst()
-                makeHeatmap(from: image) { heatmap in
-                    if let heatmap = heatmap { heatmaps[idx] = heatmap }
-                    dispatchGroup.leave()
-                }
+            // Iterate in this way to reduce CGImage memory allocations as we process them
+            let image = images.removeFirst()
+            makeHeatmap(from: image) { heatmap in
+                if let heatmap = heatmap { heatmaps[idx] = heatmap }
+                dispatchGroup.leave()
             }
             idx += 1
         }
