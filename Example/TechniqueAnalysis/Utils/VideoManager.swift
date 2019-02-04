@@ -20,11 +20,11 @@ struct VideoManager {
         "avi", "flv", "wmv", "mov", "mp4"
     ]
 
-    let labeledVideos: [(url: URL, meta: Timeseries.Meta)] = {
+    let labeledVideos: [(url: URL, meta: Meta)] = {
         return VideoManager.labeledVideos()
     }()
 
-    let unlabeledVideos: [(url: URL, meta: Timeseries.Meta)] = {
+    let unlabeledVideos: [(url: URL, meta: Meta)] = {
         return VideoManager.unlabeledVideos()
     }()
 
@@ -50,23 +50,23 @@ struct VideoManager {
         return file
     }
 
-    private static func labeledVideos() -> [(URL, Timeseries.Meta)] {
+    private static func labeledVideos() -> [(URL, Meta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }
 
-        func parseLabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Timeseries.Meta)? {
+        func parseLabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
             let parts = noExtension(videoName).split(separator: "_").map { String($0) }
             guard parts.element(atIndex: 0) != "test",
                 let name = parts.element(atIndex: 0)?.replacingOccurrences(of: "-", with: " ").capitalized,
                 let description = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
                 let angleString = parts.element(atIndex: 2),
-                let angle = Timeseries.CameraAngle(rawValue: angleString) else {
+                let angle = CameraAngle(rawValue: angleString) else {
                     return nil
             }
 
             let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-            let meta = Timeseries.Meta(isLabeled: true, exerciseName: name, exerciseDetail: description, angle: angle)
+            let meta = Meta(isLabeled: true, exerciseName: name, exerciseDetail: description, angle: angle)
             return (url, meta)
         }
 
@@ -74,23 +74,23 @@ struct VideoManager {
         return videos.compactMap { parseLabeled(videoName: $0, baseURL: path) }
     }
 
-    private static func unlabeledVideos() -> [(URL, Timeseries.Meta)] {
+    private static func unlabeledVideos() -> [(URL, Meta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }
 
-        func parseUnlabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Timeseries.Meta)? {
+        func parseUnlabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
             let parts = noExtension(videoName).split(separator: "_").map { String($0) }
             guard parts.element(atIndex: 0) == "test",
                 let name = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
                 let description = parts.element(atIndex: 2)?.replacingOccurrences(of: "-", with: " ").capitalized,
                 let angleString = parts.element(atIndex: 3),
-                let angle = Timeseries.CameraAngle(rawValue: angleString) else {
+                let angle = CameraAngle(rawValue: angleString) else {
                     return nil
             }
 
             let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-            let meta = Timeseries.Meta(isLabeled: false, exerciseName: name, exerciseDetail: description, angle: angle)
+            let meta = Meta(isLabeled: false, exerciseName: name, exerciseDetail: description, angle: angle)
             return (url, meta)
         }
 

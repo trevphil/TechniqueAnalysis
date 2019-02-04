@@ -54,7 +54,7 @@ public class VideoProcessor {
     // MARK: - Public Functions
 
     public func makeTimeseries(videoURL: URL,
-                               meta: Timeseries.Meta,
+                               meta: Meta,
                                onFinish: @escaping (([Timeseries]) -> ()),
                                onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
@@ -71,7 +71,7 @@ public class VideoProcessor {
     // MARK: - Private Functions
 
     private func processVideo(videoURL: URL,
-                              meta: Timeseries.Meta,
+                              meta: Meta,
                               onFinish: @escaping (([Timeseries], [Error]) -> ())) {
         var timeseries = [Int: Timeseries]()
         var errors = [Int: Error]()
@@ -215,7 +215,7 @@ public class VideoProcessor {
     }
     
     private func makeTimeseries(from images: inout [CGImage],
-                                meta: Timeseries.Meta,
+                                meta: Meta,
                                 onFinish: @escaping ((Timeseries?, Error?) -> ())) {
         var heatmaps = [Int: MLMultiArray]()
         let dispatchGroup = DispatchGroup()

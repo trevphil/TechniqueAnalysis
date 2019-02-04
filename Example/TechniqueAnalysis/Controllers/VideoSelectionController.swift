@@ -13,13 +13,13 @@ class VideoSelectionController: UIViewController {
 
     // MARK: - Properties
 
-    let videos: [(url: URL, meta: Timeseries.Meta)]
-    let onVideoSelected: ((URL, Timeseries.Meta) -> Void)
+    let videos: [(url: URL, meta: Meta)]
+    let onVideoSelected: ((URL, Meta) -> Void)
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - Initialization
 
-    init(onVideoSelected: @escaping ((URL, Timeseries.Meta) -> Void)) {
+    init(onVideoSelected: @escaping ((URL, Meta) -> Void)) {
         self.videos = VideoManager.shared.unlabeledVideos
         self.onVideoSelected = onVideoSelected
         super.init(nibName: nil, bundle: nil)

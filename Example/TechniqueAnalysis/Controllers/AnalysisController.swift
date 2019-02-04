@@ -141,7 +141,7 @@ class AnalysisController: UIViewController {
         controller.view.bottomAnchor.constraint(equalTo: videoSelectionContainer.bottomAnchor).isActive = true
     }
 
-    private func processVideo(videoURL: URL, meta: Timeseries.Meta) {
+    private func processVideo(videoURL: URL, meta: Meta) {
         processor?.makeTimeseries(videoURL: videoURL,
                                   meta: meta,
                                   onFinish: { [weak self] timeseriesArray in
