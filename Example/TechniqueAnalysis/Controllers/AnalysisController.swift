@@ -25,10 +25,10 @@ class AnalysisController: UIViewController {
     @IBOutlet private weak var selectVideoButton: UIButton!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var infoLabel: UILabel!
-    private weak var heatmapView: HeatmapView?
+    private weak var poseView: PoseView?
 
-    // Array of `Timeseries` objects derived from a sample video
-    private var timeseriesArray = [Timeseries]()
+    // Array of `CompressedTimeseries` objects derived from a sample video
+    private var timeseriesArray = [CompressedTimeseries]()
 
     /// The index of timeseries from `timeseriesArray` to be shown in a heatmap
     private var selectedTimeseries: Int {
@@ -123,7 +123,7 @@ class AnalysisController: UIViewController {
 
     private func addVideoSelectionController() {
         let controller = VideoSelectionController(onVideoSelected: { (url, meta) in
-            self.heatmapView?.removeFromSuperview()
+            self.poseView?.removeFromSuperview()
             self.activityIndicator.isHidden = false
             self.infoLabel.isHidden = false
             self.infoLabel.text = "Processing\nVideo"
@@ -142,37 +142,37 @@ class AnalysisController: UIViewController {
     }
 
     private func processVideo(videoURL: URL, meta: Meta) {
-        processor?.makeTimeseries(videoURL: videoURL,
-                                  meta: meta,
-                                  onFinish: { [weak self] timeseriesArray in
-                                    DispatchQueue.main.async {
-                                        self?.finishedProcessing(results: timeseriesArray)
-                                    }
+        processor?.makeCompressedTimeseries(videoURL: videoURL,
+                                            meta: meta,
+                                            onFinish: { [weak self] compressedTimeseries in
+                                                DispatchQueue.main.async {
+                                                    self?.finishedProcessing(results: compressedTimeseries)
+                                                }
             },
-                                  onFailure: { errors in
-                                    print("Video Processor finished with errors:")
-                                    for error in errors {
-                                        print("\t\(error)")
-                                    }
+                                            onFailure: { errors in
+                                                print("Video Processor finished with errors:")
+                                                for error in errors {
+                                                    print("\t\(error)")
+                                                }
         })
     }
 
-    private func finishedProcessing(results timeseriesArray: [Timeseries]) {
-        self.timeseriesArray = timeseriesArray
+    private func finishedProcessing(results compressedTimeseries: [CompressedTimeseries]) {
+        self.timeseriesArray = compressedTimeseries
 
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
             if let strongSelf = self,
                 let timeseries = strongSelf.timeseriesArray.element(atIndex: strongSelf.selectedTimeseries) {
-                strongSelf.updateHeatmapView(with: timeseries)
+                strongSelf.updatePoseView(with: timeseries)
                 strongSelf.sampleIndex = (strongSelf.sampleIndex + 1) % timeseries.numSamples
             }
         }
 
-        configureHeatmapView()
+        configurePoseView()
     }
 
-    private func configureHeatmapView() {
+    private func configurePoseView() {
         guard let timeseries = timeseriesArray.element(atIndex: selectedTimeseries),
             poseViewContainer != nil else {
             return
@@ -180,24 +180,20 @@ class AnalysisController: UIViewController {
 
         activityIndicator.isHidden = true
         infoLabel.isHidden = true
-        heatmapView?.removeFromSuperview()
+        poseView?.removeFromSuperview()
 
         do {
             let slice = try timeseries.timeSlice(forSample: sampleIndex)
+            let model = PoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
+            let poseView = PoseView(model: model, delegate: nil, jointLineColor: .red)
 
-            guard let model = HeatmapViewModel(heatmap: slice) else {
-                print("Unable to initialize PoseViewModel from timeseries slice")
-                return
-            }
-
-            let heatmapView = HeatmapView(model: model)
-            poseViewContainer.addSubview(heatmapView)
-            heatmapView.translatesAutoresizingMaskIntoConstraints = false
-            heatmapView.leftAnchor.constraint(equalTo: poseViewContainer.leftAnchor).isActive = true
-            heatmapView.rightAnchor.constraint(equalTo: poseViewContainer.rightAnchor).isActive = true
-            heatmapView.topAnchor.constraint(equalTo: poseViewContainer.topAnchor).isActive = true
-            heatmapView.bottomAnchor.constraint(equalTo: poseViewContainer.bottomAnchor).isActive = true
-            self.heatmapView = heatmapView
+            poseViewContainer.addSubview(poseView)
+            poseView.translatesAutoresizingMaskIntoConstraints = false
+            poseView.leftAnchor.constraint(equalTo: poseViewContainer.leftAnchor).isActive = true
+            poseView.rightAnchor.constraint(equalTo: poseViewContainer.rightAnchor).isActive = true
+            poseView.topAnchor.constraint(equalTo: poseViewContainer.topAnchor).isActive = true
+            poseView.bottomAnchor.constraint(equalTo: poseViewContainer.bottomAnchor).isActive = true
+            self.poseView = poseView
         } catch {
             print(error)
         }
@@ -208,13 +204,13 @@ class AnalysisController: UIViewController {
         avpController.player = player
     }
 
-    private func updateHeatmapView(with timeseries: Timeseries) {
-        guard let slice = try? timeseries.timeSlice(forSample: sampleIndex),
-            let model = HeatmapViewModel(heatmap: slice) else {
-                return
+    private func updatePoseView(with timeseries: CompressedTimeseries) {
+        guard let slice = try? timeseries.timeSlice(forSample: sampleIndex) else {
+            return
         }
 
-        heatmapView?.configure(with: model)
+        let model = PoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
+        poseView?.configure(with: model)
     }
 
 }

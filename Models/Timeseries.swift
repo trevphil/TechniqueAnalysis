@@ -84,9 +84,20 @@ public struct CompressedTimeseries {
         self.meta = meta
     }
 
-    // MARK: - Private Functions
+    // MARK: - Public Functions
 
-    private static func compress(_ heatmap: MLMultiArray) -> [PointEstimate]? {
+    public func timeSlice(forSample index: Int) throws -> [PointEstimate] {
+        guard let slice = data.element(atIndex: index) else {
+            let message = "Index \(index) is not within the number of samples for the timeseries"
+            throw TimeseriesError.indexOutOfBoundsError(message)
+        }
+
+        return slice
+    }
+
+    // MARK: - Exposed Functions
+
+    static func compress(_ heatmap: MLMultiArray) -> [PointEstimate]? {
         guard validHeatmap(heatmap, expectedShape: [14, 96, 96]) else {
             return nil
         }
@@ -116,6 +127,8 @@ public struct CompressedTimeseries {
 
         return normalize(bodyPoints, maxWidth: width, maxHeight: height)
     }
+
+    // MARK: - Private Functions
 
     private static func normalize(_ points: [PointEstimate], maxWidth: Int, maxHeight: Int) -> [PointEstimate] {
         return points.map { point -> PointEstimate in

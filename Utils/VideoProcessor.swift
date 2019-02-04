@@ -58,8 +58,23 @@ public class VideoProcessor {
                                onFinish: @escaping (([Timeseries]) -> ()),
                                onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
-            self.processVideo(videoURL: videoURL, meta: meta) { series, errors in
-                if errors.isEmpty {
+            self.processVideo(videoURL: videoURL, meta: meta, compressed: false) { series, errors in
+                if errors.isEmpty, let series = series as? [Timeseries] {
+                    onFinish(series)
+                } else {
+                    onFailure(errors)
+                }
+            }
+        }
+    }
+
+    public func makeCompressedTimeseries(videoURL: URL,
+                                         meta: Meta,
+                                         onFinish: @escaping (([CompressedTimeseries]) -> ()),
+                                         onFailure: @escaping (([Error]) -> ())) {
+        workerQueue.async {
+            self.processVideo(videoURL: videoURL, meta: meta, compressed: true) { series, errors in
+                if errors.isEmpty, let series = series as? [CompressedTimeseries] {
                     onFinish(series)
                 } else {
                     onFailure(errors)
@@ -72,8 +87,10 @@ public class VideoProcessor {
 
     private func processVideo(videoURL: URL,
                               meta: Meta,
-                              onFinish: @escaping (([Timeseries], [Error]) -> ())) {
+                              compressed: Bool,
+                              onFinish: @escaping (([Any], [Error]) -> ())) {
         var timeseries = [Int: Timeseries]()
+        var compressedTimeseries = [Int: CompressedTimeseries]()
         var errors = [Int: Error]()
         let dispatchGroup = DispatchGroup()
         
@@ -87,9 +104,12 @@ public class VideoProcessor {
                 self.makeImages(from: asset) { images in
 
                     dispatchGroup.enter() // ENTER 3
-                    self.makeTimeseries(from: &images, meta: meta) { series, error in
-
-                        if let series = series { timeseries[idx] = series }
+                    self.makeTimeseries(from: &images, meta: meta, compressed: compressed) { series, error in
+                        if let normal = series as? Timeseries {
+                            timeseries[idx] = normal
+                        } else if let compr = series as? CompressedTimeseries {
+                            compressedTimeseries[idx] = compr
+                        }
                         if let error = error { errors[idx] = error }
                         dispatchGroup.leave() // LEAVE 3
                     }
@@ -103,9 +123,10 @@ public class VideoProcessor {
         }
         
         dispatchGroup.notify(queue: workerQueue) {
-            let sortedSeries = timeseries.keys.sorted().compactMap { timeseries[$0] }
+            let sortedNormal = timeseries.keys.sorted().compactMap { timeseries[$0] }
+            let sortedCompressed = compressedTimeseries.keys.sorted().compactMap { compressedTimeseries[$0] }
             let sortedErrors = errors.keys.sorted().compactMap { errors[$0] }
-            onFinish(sortedSeries, sortedErrors)
+            onFinish(compressed ? sortedCompressed : sortedNormal, sortedErrors)
         }
     }
 
@@ -216,7 +237,8 @@ public class VideoProcessor {
     
     private func makeTimeseries(from images: inout [CGImage],
                                 meta: Meta,
-                                onFinish: @escaping ((Timeseries?, Error?) -> ())) {
+                                compressed: Bool,
+                                onFinish: @escaping ((Any?, Error?) -> ())) {
         var heatmaps = [Int: MLMultiArray]()
         let dispatchGroup = DispatchGroup()
         
@@ -236,7 +258,13 @@ public class VideoProcessor {
         dispatchGroup.notify(queue: workerQueue) {
             do {
                 let sortedHeatmaps = heatmaps.keys.sorted().compactMap { heatmaps[$0] }
-                let timeseries = try Timeseries(data: sortedHeatmaps, meta: meta)
+                let timeseries: Any
+                switch compressed {
+                case true:
+                    timeseries = try CompressedTimeseries(data: sortedHeatmaps, meta: meta)
+                case false:
+                    timeseries = try Timeseries(data: sortedHeatmaps, meta: meta)
+                }
                 onFinish(timeseries, nil)
             } catch {
                 onFinish(nil, error)

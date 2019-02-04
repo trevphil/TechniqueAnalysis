@@ -79,7 +79,7 @@ public class PoseEstimationModel {
         videoCapture.previewLayer?.removeFromSuperlayer()
     }
 
-    // MARK: - Internal Functions
+    // MARK: - Exposed Functions
 
     func predictUsingVision(pixelBuffer: CVPixelBuffer) {
         guard let request = request else {
