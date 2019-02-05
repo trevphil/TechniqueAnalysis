@@ -58,7 +58,7 @@ public struct Timeseries {
 
 }
 
-public struct CompressedTimeseries {
+public struct CompressedTimeseries: Codable {
 
     // MARK: - Properties
 

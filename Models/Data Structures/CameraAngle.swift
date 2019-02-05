@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum CameraAngle: String {
+public enum CameraAngle: String, Codable {
     case front, back, left, right
 }

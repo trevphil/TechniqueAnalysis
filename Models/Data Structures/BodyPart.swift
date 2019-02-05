@@ -5,9 +5,9 @@
 //  Created by Trevor on 04.12.18.
 //
 
-import UIKit
+import Foundation
 
-public enum BodyPart: Int, CaseIterable {
+public enum BodyPart: Int, CaseIterable, Codable {
 
     case top
     case neck

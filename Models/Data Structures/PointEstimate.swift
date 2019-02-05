@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PointEstimate {
+public struct PointEstimate: Codable {
     public let point: CGPoint
     public let confidence: Double
     public let bodyPart: BodyPart?

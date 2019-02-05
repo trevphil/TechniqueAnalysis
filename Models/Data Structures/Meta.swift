@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Meta {
+public struct Meta: Codable {
 
     // MARK: - Properties
 
