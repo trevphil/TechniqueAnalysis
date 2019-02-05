@@ -9,14 +9,16 @@
 import Foundation
 import TechniqueAnalysis
 
-struct CacheManager {
+class CacheManager {
 
     // MARK: - Properties
 
     /// Shared Singleton Instance
     static let shared = CacheManager()
 
-    let cache: [CompressedTimeseries]
+    private(set) var cache: [CompressedTimeseries]
+    private var processingQueue = [(url: URL, meta: Meta)]()
+    private let processor: VideoProcessor?
 
     private static let cachedTimeseriesExtension = "ts"
 
@@ -36,7 +38,15 @@ struct CacheManager {
                                                      withIntermediateDirectories: true,
                                                      attributes: nil)
         }
+
         self.cache = CacheManager.retrieveCache()
+
+        do {
+            self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+        } catch {
+            print("Error while initializing VideoProcessor in CacheManager: \(error)")
+            self.processor = nil
+        }
     }
 
     // MARK: - Exposed Functions
@@ -61,7 +71,63 @@ struct CacheManager {
         return true
     }
 
+    func processUncachedLabeledVideos(onItemProcessed: @escaping ((Int, Int) -> Void),
+                                      onFinish: @escaping (() -> Void),
+                                      onError: @escaping ((String) -> Void)) {
+        guard processingQueue.isEmpty else {
+            onError("CacheManager is already processing videos, please wait!")
+            return
+        }
+
+        let labeledVideos = VideoManager.shared.labeledVideos
+        let toProcess = labeledVideos.filter { !cache(contains: $0.meta) }
+
+        if toProcess.isEmpty {
+            onFinish()
+            return
+        }
+
+        self.processingQueue = toProcess
+        processNext(originalSize: toProcess.count, onItemProcessed: onItemProcessed, onFinish: onFinish)
+    }
+
     // MARK: - Private Functions
+
+    private func cache(contains meta: Meta) -> Bool {
+        return cache.contains(where: { cachedSeries -> Bool in
+            cachedSeries.meta.exerciseName == meta.exerciseName &&
+                cachedSeries.meta.exerciseDetail == meta.exerciseDetail &&
+                cachedSeries.meta.angle == meta.angle &&
+                cachedSeries.meta.isLabeled == meta.isLabeled
+        })
+    }
+
+    private func processNext(originalSize: Int,
+                             onItemProcessed: @escaping ((Int, Int) -> Void),
+                             onFinish: @escaping (() -> Void)) {
+        guard let next = processingQueue.popLast(),
+            let processor = processor else {
+                return
+        }
+
+        processor.makeCompressedTimeseries(videoURL: next.url,
+                                           meta: next.meta,
+                                           onFinish: { results in
+                                            for compressedSeries in results {
+                                                _ = self.cache(compressedSeries)
+                                            }
+
+                                            if self.processingQueue.isEmpty {
+                                                onFinish()
+                                            } else {
+                                                onItemProcessed(originalSize - self.processingQueue.count, originalSize)
+                                                self.processNext(originalSize: originalSize,
+                                                                 onItemProcessed: onItemProcessed,
+                                                                 onFinish: onFinish)
+                                            }
+        },
+                                           onFailure: { _ in })
+    }
 
     private static func retrieveCache() -> [CompressedTimeseries] {
         guard let directory = cacheDirectory,

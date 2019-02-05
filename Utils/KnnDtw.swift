@@ -7,20 +7,20 @@
 
 import Foundation
 
-enum KnnDtwError: Error {
+public enum KnnDtwError: Error {
     case shapeMismatchError
 }
 
-struct KnnDtw {
+public struct KnnDtw {
 
     // MARK: - Properties
 
-    let warpingWindow: Int
-    let minConfidence: Double
+    public let warpingWindow: Int
+    public let minConfidence: Double
 
     // MARK: - Initialization
 
-    init(warpingWindow: Int, minConfidence: Double) {
+    public init(warpingWindow: Int, minConfidence: Double) {
         self.warpingWindow = warpingWindow
         self.minConfidence = minConfidence
     }

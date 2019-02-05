@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AnalysisController" customModule="TechniqueAnalysis_Example" customModuleProvider="target">
             <connections>
                 <outlet property="activityIndicator" destination="eSM-wm-jXj" id="JZT-Gj-lko"/>
+                <outlet property="bestGuessLabel" destination="8sG-0y-m7J" id="7bh-YA-x5C"/>
                 <outlet property="infoLabel" destination="eWA-BW-C6G" id="ugK-8t-GGC"/>
                 <outlet property="poseViewContainer" destination="k69-eM-ZOd" id="BI4-O3-W0f"/>
                 <outlet property="selectVideoButton" destination="TfO-k1-3VJ" id="TrK-Md-RbX"/>
@@ -55,20 +56,20 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jGi-tA-xUt">
-                            <rect key="frame" x="0.0" y="150" width="375" height="248.5"/>
+                            <rect key="frame" x="0.0" y="150" width="375" height="218.5"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" priority="750" constant="280" id="KsJ-zp-T0f"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k69-eM-ZOd">
-                            <rect key="frame" x="0.0" y="398.5" width="375" height="248.5"/>
+                            <rect key="frame" x="0.0" y="368.5" width="375" height="218.5"/>
                             <subviews>
                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="eSM-wm-jXj">
-                                    <rect key="frame" x="169" y="96" width="37" height="37"/>
+                                    <rect key="frame" x="169" y="81" width="37" height="37"/>
                                 </activityIndicatorView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing Video" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eWA-BW-C6G">
-                                    <rect key="frame" x="145.5" y="149" width="84.5" height="41"/>
+                                    <rect key="frame" x="145.5" y="134" width="84.5" height="41"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
@@ -83,9 +84,26 @@
                                 <constraint firstItem="eWA-BW-C6G" firstAttribute="centerX" secondItem="k69-eM-ZOd" secondAttribute="centerX" id="xhc-UZ-BKu"/>
                             </constraints>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7bj-Rg-e5L">
+                            <rect key="frame" x="0.0" y="587" width="375" height="60"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8sG-0y-m7J">
+                                    <rect key="frame" x="187.5" y="30" width="0.0" height="0.0"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="8sG-0y-m7J" firstAttribute="centerX" secondItem="7bj-Rg-e5L" secondAttribute="centerX" id="OCg-MC-Tv1"/>
+                                <constraint firstItem="8sG-0y-m7J" firstAttribute="centerY" secondItem="7bj-Rg-e5L" secondAttribute="centerY" id="he9-8X-mPv"/>
+                                <constraint firstAttribute="height" constant="60" id="oXc-bA-7SE"/>
+                            </constraints>
+                        </view>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="k69-eM-ZOd" firstAttribute="height" secondItem="jGi-tA-xUt" secondAttribute="height" id="pQH-Rq-w24"/>
+                        <constraint firstItem="k69-eM-ZOd" firstAttribute="height" secondItem="jGi-tA-xUt" secondAttribute="height" priority="999" id="pQH-Rq-w24"/>
                     </constraints>
                 </stackView>
             </subviews>

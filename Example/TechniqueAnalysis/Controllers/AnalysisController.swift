@@ -25,6 +25,7 @@ class AnalysisController: UIViewController {
     @IBOutlet private weak var selectVideoButton: UIButton!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var infoLabel: UILabel!
+    @IBOutlet private weak var bestGuessLabel: UILabel!
     private weak var poseView: PoseView?
 
     // Array of `CompressedTimeseries` objects derived from a sample video
@@ -41,6 +42,9 @@ class AnalysisController: UIViewController {
 
     /// Timer to continuously update the heatmap with various time slices
     private var timer: Timer?
+
+    /// Worker queue for running the Knn DTW algorithm
+    private let algoQueue = DispatchQueue(label: "KnnDTW")
 
     // MARK: - Initialization
 
@@ -142,6 +146,7 @@ class AnalysisController: UIViewController {
     }
 
     private func processVideo(videoURL: URL, meta: Meta) {
+        bestGuessLabel.text = ""
         processor?.makeCompressedTimeseries(videoURL: videoURL,
                                             meta: meta,
                                             onFinish: { [weak self] compressedTimeseries in
@@ -167,6 +172,25 @@ class AnalysisController: UIViewController {
                 strongSelf.updatePoseView(with: timeseries)
                 strongSelf.sampleIndex = (strongSelf.sampleIndex + 1) % timeseries.numSamples
             }
+        }
+
+        if let series = compressedTimeseries.element(atIndex: selectedTimeseries) {
+            bestGuessLabel.text = "Predicting..."
+            let algo = KnnDtw(warpingWindow: 100, minConfidence: 0.2)
+            algoQueue.async {
+                let newText: String
+                if let result = algo.nearestNeighbor(unknownItem: series, knownItems: CacheManager.shared.cache) {
+                    newText = "\(result.timeseries.meta.exerciseName), \(result.timeseries.meta.exerciseDetail), " +
+                    "\(result.timeseries.meta.angle.rawValue) (score=\(result.score))"
+                } else {
+                    newText = ""
+                }
+                DispatchQueue.main.async {
+                    self.bestGuessLabel.text = newText
+                }
+            }
+        } else {
+            bestGuessLabel.text = ""
         }
 
         configurePoseView()
