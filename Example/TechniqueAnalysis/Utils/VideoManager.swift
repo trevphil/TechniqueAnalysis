@@ -28,6 +28,10 @@ struct VideoManager {
         return VideoManager.unlabeledVideos()
     }()
 
+    // MARK: - Initialization
+
+    private init() {}
+
     // MARK: - Private Functions
 
     private static func videoFileNames() -> [String] {
@@ -43,35 +47,13 @@ struct VideoManager {
         }
     }
 
-    private static func noExtension(_ file: String) -> String {
-        if let index = file.lastIndex(of: ".") {
-            return String(file[..<index])
-        }
-        return file
-    }
-
     private static func labeledVideos() -> [(URL, Meta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }
 
-        func parseLabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
-            let parts = noExtension(videoName).split(separator: "_").map { String($0) }
-            guard parts.element(atIndex: 0) != "test",
-                let name = parts.element(atIndex: 0)?.replacingOccurrences(of: "-", with: " ").capitalized,
-                let description = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
-                let angleString = parts.element(atIndex: 2),
-                let angle = CameraAngle(rawValue: angleString) else {
-                    return nil
-            }
-
-            let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-            let meta = Meta(isLabeled: true, exerciseName: name, exerciseDetail: description, angle: angle)
-            return (url, meta)
-        }
-
         let videos = videoFileNames()
-        return videos.compactMap { parseLabeled(videoName: $0, baseURL: path) }
+        return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: true) }
     }
 
     private static func unlabeledVideos() -> [(URL, Meta)] {
@@ -79,23 +61,8 @@ struct VideoManager {
             return []
         }
 
-        func parseUnlabeled(videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
-            let parts = noExtension(videoName).split(separator: "_").map { String($0) }
-            guard parts.element(atIndex: 0) == "test",
-                let name = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
-                let description = parts.element(atIndex: 2)?.replacingOccurrences(of: "-", with: " ").capitalized,
-                let angleString = parts.element(atIndex: 3),
-                let angle = CameraAngle(rawValue: angleString) else {
-                    return nil
-            }
-
-            let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-            let meta = Meta(isLabeled: false, exerciseName: name, exerciseDetail: description, angle: angle)
-            return (url, meta)
-        }
-
         let videos = videoFileNames()
-        return videos.compactMap { parseUnlabeled(videoName: $0, baseURL: path) }
+        return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: false) }
     }
 
 }

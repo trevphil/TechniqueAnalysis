@@ -75,6 +75,8 @@
 		6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* AnalysisController.swift */; };
 		6935FF242200AE00005E4FAA /* AnalysisController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6935FF232200AE00005E4FAA /* AnalysisController.xib */; };
 		6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF2A2202F438005E4FAA /* Array+Additions.swift */; };
+		69E32C912209D68500EF84F0 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C902209D68500EF84F0 /* CacheManager.swift */; };
+		69E32C932209DDAE00EF84F0 /* FileNamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C922209DDAE00EF84F0 /* FileNamer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -160,6 +162,8 @@
 		6935FF212200A02D005E4FAA /* AnalysisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisController.swift; sourceTree = "<group>"; };
 		6935FF232200AE00005E4FAA /* AnalysisController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalysisController.xib; sourceTree = "<group>"; };
 		6935FF2A2202F438005E4FAA /* Array+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
+		69E32C902209D68500EF84F0 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		69E32C922209DDAE00EF84F0 /* FileNamer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNamer.swift; sourceTree = "<group>"; };
 		6E75238D061C1DCA3A28F1F5 /* Pods_TechniqueAnalysis_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TechniqueAnalysis_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A49583CD828D24657F9D442 /* Pods-TechniqueAnalysis_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TechniqueAnalysis_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TechniqueAnalysis_Tests/Pods-TechniqueAnalysis_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		7BAD2021A5C84470F9DC56C3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -259,6 +263,8 @@
 		0F55CE932203B2A500CAF55B /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				69E32C902209D68500EF84F0 /* CacheManager.swift */,
+				69E32C922209DDAE00EF84F0 /* FileNamer.swift */,
 				0F55CE942203B2BF00CAF55B /* VideoManager.swift */,
 			);
 			path = Utils;
@@ -640,6 +646,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69E32C912209D68500EF84F0 /* CacheManager.swift in Sources */,
 				6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */,
 				0F9A694C21C7083A000502B7 /* JointController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
@@ -652,6 +659,7 @@
 				0F55CE952203B2BF00CAF55B /* VideoManager.swift in Sources */,
 				0F9A695321C7083A000502B7 /* RootCoordinator.swift in Sources */,
 				0F9A695521C7085A000502B7 /* BodyPart+Additions.swift in Sources */,
+				69E32C932209DDAE00EF84F0 /* FileNamer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
