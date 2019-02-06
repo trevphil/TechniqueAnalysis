@@ -106,9 +106,9 @@ public struct KnnDtw {
             distances.append(dist)
         }
 
-        let validNums = distances.filter { $0 != Double.nan }
+        let validNums = distances.filter { !$0.isNaN }
         let nanFill = validNums.max() ?? Double.greatestFiniteMagnitude
-        distances = distances.map { $0 == Double.nan ? nanFill : $0 }
+        distances = distances.map { $0.isNaN ? nanFill : $0 }
         return distances.reduce(0, +)
     }
 

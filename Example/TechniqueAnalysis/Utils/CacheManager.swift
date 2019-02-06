@@ -68,6 +68,7 @@ class CacheManager {
         FileManager.default.createFile(atPath: filePath,
                                        contents: data,
                                        attributes: [:])
+        cache.append(compressedTimeseries)
         return true
     }
 
@@ -107,6 +108,7 @@ class CacheManager {
                              onFinish: @escaping (() -> Void)) {
         guard let next = processingQueue.popLast(),
             let processor = processor else {
+                onFinish()
                 return
         }
 

@@ -19,6 +19,7 @@ class AnalysisController: UIViewController {
     private let processor: VideoProcessor?
     @IBOutlet private weak var videoViewContainer: UIView!
     @IBOutlet private weak var poseViewContainer: UIView!
+    @IBOutlet private weak var processingCacheView: UIView?
     @IBOutlet private weak var videoSelectionContainer: UIView!
     @IBOutlet private weak var videoSelectionContainerHeight: NSLayoutConstraint!
     private var videoSectionCollapsed = true
@@ -26,6 +27,7 @@ class AnalysisController: UIViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var infoLabel: UILabel!
     @IBOutlet private weak var bestGuessLabel: UILabel!
+    @IBOutlet private weak var processingCacheStatus: UILabel?
     private weak var poseView: PoseView?
 
     // Array of `CompressedTimeseries` objects derived from a sample video
@@ -85,6 +87,9 @@ class AnalysisController: UIViewController {
 
         activityIndicator.isHidden = true
         infoLabel.text = "Select\na Video"
+        bestGuessLabel.text = ""
+        processingCacheStatus?.text = "Processing Labeled Data"
+        processLabeledData()
     }
 
     deinit {
@@ -100,8 +105,9 @@ class AnalysisController: UIViewController {
 
         func collapse() {
             videoSelectionContainerHeight?.constant = 0
-            UIView.animate(withDuration: animationDuration, animations: { [weak self] in
-                self?.view.layoutIfNeeded()
+            UIView.animate(withDuration: animationDuration,
+                           animations: { [weak self] in
+                            self?.view.layoutIfNeeded()
                 },
                            completion: { [weak self] _ in
                             self?.selectVideoButton?.setTitle("Show Video Selection", for: .normal)
@@ -111,8 +117,9 @@ class AnalysisController: UIViewController {
 
         func expand() {
             videoSelectionContainerHeight?.constant = maxContainerHeight
-            UIView.animate(withDuration: animationDuration, animations: { [weak self] in
-                self?.view.layoutIfNeeded()
+            UIView.animate(withDuration: animationDuration,
+                           animations: { [weak self] in
+                            self?.view.layoutIfNeeded()
                 },
                            completion: { [weak self] _ in
                             self?.selectVideoButton?.setTitle("Hide Video Selection", for: .normal)
@@ -124,6 +131,22 @@ class AnalysisController: UIViewController {
     }
 
     // MARK: - Private Functions
+
+    private func processLabeledData() {
+        CacheManager.shared.processUncachedLabeledVideos(onItemProcessed: { [weak self] (current, total) in
+            DispatchQueue.main.async {
+                self?.processingCacheStatus?.text = "Processing Labeled Data (\(current)/\(total))"
+            }
+            },
+                                                         onFinish: { [weak self] in
+                                                            DispatchQueue.main.async {
+                                                                self?.processingCacheView?.removeFromSuperview()
+                                                            }
+            },
+                                                         onError: { errorMessage in
+                                                            print(errorMessage)
+        })
+    }
 
     private func addVideoSelectionController() {
         let controller = VideoSelectionController(onVideoSelected: { (url, meta) in
@@ -180,10 +203,11 @@ class AnalysisController: UIViewController {
             algoQueue.async {
                 let newText: String
                 if let result = algo.nearestNeighbor(unknownItem: series, knownItems: CacheManager.shared.cache) {
-                    newText = "\(result.timeseries.meta.exerciseName), \(result.timeseries.meta.exerciseDetail), " +
-                    "\(result.timeseries.meta.angle.rawValue) (score=\(result.score))"
+                    newText = "Prediction: \(result.timeseries.meta.exerciseName), " +
+                        "\(result.timeseries.meta.exerciseDetail), " +
+                        "\(result.timeseries.meta.angle.rawValue.capitalized) (score=\(Int(result.score)))"
                 } else {
-                    newText = ""
+                    newText = "No Prediction Available"
                 }
                 DispatchQueue.main.async {
                     self.bestGuessLabel.text = newText
