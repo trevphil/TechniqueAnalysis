@@ -7,12 +7,11 @@
 
 import CoreML
 import AVKit
-import AVFoundation
 
 public enum VideoProcessorError: Error {
     case initializationError(String)
     case noDataError(String)
-    case multiArrayError(String)
+    case filesystemAccessError(String)
 }
 
 public class VideoProcessor {
@@ -20,19 +19,11 @@ public class VideoProcessor {
     // MARK: - Properties
 
     private let poseEstimationModel: PoseEstimationModel
+    private let generatedVideosPath: URL
     private let sampleLength: TimeInterval
     private let insetPercent: Double
     private let fps: Double
     private let workerQueue = DispatchQueue(label: "video_processing")
-    private var dispatchGroup: DispatchGroup?
-    private var heatmaps: [MLMultiArray]?
-
-    private var documentsURL: URL? {
-        return try? FileManager.default.url(for: .documentDirectory,
-                                            in: .allDomainsMask,
-                                            appropriateFor: nil,
-                                            create: true)
-    }
 
     // MARK: - Initialization
 
@@ -44,38 +35,49 @@ public class VideoProcessor {
             throw VideoProcessorError.initializationError("Could not initialize underlying Pose Estimation Model")
         }
 
+        guard let path = try? FileManager.default.url(for: .documentDirectory,
+                                                      in: .allDomainsMask, appropriateFor: nil, create: true) else {
+            throw VideoProcessorError.filesystemAccessError("Could not create URL path for generating video subclips")
+        }
+
+        self.generatedVideosPath = path.appendingPathComponent("sections", isDirectory: true)
         self.poseEstimationModel = poseEstimationModel
         self.sampleLength = sampleLength
         self.insetPercent = insetPercent
         self.fps = fps
-        self.poseEstimationModel.delegate = self
+        
+        _ = try? FileManager.default.createDirectory(at: generatedVideosPath,
+                                                     withIntermediateDirectories: true,
+                                                     attributes: nil)
     }
 
     // MARK: - Public Functions
 
     public func makeTimeseries(videoURL: URL,
-                               meta: Timeseries.Meta,
-                               onFinish: @escaping ((Timeseries) -> ()),
-                               onFailure: @escaping ((Error) -> ())) {
-        let dispatchGroup = DispatchGroup()
-        let heatmaps = [MLMultiArray]()
-        self.dispatchGroup = dispatchGroup
-        self.heatmaps = heatmaps
-
+                               meta: Meta,
+                               onFinish: @escaping (([Timeseries]) -> ()),
+                               onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
-            self.processVideo(videoURL: videoURL, dispatchGroup: dispatchGroup)
-
-            dispatchGroup.notify(queue: self.workerQueue) {
-                defer {
-                    self.dispatchGroup = nil
-                    self.heatmaps = nil
+            self.processVideo(videoURL: videoURL, meta: meta, compressed: false) { series, errors in
+                if errors.isEmpty, let series = series as? [Timeseries] {
+                    onFinish(series)
+                } else {
+                    onFailure(errors)
                 }
+            }
+        }
+    }
 
-                do {
-                    let timeseries = try self.configuredTimeseries(meta: meta)
-                    onFinish(timeseries)
-                } catch {
-                    onFailure(error)
+    public func makeCompressedTimeseries(videoURL: URL,
+                                         meta: Meta,
+                                         onFinish: @escaping (([CompressedTimeseries]) -> ()),
+                                         onFailure: @escaping (([Error]) -> ())) {
+        workerQueue.async {
+            self.processVideo(videoURL: videoURL, meta: meta, compressed: true) { series, errors in
+                if errors.isEmpty, let series = series as? [CompressedTimeseries] {
+                    onFinish(series)
+                } else {
+                    onFailure(errors)
                 }
             }
         }
@@ -83,49 +85,49 @@ public class VideoProcessor {
 
     // MARK: - Private Functions
 
-    private func processVideo(videoURL: URL, dispatchGroup: DispatchGroup) {
-        dispatchGroup.enter()
-        makeSections(from: videoURL) { videoURLs in
-            for url in videoURLs {
-                print(videoURLs.map { $0.absoluteString })
+    private func processVideo(videoURL: URL,
+                              meta: Meta,
+                              compressed: Bool,
+                              onFinish: @escaping (([Any], [Error]) -> ())) {
+        var timeseries = [Int: Timeseries]()
+        var compressedTimeseries = [Int: CompressedTimeseries]()
+        var errors = [Int: Error]()
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter() // ENTER 1
+        makeSections(from: videoURL) { sectionURLs in
+            
+            for (idx, url) in sectionURLs.enumerated() {
                 let asset = AVAsset(url: url)
-                dispatchGroup.enter()
-
+                
+                dispatchGroup.enter() // ENTER 2
                 self.makeImages(from: asset) { images in
-                    let buffers = images.compactMap { $0.asPixelBuffer }
-                    print("\(buffers.count) pixel buffers generated")
-                    for buffer in buffers {
-                        dispatchGroup.enter()
-                        self.poseEstimationModel.predictUsingVision(pixelBuffer: buffer)
+
+                    dispatchGroup.enter() // ENTER 3
+                    self.makeTimeseries(from: &images, meta: meta, compressed: compressed) { series, error in
+                        if let normal = series as? Timeseries {
+                            timeseries[idx] = normal
+                        } else if let compr = series as? CompressedTimeseries {
+                            compressedTimeseries[idx] = compr
+                        }
+                        if let error = error { errors[idx] = error }
+                        dispatchGroup.leave() // LEAVE 3
                     }
-                    dispatchGroup.leave()
+
+                    dispatchGroup.leave() // LEAVE 2
                 }
             }
-            dispatchGroup.leave()
-        }
-    }
+            self.cleanupSections(sectionURLs)
 
-    private func configuredTimeseries(meta: Timeseries.Meta) throws -> Timeseries {
-        guard let heatmaps = heatmaps, let sampleItem = heatmaps.element(atIndex: 0) else {
-            throw VideoProcessorError.noDataError("No heatmaps were created!")
+            dispatchGroup.leave() // LEAVE 1
         }
-
-        let shape = [NSNumber(value: heatmaps.count)] + sampleItem.shape
-        let dataType = sampleItem.dataType
-        guard let multi = try? MLMultiArray(shape: shape, dataType: dataType) else {
-            let errorMessage = "Error while initializing MLMultiArray with shape \(shape.map { $0.intValue })"
-            throw VideoProcessorError.multiArrayError(errorMessage)
+        
+        dispatchGroup.notify(queue: workerQueue) {
+            let sortedNormal = timeseries.keys.sorted().compactMap { timeseries[$0] }
+            let sortedCompressed = compressedTimeseries.keys.sorted().compactMap { compressedTimeseries[$0] }
+            let sortedErrors = errors.keys.sorted().compactMap { errors[$0] }
+            onFinish(compressed ? sortedCompressed : sortedNormal, sortedErrors)
         }
-
-        let blockSize = MemoryLayout<Double>.size * sampleItem.shape.map({ $0.intValue }).reduce(0, +)
-        let base = multi.dataPointer
-        for (idx, heatmap) in heatmaps.enumerated() {
-            let src = heatmap.dataPointer
-            let dest = base + blockSize * idx
-            memcpy(dest, src, blockSize)
-        }
-
-        return Timeseries(data: multi, meta: meta)
     }
 
     private func subclipIntervals(totalLength: TimeInterval) -> [(start: TimeInterval, end: TimeInterval)] {
@@ -145,12 +147,7 @@ public class VideoProcessor {
     }
 
     private func makeSections(from videoURL: URL, onFinish: @escaping (([URL]) -> ())) {
-        guard let docs = documentsURL else {
-            onFinish([])
-            return
-        }
-
-        var sectionURLs = [URL]()
+        var sectionURLs = [Int: URL]()
         let video = AVAsset(url: videoURL)
         let dispatchGroup = DispatchGroup()
 
@@ -165,7 +162,7 @@ public class VideoProcessor {
                 continue
             }
 
-            let sectionURL = docs.appendingPathComponent("\(videoName)_section\(idx).\(videoExtension)")
+            let sectionURL = generatedVideosPath.appendingPathComponent("\(videoName)_section\(idx).\(videoExtension)")
             _ = try? FileManager.default.removeItem(at: sectionURL)
             exportSession.outputURL = sectionURL
             exportSession.outputFileType = .mp4
@@ -173,7 +170,7 @@ public class VideoProcessor {
             let endTime = CMTime(seconds: section.end, preferredTimescale: video.duration.timescale)
             let timeRange = CMTimeRange(start: startTime, end: endTime)
             exportSession.timeRange = timeRange
-            sectionURLs.append(sectionURL)
+            sectionURLs[idx] = sectionURL
 
             dispatchGroup.enter()
             exportSession.exportAsynchronously {
@@ -182,7 +179,18 @@ public class VideoProcessor {
         }
 
         dispatchGroup.notify(queue: workerQueue) {
-            onFinish(sectionURLs)
+            let sorted = sectionURLs.keys.sorted().compactMap { sectionURLs[$0] }
+            onFinish(sorted)
+        }
+    }
+
+    private func cleanupSections(_ sectionURLs: [URL]) {
+        for url in sectionURLs {
+            do {
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                print("Error: Unable to remove generated section subclip: \(error)")
+            }
         }
     }
 
@@ -200,18 +208,22 @@ public class VideoProcessor {
         return sampleTimes
     }
 
-    private func makeImages(from asset: AVAsset, onFinish: @escaping (([CGImage]) -> ())) {
-        var images = [CGImage]()
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.requestedTimeToleranceBefore = CMTime.zero
-        generator.requestedTimeToleranceAfter = CMTime.zero
-        let dispatchGroup = DispatchGroup()
+    private func makeImages(from asset: AVAsset, onFinish: @escaping ((inout [CGImage]) -> ())) {
+        var images = [Double: CGImage]()
+        var sortedImages = [CGImage]()
         let sampleTimes = samples(for: asset)
 
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.requestedTimeToleranceBefore = .zero
+        generator.requestedTimeToleranceAfter = .zero
+
+        let dispatchGroup = DispatchGroup()
         _ = (0..<sampleTimes.count).forEach { _ in dispatchGroup.enter() }
-        let handler: AVAssetImageGeneratorCompletionHandler = { requestedTime, image, actualTime, result, error in
+        
+        let handler: AVAssetImageGeneratorCompletionHandler = { _, image, time, _, _ in
             if let image = image {
-                images.append(image)
+                images[time.seconds] = image
+                sortedImages = images.keys.sorted().compactMap { images[$0] }
             }
             dispatchGroup.leave()
         }
@@ -219,23 +231,54 @@ public class VideoProcessor {
         generator.generateCGImagesAsynchronously(forTimes: sampleTimes, completionHandler: handler)
 
         dispatchGroup.notify(queue: workerQueue) {
-            onFinish(images)
+            onFinish(&sortedImages)
         }
     }
+    
+    private func makeTimeseries(from images: inout [CGImage],
+                                meta: Meta,
+                                compressed: Bool,
+                                onFinish: @escaping ((Any?, Error?) -> ())) {
+        var heatmaps = [Int: MLMultiArray]()
+        let dispatchGroup = DispatchGroup()
+        
+        for _ in (0..<images.count) { dispatchGroup.enter() }
 
-}
-
-extension VideoProcessor: PoseEstimationDelegate {
-
-    public func visionRequestDidComplete(heatmap: MLMultiArray) {
-        workerQueue.async {
-            self.heatmaps?.append(heatmap)
-            self.dispatchGroup?.leave()
+        var idx: Int = 0
+        while !images.isEmpty {
+            // Iterate in this way to reduce CGImage memory allocations as we process them
+            let image = images.removeFirst()
+            makeHeatmap(from: image) { heatmap in
+                if let heatmap = heatmap { heatmaps[idx] = heatmap }
+                dispatchGroup.leave()
+            }
+            idx += 1
+        }
+        
+        dispatchGroup.notify(queue: workerQueue) {
+            do {
+                let sortedHeatmaps = heatmaps.keys.sorted().compactMap { heatmaps[$0] }
+                let timeseries: Any
+                switch compressed {
+                case true:
+                    timeseries = try CompressedTimeseries(data: sortedHeatmaps, meta: meta)
+                case false:
+                    timeseries = try Timeseries(data: sortedHeatmaps, meta: meta)
+                }
+                onFinish(timeseries, nil)
+            } catch {
+                onFinish(nil, error)
+            }
         }
     }
-
-    public func visionRequestDidFail(error: Error?) {}
-
-    public func didSamplePerformance(inferenceTime: Double, executionTime: Double, fps: Int) {}
+    
+    private func makeHeatmap(from image: CGImage, onFinish: @escaping ((MLMultiArray?) -> ())) {
+        let failure = { (error: Error?) in
+            print("Error applying CoreVision on cgImage: \(error?.localizedDescription ?? "(none)")")
+            onFinish(nil)
+        }
+        
+        poseEstimationModel.predictUsingVision(cgImage: image, onSuccess: onFinish, onFailure: failure)
+    }
 
 }

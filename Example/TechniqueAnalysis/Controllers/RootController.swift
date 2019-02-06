@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import TechniqueAnalysis
 
 class RootController: UITabBarController {
 
@@ -29,29 +28,6 @@ class RootController: UITabBarController {
 
         configureControllers()
         configureTabBar()
-
-        do {
-            let processor = try VideoProcessor(sampleLength: 3, insetPercent: 0.1, fps: 20, modelType: .cpm)
-            guard let url = Bundle.main.url(forResource: "pull-up-correct_front", withExtension: "mov") else {
-                print("Resource not found!")
-                return
-            }
-
-            let meta = Timeseries.Meta(isLabeled: true,
-                                       exerciseName: "pull-ups",
-                                       exerciseDetail: "correct-form",
-                                       angle: .front)
-            processor.makeTimeseries(videoURL: url,
-                                     meta: meta,
-                                     onFinish: { timeseries in
-                                        print(timeseries)
-            },
-                                     onFailure: { error in
-                                        print(error)
-            })
-        } catch {
-            print(error)
-        }
     }
 
     // MARK: - Private Functions
@@ -59,7 +35,8 @@ class RootController: UITabBarController {
     private func configureControllers() {
         let heatmapController = HeatmapController()
         let jointController = JointController()
-        viewControllers = [heatmapController, jointController]
+        let analysisController = AnalysisController()
+        viewControllers = [heatmapController, jointController, analysisController]
         reloadInputViews()
         selectedIndex = 0
     }
@@ -70,6 +47,9 @@ class RootController: UITabBarController {
         }
         if let jointTab = tabBar.items?[1], let arm = "💪".asImage?.withRenderingMode(.alwaysTemplate) {
             jointTab.image = arm
+        }
+        if let analysisTab = tabBar.items?[2], let video = "🎥".asImage?.withRenderingMode(.alwaysTemplate) {
+            analysisTab.image = video
         }
     }
 

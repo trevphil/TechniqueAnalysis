@@ -1,3 +1,7 @@
+excluded:
+  - cpm_model.swift
+  - hourglass_model.swift
+
 disabled_rules:
   - force_cast
   - type_body_length
@@ -25,7 +29,6 @@ opt_in_rules:
   - fallthrough
   - force_unwrapping
   - explicit_init
-  - conditional_returns_on_newline
   - closure_spacing
   - prohibited_super_call
   - overridden_super_call
@@ -50,7 +53,7 @@ opt_in_rules:
   - unused_closure_parameter
 
 function_body_length:
-  - 50    
+  - 50
 
 cyclomatic_complexity:
   warning: 20

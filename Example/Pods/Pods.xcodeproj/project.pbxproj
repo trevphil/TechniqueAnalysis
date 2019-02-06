@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0F9A692E21C707C9000502B7 /* VideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691C21C707C9000502B7 /* VideoCapture.swift */; };
-		0F9A692F21C707C9000502B7 /* NSObject+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */; };
 		0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691E21C707C9000502B7 /* Array+Additions.swift */; };
 		0F9A693121C707C9000502B7 /* PerformanceTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691F21C707C9000502B7 /* PerformanceTool.swift */; };
 		0F9A693221C707C9000502B7 /* PoseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692121C707C9000502B7 /* PoseViewModel.swift */; };
@@ -22,10 +21,12 @@
 		0F9A693B21C707C9000502B7 /* BodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692D21C707C9000502B7 /* BodyPart.swift */; };
 		0FFCFF1821FCE7070034AF09 /* Timeseries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1721FCE7070034AF09 /* Timeseries.swift */; };
 		0FFCFF1A21FCF4EF0034AF09 /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */; };
-		0FFCFF1C21FE206D0034AF09 /* CGImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1B21FE206D0034AF09 /* CGImage+Additions.swift */; };
 		2E31C39E623035EEF1775AADD12CA345 /* TechniqueAnalysis-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A6517513C78CB3DE8FB42159868B0FD3 /* TechniqueAnalysis-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30FB6B3FC1275DD116123E87F84E846E /* Pods-TechniqueAnalysis_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BA599898DC075929072BF85D2A71DFE /* Pods-TechniqueAnalysis_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5D71369D417A6A1C2E579970739710BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
+		699B2ADE22083F9600CE6B27 /* Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADD22083F9600CE6B27 /* Meta.swift */; };
+		699B2AE022083FC300CE6B27 /* CameraAngle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADF22083FC300CE6B27 /* CameraAngle.swift */; };
+		69E32C8F2209B45700EF84F0 /* KnnDtw.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C8E2209B45700EF84F0 /* KnnDtw.swift */; };
 		6F75A22A951615C6493CE33689DFB682 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
 		958EFEE52CF5D513334C01FEE5FEC196 /* Pods-TechniqueAnalysis_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 709CE85C86B23E8C7C34876DCE04E979 /* Pods-TechniqueAnalysis_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E20058B7910A4825B9DC014850EF387A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
@@ -55,7 +56,6 @@
 		0243C7F3D9A6FBEBC2FAA467D7152585 /* TechniqueAnalysis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TechniqueAnalysis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F6A58AF4BF33225ABF5048551F40371 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0F9A691C21C707C9000502B7 /* VideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCapture.swift; sourceTree = "<group>"; };
-		0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Additions.swift"; sourceTree = "<group>"; };
 		0F9A691E21C707C9000502B7 /* Array+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
 		0F9A691F21C707C9000502B7 /* PerformanceTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTool.swift; sourceTree = "<group>"; };
 		0F9A692121C707C9000502B7 /* PoseViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseViewModel.swift; sourceTree = "<group>"; };
@@ -69,7 +69,6 @@
 		0F9A692D21C707C9000502B7 /* BodyPart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyPart.swift; sourceTree = "<group>"; };
 		0FFCFF1721FCE7070034AF09 /* Timeseries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeseries.swift; sourceTree = "<group>"; };
 		0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
-		0FFCFF1B21FE206D0034AF09 /* CGImage+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+Additions.swift"; sourceTree = "<group>"; };
 		19757E8793CA35F675C49DF7DE75D9F6 /* Pods-TechniqueAnalysis_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-TechniqueAnalysis_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		262D9B615FD39BF51FE81F09548EDF2C /* Pods-TechniqueAnalysis_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-TechniqueAnalysis_Tests.modulemap"; sourceTree = "<group>"; };
 		26A879DA02CE912B79FE56DB88839C33 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,6 +81,9 @@
 		59D4CCE01120A8BA83743DB3DB0B0369 /* TechniqueAnalysis.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = TechniqueAnalysis.modulemap; sourceTree = "<group>"; };
 		5E68BCDD77B5370090C189A45EF8C599 /* Pods-TechniqueAnalysis_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-TechniqueAnalysis_Example-frameworks.sh"; sourceTree = "<group>"; };
 		65C302F8F05EB48E12B13574FDDDF360 /* Pods-TechniqueAnalysis_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TechniqueAnalysis_Example-acknowledgements.plist"; sourceTree = "<group>"; };
+		699B2ADD22083F9600CE6B27 /* Meta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meta.swift; sourceTree = "<group>"; };
+		699B2ADF22083FC300CE6B27 /* CameraAngle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAngle.swift; sourceTree = "<group>"; };
+		69E32C8E2209B45700EF84F0 /* KnnDtw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnnDtw.swift; sourceTree = "<group>"; };
 		709CE85C86B23E8C7C34876DCE04E979 /* Pods-TechniqueAnalysis_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-TechniqueAnalysis_Tests-umbrella.h"; sourceTree = "<group>"; };
 		744A3523147ACF7B7CE185C556F7E3B4 /* Pods-TechniqueAnalysis_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-TechniqueAnalysis_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		79C0451F9909331842BA14E27A89DE49 /* Pods-TechniqueAnalysis_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TechniqueAnalysis_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -146,8 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				0F9A691E21C707C9000502B7 /* Array+Additions.swift */,
-				0FFCFF1B21FE206D0034AF09 /* CGImage+Additions.swift */,
-				0F9A691D21C707C9000502B7 /* NSObject+Additions.swift */,
+				69E32C8E2209B45700EF84F0 /* KnnDtw.swift */,
 				0F9A691F21C707C9000502B7 /* PerformanceTool.swift */,
 				0F9A691C21C707C9000502B7 /* VideoCapture.swift */,
 				0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */,
@@ -182,15 +183,17 @@
 			path = "ML Models";
 			sourceTree = "<group>";
 		};
-		0F9A692A21C707C9000502B7 /* Models */ = {
+		0F9A692A21C707C9000502B7 /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
 				0F9A692D21C707C9000502B7 /* BodyPart.swift */,
+				699B2ADF22083FC300CE6B27 /* CameraAngle.swift */,
+				699B2ADD22083F9600CE6B27 /* Meta.swift */,
 				0F9A692C21C707C9000502B7 /* PointEstimate.swift */,
 				0F9A692B21C707C9000502B7 /* PoseEstimationModel.swift */,
 				0FFCFF1721FCE7070034AF09 /* Timeseries.swift */,
 			);
-			path = Models;
+			path = "Data Structures";
 			sourceTree = "<group>";
 		};
 		273A7239F442FBD9F8AB1605AB51D0AD /* Products */ = {
@@ -206,10 +209,8 @@
 		2B6201D602F9FF8D020B75A33096A45D /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A692721C707C9000502B7 /* ML Models */,
-				0F9A692A21C707C9000502B7 /* Models */,
+				69E32C8D2209B40800EF84F0 /* Models */,
 				0F9A691B21C707C9000502B7 /* Utils */,
-				0F9A692021C707C9000502B7 /* View Models */,
 				0F9A692321C707C9000502B7 /* Views */,
 				4B08DED3D0A5CE13EB028C08EF2C791D /* LICENSE */,
 				F25FD4062EBDFDBD829836FA8B876664 /* README.md */,
@@ -238,6 +239,16 @@
 				D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */,
 			);
 			name = iOS;
+			sourceTree = "<group>";
+		};
+		69E32C8D2209B40800EF84F0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0F9A692A21C707C9000502B7 /* Data Structures */,
+				0F9A692721C707C9000502B7 /* ML Models */,
+				0F9A692021C707C9000502B7 /* View Models */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		7DB346D0F39D3F0E887471402A8071AB = {
@@ -491,13 +502,14 @@
 				0FFCFF1A21FCF4EF0034AF09 /* VideoProcessor.swift in Sources */,
 				0F9A693421C707C9000502B7 /* PoseView.swift in Sources */,
 				0F9A693821C707C9000502B7 /* hourglass_model.mlmodel in Sources */,
-				0F9A692F21C707C9000502B7 /* NSObject+Additions.swift in Sources */,
-				0FFCFF1C21FE206D0034AF09 /* CGImage+Additions.swift in Sources */,
+				699B2AE022083FC300CE6B27 /* CameraAngle.swift in Sources */,
 				0F9A693321C707C9000502B7 /* HeatmapViewModel.swift in Sources */,
 				0F9A693921C707C9000502B7 /* PoseEstimationModel.swift in Sources */,
 				0FFCFF1821FCE7070034AF09 /* Timeseries.swift in Sources */,
+				69E32C8F2209B45700EF84F0 /* KnnDtw.swift in Sources */,
 				0F9A693621C707C9000502B7 /* HeatmapView.swift in Sources */,
 				0F9A693721C707C9000502B7 /* cpm_model.mlmodel in Sources */,
+				699B2ADE22083F9600CE6B27 /* Meta.swift in Sources */,
 				0F9A692E21C707C9000502B7 /* VideoCapture.swift in Sources */,
 				0F9A693B21C707C9000502B7 /* BodyPart.swift in Sources */,
 				FAF1D69FBEAC25F6519736C9327E24CB /* TechniqueAnalysis-dummy.m in Sources */,
