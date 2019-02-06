@@ -69,6 +69,20 @@ public struct CompressedTimeseries: Codable {
         return data.count
     }
 
+    public var reflectedData: [[PointEstimate]] {
+        var reflections = [[PointEstimate]]()
+        for sample in data {
+            let flippedPoints: [PointEstimate] = sample.map { pointEstimate in
+                let flippedPoint = CGPoint(x: 1.0 - pointEstimate.point.x, y: pointEstimate.point.y)
+                return PointEstimate(point: flippedPoint,
+                                     confidence: pointEstimate.confidence,
+                                     bodyPart: pointEstimate.bodyPart)
+            }
+            reflections.append(flippedPoints)
+        }
+        return reflections
+    }
+
     // MARK: - Initialization
 
     public init(data: [MLMultiArray], meta: Meta) throws {
@@ -81,6 +95,16 @@ public struct CompressedTimeseries: Codable {
         }
 
         self.data = compressed
+        self.meta = meta
+    }
+
+    public init(data: [[PointEstimate]], meta: Meta) throws {
+        guard data.count > 0 else {
+            let message = "Timeseries initialized with empty data"
+            throw TimeseriesError.invalidShapeError(message)
+        }
+
+        self.data = data
         self.meta = meta
     }
 

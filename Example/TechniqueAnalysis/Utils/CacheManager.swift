@@ -16,7 +16,7 @@ class CacheManager {
     /// Shared Singleton Instance
     static let shared = CacheManager()
 
-    private(set) var cache: [CompressedTimeseries]
+    private(set) var cached: [CompressedTimeseries]
     private var processingQueue = [(url: URL, meta: Meta)]()
     private let processor: VideoProcessor?
 
@@ -39,7 +39,7 @@ class CacheManager {
                                                      attributes: nil)
         }
 
-        self.cache = CacheManager.retrieveCache()
+        self.cached = CacheManager.retrieveCache()
 
         do {
             self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
@@ -68,7 +68,7 @@ class CacheManager {
         FileManager.default.createFile(atPath: filePath,
                                        contents: data,
                                        attributes: [:])
-        cache.append(compressedTimeseries)
+        cached.append(compressedTimeseries)
         return true
     }
 
@@ -95,7 +95,7 @@ class CacheManager {
     // MARK: - Private Functions
 
     private func cache(contains meta: Meta) -> Bool {
-        return cache.contains(where: { cachedSeries -> Bool in
+        return cached.contains(where: { cachedSeries -> Bool in
             cachedSeries.meta.exerciseName == meta.exerciseName &&
                 cachedSeries.meta.exerciseDetail == meta.exerciseDetail &&
                 cachedSeries.meta.angle == meta.angle &&
@@ -120,6 +120,7 @@ class CacheManager {
                                             }
 
                                             if self.processingQueue.isEmpty {
+                                                self.generateAndCacheReflections()
                                                 onFinish()
                                             } else {
                                                 onItemProcessed(originalSize - self.processingQueue.count, originalSize)
@@ -153,6 +154,29 @@ class CacheManager {
         }
 
         return decodedSeries
+    }
+
+    private func generateAndCacheReflections() {
+        let reflections: [CompressedTimeseries] = cached.compactMap {
+            guard let oppositeAngle = $0.meta.angle.opposite else {
+                return nil
+            }
+
+            let reflected = Meta(isLabeled: $0.meta.isLabeled,
+                                 exerciseName: $0.meta.exerciseName,
+                                 exerciseDetail: $0.meta.exerciseDetail,
+                                 angle: oppositeAngle)
+
+            guard !cache(contains: reflected) else {
+                return nil
+            }
+
+            return try? CompressedTimeseries(data: $0.reflectedData, meta: reflected)
+        }
+
+        for reflection in reflections {
+            _ = cache(reflection)
+        }
     }
 
 }
