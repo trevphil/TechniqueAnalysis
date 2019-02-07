@@ -13,7 +13,7 @@ struct FileNamer {
 
     // MARK: - Exposed Functions
 
-    static func meta(from filename: String, baseURL: URL, isLabeled: Bool) -> (url: URL, meta: Meta)? {
+    static func meta(from filename: String, baseURL: URL, isLabeled: Bool) -> (url: URL, meta: TAMeta)? {
         let name = noExtension(filename)
         let parts = name.split(separator: "_").map { String($0) }
         return isLabeled ?
@@ -21,7 +21,7 @@ struct FileNamer {
             parseUnlabeled(parts: parts, videoName: filename, baseURL: baseURL)
     }
 
-    static func dataFileName(from meta: Meta, ext: String) -> String {
+    static func dataFileName(from meta: TAMeta, ext: String) -> String {
         var parts = [
             meta.exerciseName.replacingOccurrences(of: " ", with: "-").lowercased(),
             meta.exerciseDetail.replacingOccurrences(of: " ", with: "-").lowercased(),
@@ -54,31 +54,31 @@ struct FileNamer {
         return filename
     }
 
-    private static func parseUnlabeled(parts: [String], videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
+    private static func parseUnlabeled(parts: [String], videoName: String, baseURL: URL) -> (url: URL, meta: TAMeta)? {
         guard parts.element(atIndex: 0) == "test",
             let name = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let description = parts.element(atIndex: 2)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let angleString = parts.element(atIndex: 3),
-            let angle = CameraAngle(rawValue: angleString) else {
+            let angle = TACameraAngle(rawValue: angleString) else {
                 return nil
         }
 
         let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-        let meta = Meta(isLabeled: false, exerciseName: name, exerciseDetail: description, angle: angle)
+        let meta = TAMeta(isLabeled: false, exerciseName: name, exerciseDetail: description, angle: angle)
         return (url, meta)
     }
 
-    private static func parseLabeled(parts: [String], videoName: String, baseURL: URL) -> (url: URL, meta: Meta)? {
+    private static func parseLabeled(parts: [String], videoName: String, baseURL: URL) -> (url: URL, meta: TAMeta)? {
         guard parts.element(atIndex: 0) != "test",
             let name = parts.element(atIndex: 0)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let description = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let angleString = parts.element(atIndex: 2),
-            let angle = CameraAngle(rawValue: angleString) else {
+            let angle = TACameraAngle(rawValue: angleString) else {
                 return nil
         }
 
         let url = baseURL.appendingPathComponent(videoName, isDirectory: false)
-        let meta = Meta(isLabeled: true, exerciseName: name, exerciseDetail: description, angle: angle)
+        let meta = TAMeta(isLabeled: true, exerciseName: name, exerciseDetail: description, angle: angle)
         return (url, meta)
     }
 

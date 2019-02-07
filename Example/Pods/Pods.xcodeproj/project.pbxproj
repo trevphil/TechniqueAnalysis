@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F9A692E21C707C9000502B7 /* VideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691C21C707C9000502B7 /* VideoCapture.swift */; };
+		0F9A692E21C707C9000502B7 /* TAVideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */; };
 		0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691E21C707C9000502B7 /* Array+Additions.swift */; };
-		0F9A693121C707C9000502B7 /* PerformanceTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691F21C707C9000502B7 /* PerformanceTool.swift */; };
-		0F9A693221C707C9000502B7 /* PoseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692121C707C9000502B7 /* PoseViewModel.swift */; };
-		0F9A693321C707C9000502B7 /* HeatmapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692221C707C9000502B7 /* HeatmapViewModel.swift */; };
-		0F9A693421C707C9000502B7 /* PoseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692421C707C9000502B7 /* PoseView.swift */; };
-		0F9A693621C707C9000502B7 /* HeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692621C707C9000502B7 /* HeatmapView.swift */; };
+		0F9A693121C707C9000502B7 /* TAPerformanceTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691F21C707C9000502B7 /* TAPerformanceTool.swift */; };
+		0F9A693221C707C9000502B7 /* TAPoseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692121C707C9000502B7 /* TAPoseViewModel.swift */; };
+		0F9A693321C707C9000502B7 /* TAHeatmapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692221C707C9000502B7 /* TAHeatmapViewModel.swift */; };
+		0F9A693421C707C9000502B7 /* TAPoseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692421C707C9000502B7 /* TAPoseView.swift */; };
+		0F9A693621C707C9000502B7 /* TAHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692621C707C9000502B7 /* TAHeatmapView.swift */; };
 		0F9A693721C707C9000502B7 /* cpm_model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692821C707C9000502B7 /* cpm_model.mlmodel */; };
 		0F9A693821C707C9000502B7 /* hourglass_model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692921C707C9000502B7 /* hourglass_model.mlmodel */; };
-		0F9A693921C707C9000502B7 /* PoseEstimationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692B21C707C9000502B7 /* PoseEstimationModel.swift */; };
-		0F9A693A21C707C9000502B7 /* PointEstimate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692C21C707C9000502B7 /* PointEstimate.swift */; };
-		0F9A693B21C707C9000502B7 /* BodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692D21C707C9000502B7 /* BodyPart.swift */; };
-		0FFCFF1821FCE7070034AF09 /* Timeseries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1721FCE7070034AF09 /* Timeseries.swift */; };
-		0FFCFF1A21FCF4EF0034AF09 /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */; };
+		0F9A693921C707C9000502B7 /* TAPoseEstimationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692B21C707C9000502B7 /* TAPoseEstimationModel.swift */; };
+		0F9A693A21C707C9000502B7 /* TAPointEstimate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692C21C707C9000502B7 /* TAPointEstimate.swift */; };
+		0F9A693B21C707C9000502B7 /* TABodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A692D21C707C9000502B7 /* TABodyPart.swift */; };
+		0FFCFF1821FCE7070034AF09 /* TATimeseries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1721FCE7070034AF09 /* TATimeseries.swift */; };
+		0FFCFF1A21FCF4EF0034AF09 /* TAVideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCFF1921FCF4EF0034AF09 /* TAVideoProcessor.swift */; };
 		2E31C39E623035EEF1775AADD12CA345 /* TechniqueAnalysis-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A6517513C78CB3DE8FB42159868B0FD3 /* TechniqueAnalysis-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30FB6B3FC1275DD116123E87F84E846E /* Pods-TechniqueAnalysis_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BA599898DC075929072BF85D2A71DFE /* Pods-TechniqueAnalysis_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5D71369D417A6A1C2E579970739710BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
-		699B2ADE22083F9600CE6B27 /* Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADD22083F9600CE6B27 /* Meta.swift */; };
-		699B2AE022083FC300CE6B27 /* CameraAngle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADF22083FC300CE6B27 /* CameraAngle.swift */; };
-		69E32C8F2209B45700EF84F0 /* KnnDtw.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C8E2209B45700EF84F0 /* KnnDtw.swift */; };
+		699B2ADE22083F9600CE6B27 /* TAMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADD22083F9600CE6B27 /* TAMeta.swift */; };
+		699B2AE022083FC300CE6B27 /* TACameraAngle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699B2ADF22083FC300CE6B27 /* TACameraAngle.swift */; };
+		69E32C8F2209B45700EF84F0 /* TAKnnDtw.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C8E2209B45700EF84F0 /* TAKnnDtw.swift */; };
 		6F75A22A951615C6493CE33689DFB682 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
 		958EFEE52CF5D513334C01FEE5FEC196 /* Pods-TechniqueAnalysis_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 709CE85C86B23E8C7C34876DCE04E979 /* Pods-TechniqueAnalysis_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E20058B7910A4825B9DC014850EF387A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
@@ -55,20 +55,20 @@
 /* Begin PBXFileReference section */
 		0243C7F3D9A6FBEBC2FAA467D7152585 /* TechniqueAnalysis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TechniqueAnalysis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F6A58AF4BF33225ABF5048551F40371 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0F9A691C21C707C9000502B7 /* VideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCapture.swift; sourceTree = "<group>"; };
+		0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAVideoCapture.swift; sourceTree = "<group>"; };
 		0F9A691E21C707C9000502B7 /* Array+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
-		0F9A691F21C707C9000502B7 /* PerformanceTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTool.swift; sourceTree = "<group>"; };
-		0F9A692121C707C9000502B7 /* PoseViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseViewModel.swift; sourceTree = "<group>"; };
-		0F9A692221C707C9000502B7 /* HeatmapViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapViewModel.swift; sourceTree = "<group>"; };
-		0F9A692421C707C9000502B7 /* PoseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseView.swift; sourceTree = "<group>"; };
-		0F9A692621C707C9000502B7 /* HeatmapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
+		0F9A691F21C707C9000502B7 /* TAPerformanceTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAPerformanceTool.swift; sourceTree = "<group>"; };
+		0F9A692121C707C9000502B7 /* TAPoseViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAPoseViewModel.swift; sourceTree = "<group>"; };
+		0F9A692221C707C9000502B7 /* TAHeatmapViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAHeatmapViewModel.swift; sourceTree = "<group>"; };
+		0F9A692421C707C9000502B7 /* TAPoseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAPoseView.swift; sourceTree = "<group>"; };
+		0F9A692621C707C9000502B7 /* TAHeatmapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAHeatmapView.swift; sourceTree = "<group>"; };
 		0F9A692821C707C9000502B7 /* cpm_model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = cpm_model.mlmodel; sourceTree = "<group>"; };
 		0F9A692921C707C9000502B7 /* hourglass_model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = hourglass_model.mlmodel; sourceTree = "<group>"; };
-		0F9A692B21C707C9000502B7 /* PoseEstimationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseEstimationModel.swift; sourceTree = "<group>"; };
-		0F9A692C21C707C9000502B7 /* PointEstimate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointEstimate.swift; sourceTree = "<group>"; };
-		0F9A692D21C707C9000502B7 /* BodyPart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyPart.swift; sourceTree = "<group>"; };
-		0FFCFF1721FCE7070034AF09 /* Timeseries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeseries.swift; sourceTree = "<group>"; };
-		0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
+		0F9A692B21C707C9000502B7 /* TAPoseEstimationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAPoseEstimationModel.swift; sourceTree = "<group>"; };
+		0F9A692C21C707C9000502B7 /* TAPointEstimate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAPointEstimate.swift; sourceTree = "<group>"; };
+		0F9A692D21C707C9000502B7 /* TABodyPart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TABodyPart.swift; sourceTree = "<group>"; };
+		0FFCFF1721FCE7070034AF09 /* TATimeseries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TATimeseries.swift; sourceTree = "<group>"; };
+		0FFCFF1921FCF4EF0034AF09 /* TAVideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TAVideoProcessor.swift; sourceTree = "<group>"; };
 		19757E8793CA35F675C49DF7DE75D9F6 /* Pods-TechniqueAnalysis_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-TechniqueAnalysis_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		262D9B615FD39BF51FE81F09548EDF2C /* Pods-TechniqueAnalysis_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-TechniqueAnalysis_Tests.modulemap"; sourceTree = "<group>"; };
 		26A879DA02CE912B79FE56DB88839C33 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,9 +81,9 @@
 		59D4CCE01120A8BA83743DB3DB0B0369 /* TechniqueAnalysis.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = TechniqueAnalysis.modulemap; sourceTree = "<group>"; };
 		5E68BCDD77B5370090C189A45EF8C599 /* Pods-TechniqueAnalysis_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-TechniqueAnalysis_Example-frameworks.sh"; sourceTree = "<group>"; };
 		65C302F8F05EB48E12B13574FDDDF360 /* Pods-TechniqueAnalysis_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TechniqueAnalysis_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		699B2ADD22083F9600CE6B27 /* Meta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meta.swift; sourceTree = "<group>"; };
-		699B2ADF22083FC300CE6B27 /* CameraAngle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAngle.swift; sourceTree = "<group>"; };
-		69E32C8E2209B45700EF84F0 /* KnnDtw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnnDtw.swift; sourceTree = "<group>"; };
+		699B2ADD22083F9600CE6B27 /* TAMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TAMeta.swift; sourceTree = "<group>"; };
+		699B2ADF22083FC300CE6B27 /* TACameraAngle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TACameraAngle.swift; sourceTree = "<group>"; };
+		69E32C8E2209B45700EF84F0 /* TAKnnDtw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TAKnnDtw.swift; sourceTree = "<group>"; };
 		709CE85C86B23E8C7C34876DCE04E979 /* Pods-TechniqueAnalysis_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-TechniqueAnalysis_Tests-umbrella.h"; sourceTree = "<group>"; };
 		744A3523147ACF7B7CE185C556F7E3B4 /* Pods-TechniqueAnalysis_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-TechniqueAnalysis_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		79C0451F9909331842BA14E27A89DE49 /* Pods-TechniqueAnalysis_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TechniqueAnalysis_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -148,10 +148,10 @@
 			isa = PBXGroup;
 			children = (
 				0F9A691E21C707C9000502B7 /* Array+Additions.swift */,
-				69E32C8E2209B45700EF84F0 /* KnnDtw.swift */,
-				0F9A691F21C707C9000502B7 /* PerformanceTool.swift */,
-				0F9A691C21C707C9000502B7 /* VideoCapture.swift */,
-				0FFCFF1921FCF4EF0034AF09 /* VideoProcessor.swift */,
+				69E32C8E2209B45700EF84F0 /* TAKnnDtw.swift */,
+				0F9A691F21C707C9000502B7 /* TAPerformanceTool.swift */,
+				0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */,
+				0FFCFF1921FCF4EF0034AF09 /* TAVideoProcessor.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -159,8 +159,8 @@
 		0F9A692021C707C9000502B7 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A692221C707C9000502B7 /* HeatmapViewModel.swift */,
-				0F9A692121C707C9000502B7 /* PoseViewModel.swift */,
+				0F9A692221C707C9000502B7 /* TAHeatmapViewModel.swift */,
+				0F9A692121C707C9000502B7 /* TAPoseViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -168,8 +168,8 @@
 		0F9A692321C707C9000502B7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A692621C707C9000502B7 /* HeatmapView.swift */,
-				0F9A692421C707C9000502B7 /* PoseView.swift */,
+				0F9A692621C707C9000502B7 /* TAHeatmapView.swift */,
+				0F9A692421C707C9000502B7 /* TAPoseView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -186,12 +186,12 @@
 		0F9A692A21C707C9000502B7 /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A692D21C707C9000502B7 /* BodyPart.swift */,
-				699B2ADF22083FC300CE6B27 /* CameraAngle.swift */,
-				699B2ADD22083F9600CE6B27 /* Meta.swift */,
-				0F9A692C21C707C9000502B7 /* PointEstimate.swift */,
-				0F9A692B21C707C9000502B7 /* PoseEstimationModel.swift */,
-				0FFCFF1721FCE7070034AF09 /* Timeseries.swift */,
+				0F9A692D21C707C9000502B7 /* TABodyPart.swift */,
+				699B2ADF22083FC300CE6B27 /* TACameraAngle.swift */,
+				699B2ADD22083F9600CE6B27 /* TAMeta.swift */,
+				0F9A692C21C707C9000502B7 /* TAPointEstimate.swift */,
+				0F9A692B21C707C9000502B7 /* TAPoseEstimationModel.swift */,
+				0FFCFF1721FCE7070034AF09 /* TATimeseries.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -495,23 +495,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F9A693221C707C9000502B7 /* PoseViewModel.swift in Sources */,
-				0F9A693A21C707C9000502B7 /* PointEstimate.swift in Sources */,
-				0F9A693121C707C9000502B7 /* PerformanceTool.swift in Sources */,
+				0F9A693221C707C9000502B7 /* TAPoseViewModel.swift in Sources */,
+				0F9A693A21C707C9000502B7 /* TAPointEstimate.swift in Sources */,
+				0F9A693121C707C9000502B7 /* TAPerformanceTool.swift in Sources */,
 				0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */,
-				0FFCFF1A21FCF4EF0034AF09 /* VideoProcessor.swift in Sources */,
-				0F9A693421C707C9000502B7 /* PoseView.swift in Sources */,
+				0FFCFF1A21FCF4EF0034AF09 /* TAVideoProcessor.swift in Sources */,
+				0F9A693421C707C9000502B7 /* TAPoseView.swift in Sources */,
 				0F9A693821C707C9000502B7 /* hourglass_model.mlmodel in Sources */,
-				699B2AE022083FC300CE6B27 /* CameraAngle.swift in Sources */,
-				0F9A693321C707C9000502B7 /* HeatmapViewModel.swift in Sources */,
-				0F9A693921C707C9000502B7 /* PoseEstimationModel.swift in Sources */,
-				0FFCFF1821FCE7070034AF09 /* Timeseries.swift in Sources */,
-				69E32C8F2209B45700EF84F0 /* KnnDtw.swift in Sources */,
-				0F9A693621C707C9000502B7 /* HeatmapView.swift in Sources */,
+				699B2AE022083FC300CE6B27 /* TACameraAngle.swift in Sources */,
+				0F9A693321C707C9000502B7 /* TAHeatmapViewModel.swift in Sources */,
+				0F9A693921C707C9000502B7 /* TAPoseEstimationModel.swift in Sources */,
+				0FFCFF1821FCE7070034AF09 /* TATimeseries.swift in Sources */,
+				69E32C8F2209B45700EF84F0 /* TAKnnDtw.swift in Sources */,
+				0F9A693621C707C9000502B7 /* TAHeatmapView.swift in Sources */,
 				0F9A693721C707C9000502B7 /* cpm_model.mlmodel in Sources */,
-				699B2ADE22083F9600CE6B27 /* Meta.swift in Sources */,
-				0F9A692E21C707C9000502B7 /* VideoCapture.swift in Sources */,
-				0F9A693B21C707C9000502B7 /* BodyPart.swift in Sources */,
+				699B2ADE22083F9600CE6B27 /* TAMeta.swift in Sources */,
+				0F9A692E21C707C9000502B7 /* TAVideoCapture.swift in Sources */,
+				0F9A693B21C707C9000502B7 /* TABodyPart.swift in Sources */,
 				FAF1D69FBEAC25F6519736C9327E24CB /* TechniqueAnalysis-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,5 +1,5 @@
 //
-//  BodyPart+Additions.swift
+//  TABodyPart+Additions.swift
 //  TechniqueAnalysis_Example
 //
 //  Created by Trevor Phillips on 12/11/18.
@@ -8,7 +8,7 @@
 
 import TechniqueAnalysis
 
-extension BodyPart {
+extension TABodyPart {
 
     static let jointLineColor = UIColor(red: 87.0/255.0, green: 1.0, blue: 211.0/255.0, alpha: 0.5)
 

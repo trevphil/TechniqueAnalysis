@@ -20,11 +20,11 @@ struct VideoManager {
         "avi", "flv", "wmv", "mov", "mp4"
     ]
 
-    let labeledVideos: [(url: URL, meta: Meta)] = {
+    let labeledVideos: [(url: URL, meta: TAMeta)] = {
         return VideoManager.labeledVideos()
     }()
 
-    let unlabeledVideos: [(url: URL, meta: Meta)] = {
+    let unlabeledVideos: [(url: URL, meta: TAMeta)] = {
         return VideoManager.unlabeledVideos()
     }()
 
@@ -47,7 +47,7 @@ struct VideoManager {
         }
     }
 
-    private static func labeledVideos() -> [(URL, Meta)] {
+    private static func labeledVideos() -> [(URL, TAMeta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }
@@ -56,7 +56,7 @@ struct VideoManager {
         return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: true) }
     }
 
-    private static func unlabeledVideos() -> [(URL, Meta)] {
+    private static func unlabeledVideos() -> [(URL, TAMeta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }

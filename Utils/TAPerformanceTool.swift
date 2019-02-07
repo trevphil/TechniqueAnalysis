@@ -1,5 +1,5 @@
 //
-//  PerformanceTool.swift
+//  TAPerformanceTool.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 04.12.18.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol PerformanceToolDelegate: class {
+protocol TAPerformanceToolDelegate: class {
     func updateSample(inferenceTime: Double, executionTime: Double, fps: Int)
 }
 
-class PerformanceTool {
+class TAPerformanceTool {
 
     private enum Label: String {
         case start, stop, endInference
@@ -19,7 +19,7 @@ class PerformanceTool {
     
     // MARK: - Properties
     
-    weak var delegate: PerformanceToolDelegate?
+    weak var delegate: TAPerformanceToolDelegate?
     private var index = -1
     private var measurements = [[Label: Double]]()
     private let capacity = 30

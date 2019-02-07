@@ -1,5 +1,5 @@
 //
-//  PoseEstimationModel.swift
+//  TAPoseEstimationModel.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor Phillips on 12/11/18.
@@ -8,13 +8,13 @@
 import Vision
 import CoreMedia
 
-public protocol PoseEstimationDelegate: class {
+public protocol TAPoseEstimationDelegate: class {
     func visionRequestDidComplete(heatmap: MLMultiArray)
     func visionRequestDidFail(error: Error?)
     func didSamplePerformance(inferenceTime: Double, executionTime: Double, fps: Int)
 }
 
-public class PoseEstimationModel {
+public class TAPoseEstimationModel {
 
     // MARK: - Core ML Model
 
@@ -27,9 +27,9 @@ public class PoseEstimationModel {
 
     // MARK: - Properties
 
-    public weak var delegate: PoseEstimationDelegate?
-    private var videoCapture: VideoCapture
-    private let performanceTool = PerformanceTool()
+    public weak var delegate: TAPoseEstimationDelegate?
+    private var videoCapture: TAVideoCapture
+    private let performanceTool = TAPerformanceTool()
     private var request: VNCoreMLRequest?
     private var visionModel: VNCoreMLModel!
     public var videoPreviewLayer: CALayer? {
@@ -39,7 +39,7 @@ public class PoseEstimationModel {
     // MARK: - Initialization
 
     public init?(type: ModelType) {
-        self.videoCapture = VideoCapture(fps: 30)
+        self.videoCapture = TAVideoCapture(fps: 30)
 
         switch type {
         case .cpm:
@@ -166,9 +166,9 @@ public class PoseEstimationModel {
 
 }
 
-extension PoseEstimationModel: VideoCaptureDelegate {
+extension TAPoseEstimationModel: TAVideoCaptureDelegate {
 
-    func videoCapture(_ capture: VideoCapture,
+    func videoCapture(_ capture: TAVideoCapture,
                       didCaptureFrame frame: CVPixelBuffer?,
                       timestamp: CMTime) {
         if let pixelBuffer = frame {
@@ -179,7 +179,7 @@ extension PoseEstimationModel: VideoCaptureDelegate {
 
 }
 
-extension PoseEstimationModel: PerformanceToolDelegate {
+extension TAPoseEstimationModel: TAPerformanceToolDelegate {
 
     func updateSample(inferenceTime: Double, executionTime: Double, fps: Int) {
         DispatchQueue.main.async {

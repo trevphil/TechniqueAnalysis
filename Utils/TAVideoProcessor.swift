@@ -1,5 +1,5 @@
 //
-//  VideoProcessor.swift
+//  TAVideoProcessor.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor Phillips on 1/26/19.
@@ -8,17 +8,17 @@
 import CoreML
 import AVKit
 
-public enum VideoProcessorError: Error {
+public enum TAVideoProcessorError: Error {
     case initializationError(String)
     case noDataError(String)
     case filesystemAccessError(String)
 }
 
-public class VideoProcessor {
+public class TAVideoProcessor {
 
     // MARK: - Properties
 
-    private let poseEstimationModel: PoseEstimationModel
+    private let poseEstimationModel: TAPoseEstimationModel
     private let generatedVideosPath: URL
     private let sampleLength: TimeInterval
     private let insetPercent: Double
@@ -30,14 +30,14 @@ public class VideoProcessor {
     public init(sampleLength: TimeInterval,
                 insetPercent: Double,
                 fps: Double,
-                modelType: PoseEstimationModel.ModelType) throws {
-        guard let poseEstimationModel = PoseEstimationModel(type: modelType) else {
-            throw VideoProcessorError.initializationError("Could not initialize underlying Pose Estimation Model")
+                modelType: TAPoseEstimationModel.ModelType) throws {
+        guard let poseEstimationModel = TAPoseEstimationModel(type: modelType) else {
+            throw TAVideoProcessorError.initializationError("Could not initialize underlying Pose Estimation Model")
         }
 
         guard let path = try? FileManager.default.url(for: .documentDirectory,
                                                       in: .allDomainsMask, appropriateFor: nil, create: true) else {
-            throw VideoProcessorError.filesystemAccessError("Could not create URL path for generating video subclips")
+            throw TAVideoProcessorError.filesystemAccessError("Could not create URL path for generating video subclips")
         }
 
         self.generatedVideosPath = path.appendingPathComponent("sections", isDirectory: true)
@@ -53,28 +53,13 @@ public class VideoProcessor {
 
     // MARK: - Public Functions
 
-    public func makeTimeseries(videoURL: URL,
-                               meta: Meta,
-                               onFinish: @escaping (([Timeseries]) -> ()),
-                               onFailure: @escaping (([Error]) -> ())) {
-        workerQueue.async {
-            self.processVideo(videoURL: videoURL, meta: meta, compressed: false) { series, errors in
-                if errors.isEmpty, let series = series as? [Timeseries] {
-                    onFinish(series)
-                } else {
-                    onFailure(errors)
-                }
-            }
-        }
-    }
-
     public func makeCompressedTimeseries(videoURL: URL,
-                                         meta: Meta,
-                                         onFinish: @escaping (([CompressedTimeseries]) -> ()),
+                                         meta: TAMeta,
+                                         onFinish: @escaping (([TATimeseries]) -> ()),
                                          onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
-            self.processVideo(videoURL: videoURL, meta: meta, compressed: true) { series, errors in
-                if errors.isEmpty, let series = series as? [CompressedTimeseries] {
+            self.processVideo(videoURL: videoURL, meta: meta) { series, errors in
+                if errors.isEmpty {
                     onFinish(series)
                 } else {
                     onFailure(errors)
@@ -86,11 +71,9 @@ public class VideoProcessor {
     // MARK: - Private Functions
 
     private func processVideo(videoURL: URL,
-                              meta: Meta,
-                              compressed: Bool,
-                              onFinish: @escaping (([Any], [Error]) -> ())) {
-        var timeseries = [Int: Timeseries]()
-        var compressedTimeseries = [Int: CompressedTimeseries]()
+                              meta: TAMeta,
+                              onFinish: @escaping (([TATimeseries], [Error]) -> ())) {
+        var timeseries = [Int: TATimeseries]()
         var errors = [Int: Error]()
         let dispatchGroup = DispatchGroup()
         
@@ -104,12 +87,8 @@ public class VideoProcessor {
                 self.makeImages(from: asset) { images in
 
                     dispatchGroup.enter() // ENTER 3
-                    self.makeTimeseries(from: &images, meta: meta, compressed: compressed) { series, error in
-                        if let normal = series as? Timeseries {
-                            timeseries[idx] = normal
-                        } else if let compr = series as? CompressedTimeseries {
-                            compressedTimeseries[idx] = compr
-                        }
+                    self.makeTimeseries(from: &images, meta: meta) { series, error in
+                        if let series = series { timeseries[idx] = series }
                         if let error = error { errors[idx] = error }
                         dispatchGroup.leave() // LEAVE 3
                     }
@@ -123,10 +102,9 @@ public class VideoProcessor {
         }
         
         dispatchGroup.notify(queue: workerQueue) {
-            let sortedNormal = timeseries.keys.sorted().compactMap { timeseries[$0] }
-            let sortedCompressed = compressedTimeseries.keys.sorted().compactMap { compressedTimeseries[$0] }
+            let sortedSeries = timeseries.keys.sorted().compactMap { timeseries[$0] }
             let sortedErrors = errors.keys.sorted().compactMap { errors[$0] }
-            onFinish(compressed ? sortedCompressed : sortedNormal, sortedErrors)
+            onFinish(sortedSeries, sortedErrors)
         }
     }
 
@@ -236,9 +214,8 @@ public class VideoProcessor {
     }
     
     private func makeTimeseries(from images: inout [CGImage],
-                                meta: Meta,
-                                compressed: Bool,
-                                onFinish: @escaping ((Any?, Error?) -> ())) {
+                                meta: TAMeta,
+                                onFinish: @escaping ((TATimeseries?, Error?) -> ())) {
         var heatmaps = [Int: MLMultiArray]()
         let dispatchGroup = DispatchGroup()
         
@@ -258,13 +235,7 @@ public class VideoProcessor {
         dispatchGroup.notify(queue: workerQueue) {
             do {
                 let sortedHeatmaps = heatmaps.keys.sorted().compactMap { heatmaps[$0] }
-                let timeseries: Any
-                switch compressed {
-                case true:
-                    timeseries = try CompressedTimeseries(data: sortedHeatmaps, meta: meta)
-                case false:
-                    timeseries = try Timeseries(data: sortedHeatmaps, meta: meta)
-                }
+                let timeseries = try TATimeseries(data: sortedHeatmaps, meta: meta)
                 onFinish(timeseries, nil)
             } catch {
                 onFinish(nil, error)

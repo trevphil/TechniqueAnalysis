@@ -18,15 +18,15 @@ class JointController: UIViewController {
     @IBOutlet private weak var inferenceLabel: UILabel!
     @IBOutlet private weak var etimeLabel: UILabel!
     @IBOutlet private weak var fpsLabel: UILabel!
-    private var poseView: PoseView?
+    private var poseView: TAPoseView?
 
-    private let model: PoseEstimationModel?
-    private var tableData = [PointEstimate]()
+    private let model: TAPoseEstimationModel?
+    private var tableData = [TAPointEstimate]()
 
     // MARK: - Initialization
 
     init() {
-        self.model = PoseEstimationModel(type: .cpm)
+        self.model = TAPoseEstimationModel(type: .cpm)
         super.init(nibName: nil, bundle: nil)
         self.model?.delegate = self
         self.title = "Joints"
@@ -63,10 +63,10 @@ class JointController: UIViewController {
 
     // MARK: - Private Functions
 
-    private func setupPoseView(with poseModel: PoseViewModel) {
-        let pose = PoseView(model: poseModel,
-                            delegate: self,
-                            jointLineColor: BodyPart.jointLineColor)
+    private func setupPoseView(with poseModel: TAPoseViewModel) {
+        let pose = TAPoseView(model: poseModel,
+                              delegate: self,
+                              jointLineColor: TABodyPart.jointLineColor)
         videoPreviewContainer.addSubview(pose)
         pose.frame = videoPreviewContainer.bounds
         model?.videoPreviewLayer?.frame = videoPreviewContainer.bounds
@@ -75,14 +75,14 @@ class JointController: UIViewController {
         self.poseView = pose
     }
 
-    private func showKeypointsDescription(with bodyPoints: [PointEstimate]) {
+    private func showKeypointsDescription(with bodyPoints: [TAPointEstimate]) {
         tableData = bodyPoints.sorted(by: {
             ($0.bodyPart?.rawValue ?? 0) < ($1.bodyPart?.rawValue ?? 1)
         })
         labelsTableView.reloadData()
     }
 
-    private func text(for pointEstimate: PointEstimate) -> String {
+    private func text(for pointEstimate: TAPointEstimate) -> String {
         let xString = String(format: "%.3f", pointEstimate.point.x)
         let yString = String(format: "%.3f", pointEstimate.point.y)
         let coordinate = "(\(xString), \(yString))"
@@ -120,10 +120,10 @@ extension JointController: UITableViewDelegate {
 
 }
 
-extension JointController: PoseEstimationDelegate {
+extension JointController: TAPoseEstimationDelegate {
 
     func visionRequestDidComplete(heatmap: MLMultiArray) {
-        if let poseModel = PoseViewModel(heatmap: heatmap) {
+        if let poseModel = TAPoseViewModel(heatmap: heatmap) {
             if let poseView = poseView {
                 poseView.configure(with: poseModel)
             } else {
@@ -145,13 +145,13 @@ extension JointController: PoseEstimationDelegate {
 
 }
 
-extension JointController: PoseViewDelegate {
+extension JointController: TAPoseViewDelegate {
 
-    func color(for bodyPart: BodyPart) -> UIColor? {
+    func color(for bodyPart: TABodyPart) -> UIColor? {
         return bodyPart.color
     }
 
-    func string(for bodyPart: BodyPart) -> String? {
+    func string(for bodyPart: TABodyPart) -> String? {
         return bodyPart.asString
     }
 

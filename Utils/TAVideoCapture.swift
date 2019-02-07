@@ -1,5 +1,5 @@
 //
-//  VideoCapture.swift
+//  TAVideoCapture.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor Phillips on 12/10/18.
@@ -9,17 +9,17 @@ import UIKit
 import AVFoundation
 import CoreVideo
 
-protocol VideoCaptureDelegate: class {
-    func videoCapture(_ capture: VideoCapture,
+protocol TAVideoCaptureDelegate: class {
+    func videoCapture(_ capture: TAVideoCapture,
                       didCaptureFrame frame: CVPixelBuffer?,
                       timestamp: CMTime)
 }
 
-class VideoCapture: NSObject {
+class TAVideoCapture: NSObject {
 
     // MARK: - Properties
 
-    weak var delegate: VideoCaptureDelegate?
+    weak var delegate: TAVideoCaptureDelegate?
     private(set) var previewLayer: AVCaptureVideoPreviewLayer?
     private let fps: Int32
 
@@ -114,7 +114,7 @@ class VideoCapture: NSObject {
 
 }
 
-extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension TAVideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
 
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,

@@ -1,5 +1,5 @@
 //
-//  HeatmapViewModel.swift
+//  TAHeatmapViewModel.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor Phillips on 12/11/18.
@@ -8,7 +8,7 @@
 import Foundation
 import CoreML
 
-public struct HeatmapViewModel {
+public struct TAHeatmapViewModel {
 
     // MARK: - Properties
 
@@ -17,7 +17,7 @@ public struct HeatmapViewModel {
     // MARK: - Initialization
 
     public init?(heatmap: MLMultiArray) {
-        guard let converted = HeatmapViewModel.convertedHeatmap(heatmap) else {
+        guard let converted = TAHeatmapViewModel.convertedHeatmap(heatmap) else {
             return nil
         }
 

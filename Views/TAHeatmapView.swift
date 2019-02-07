@@ -1,5 +1,5 @@
 //
-//  HeatmapView.swift
+//  TAHeatmapView.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 04.12.18.
@@ -8,15 +8,15 @@
 import UIKit
 import CoreML
 
-public class HeatmapView: UIView {
+public class TAHeatmapView: UIView {
 
     // MARK: - Properties
 
-    private var model: HeatmapViewModel
+    private var model: TAHeatmapViewModel
 
     // MARK: - Initialization
 
-    public init(model: HeatmapViewModel) {
+    public init(model: TAHeatmapViewModel) {
         self.model = model
         super.init(frame: .zero)
     }
@@ -62,7 +62,7 @@ public class HeatmapView: UIView {
 
     // MARK: - Public Functions
 
-    public func configure(with model: HeatmapViewModel) {
+    public func configure(with model: TAHeatmapViewModel) {
         self.model = model
         setNeedsDisplay()
     }
