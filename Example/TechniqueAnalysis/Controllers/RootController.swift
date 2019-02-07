@@ -63,7 +63,7 @@ class RootController: UITabBarController {
             case .joint(let jointModel):
                 return JointController(model: jointModel)
             case .analysis(let analysisModel):
-                return AnalysisController(model: analysisModel)
+                return AnalysisController() // model: analysisModel)
             case .test(let testModel):
                 return TestController(model: testModel)
             }

@@ -51,14 +51,14 @@ class CacheManager {
 
     // MARK: - Exposed Functions
 
-    func cache(_ compressedTimeseries: TATimeseries) -> Bool {
+    func cache(_ timeseries: TATimeseries) -> Bool {
         let encoder = JSONEncoder()
         guard let directory = CacheManager.cacheDirectory,
-            let data = try? encoder.encode(compressedTimeseries) else {
+            let data = try? encoder.encode(timeseries) else {
                 return false
         }
 
-        let filename = FileNamer.dataFileName(from: compressedTimeseries.meta,
+        let filename = FileNamer.dataFileName(from: timeseries.meta,
                                               ext: CacheManager.cachedTimeseriesExtension)
         let filePath = URL(fileURLWithPath: directory,
                           isDirectory: true).appendingPathComponent(filename, isDirectory: false).relativePath
@@ -68,7 +68,7 @@ class CacheManager {
         FileManager.default.createFile(atPath: filePath,
                                        contents: data,
                                        attributes: [:])
-        cached.append(compressedTimeseries)
+        cached.append(timeseries)
         return true
     }
 
@@ -112,24 +112,24 @@ class CacheManager {
                 return
         }
 
-        processor.makeCompressedTimeseries(videoURL: next.url,
-                                           meta: next.meta,
-                                           onFinish: { results in
-                                            for compressedSeries in results {
-                                                _ = self.cache(compressedSeries)
-                                            }
+        processor.makeTimeseries(videoURL: next.url,
+                                 meta: next.meta,
+                                 onFinish: { results in
+                                    for timeseries in results {
+                                        _ = self.cache(timeseries)
+                                    }
 
-                                            if self.processingQueue.isEmpty {
-                                                self.generateAndCacheReflections()
-                                                onFinish()
-                                            } else {
-                                                onItemProcessed(originalSize - self.processingQueue.count, originalSize)
-                                                self.processNext(originalSize: originalSize,
-                                                                 onItemProcessed: onItemProcessed,
-                                                                 onFinish: onFinish)
-                                            }
+                                    if self.processingQueue.isEmpty {
+                                        self.generateAndCacheReflections()
+                                        onFinish()
+                                    } else {
+                                        onItemProcessed(originalSize - self.processingQueue.count, originalSize)
+                                        self.processNext(originalSize: originalSize,
+                                                         onItemProcessed: onItemProcessed,
+                                                         onFinish: onFinish)
+                                    }
         },
-                                           onFailure: { _ in })
+                                 onFailure: { _ in })
     }
 
     private static func retrieveCache() -> [TATimeseries] {

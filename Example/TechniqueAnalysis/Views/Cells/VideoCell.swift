@@ -17,27 +17,31 @@ class VideoCell: UITableViewCell {
     @IBOutlet private weak var exerciseDetailLabel: UILabel!
     @IBOutlet private weak var correctExerciseLabel: UILabel!
     @IBOutlet private weak var correctOverallLabel: UILabel!
+    @IBOutlet private weak var scoreLabel: UILabel!
 
     // MARK: - Exposed Functions
 
-    func configure(exerciseName: String,
-                   exerciseDetail: String,
-                   cameraAngle: String,
-                   correctExercise: Bool?,
-                   correctOverall: Bool?) {
-        exerciseNameLabel.text = "\(exerciseName) (\(cameraAngle))"
-        exerciseDetailLabel.text = exerciseDetail
+    func configure(with model: TestModel.TestCase) {
+        exerciseNameLabel.text = "\(model.meta.exerciseName) " +
+        "(\(model.meta.angle.rawValue.capitalized))"
+        exerciseDetailLabel.text = model.meta.exerciseDetail
 
-        if let correctExercise = correctExercise {
+        if let correctExercise = model.predictedCorrectExercise {
             correctExerciseLabel.text = correctExercise ? "✅" : "❌"
         } else {
             correctExerciseLabel.text = ""
         }
 
-        if let correctOverall = correctOverall {
+        if let correctOverall = model.predictedCorrectOverall {
             correctOverallLabel.text = correctOverall ? "✅" : "❌"
         } else {
             correctOverallLabel.text = ""
+        }
+
+        if let score = model.predictionScore {
+            scoreLabel.text = "\(Int(score))"
+        } else {
+            scoreLabel.text = "--"
         }
     }
 

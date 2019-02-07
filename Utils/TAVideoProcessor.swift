@@ -52,11 +52,11 @@ public class TAVideoProcessor {
     }
 
     // MARK: - Public Functions
-
-    public func makeCompressedTimeseries(videoURL: URL,
-                                         meta: TAMeta,
-                                         onFinish: @escaping (([TATimeseries]) -> ()),
-                                         onFailure: @escaping (([Error]) -> ())) {
+    
+    public func makeTimeseries(videoURL: URL,
+                               meta: TAMeta,
+                               onFinish: @escaping (([TATimeseries]) -> ()),
+                               onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
             self.processVideo(videoURL: videoURL, meta: meta) { series, errors in
                 if errors.isEmpty {

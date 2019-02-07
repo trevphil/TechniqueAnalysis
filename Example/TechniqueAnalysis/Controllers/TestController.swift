@@ -38,9 +38,11 @@ class TestController: UIViewController {
         tableView.register(UINib(nibName: String(describing: VideoCell.self), bundle: nil),
                            forCellReuseIdentifier: VideoCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 80
+        tableView.estimatedRowHeight = 100
         tableView.backgroundColor = .black
         view.backgroundColor = .black
+
+        model.beginTesting()
     }
 
 }
@@ -48,21 +50,17 @@ class TestController: UIViewController {
 extension TestController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.testableItems.count
+        return model.testCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: VideoCell.identifier,
                                                        for: indexPath) as? VideoCell,
-            let videoMeta = model.testableItems.element(atIndex: indexPath.row)?.meta else {
+            let testCase = model.testCases.element(atIndex: indexPath.row) else {
                 return UITableViewCell()
         }
 
-        cell.configure(exerciseName: videoMeta.exerciseName,
-                       exerciseDetail: videoMeta.exerciseDetail,
-                       cameraAngle: videoMeta.angle.rawValue.capitalized,
-                       correctExercise: nil,
-                       correctOverall: nil)
+        cell.configure(with: testCase)
         return cell
     }
 
@@ -70,13 +68,13 @@ extension TestController: UITableViewDataSource {
 
 extension TestController: TestModelDelegate {
 
+    func didUpdateTestCase(atIndex index: Int) {
+        let indexPath = IndexPath(row: index, section: 0)
+        tableView.reloadRows(at: [indexPath], with: .left)
+    }
+
     func didProcessLabeledData(_ index: Int, outOf total: Int) {
-        <#code#>
+        print("Processed \(index)/\(total)")
     }
-
-    func didPredictUnlabeledData(atIndex index: Int, correctExercise: Bool, correctOverall: Bool, score: Double) {
-        <#code#>
-    }
-
 
 }

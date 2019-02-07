@@ -11,7 +11,7 @@ import UIKit
 struct RootCoordinator {
 
     func start() -> UIViewController? {
-        return RootController()
+        return RootController(model: RootModel())
     }
 
 }

@@ -30,7 +30,7 @@ class AnalysisController: UIViewController {
     @IBOutlet private weak var processingCacheStatus: UILabel?
     private weak var poseView: TAPoseView?
 
-    // Array of `CompressedTimeseries` objects derived from a sample video
+    // Array of `TATimeseries` objects derived from a sample video
     private var timeseriesArray = [TATimeseries]()
 
     /// The index of timeseries from `timeseriesArray` to be shown in a heatmap
@@ -170,23 +170,23 @@ class AnalysisController: UIViewController {
 
     private func processVideo(videoURL: URL, meta: TAMeta) {
         bestGuessLabel.text = ""
-        processor?.makeCompressedTimeseries(videoURL: videoURL,
-                                            meta: meta,
-                                            onFinish: { [weak self] compressedTimeseries in
-                                                DispatchQueue.main.async {
-                                                    self?.finishedProcessing(results: compressedTimeseries)
-                                                }
+        processor?.makeTimeseries(videoURL: videoURL,
+                                  meta: meta,
+                                  onFinish: { [weak self] timeseries in
+                                    DispatchQueue.main.async {
+                                        self?.finishedProcessing(results: timeseries)
+                                    }
             },
-                                            onFailure: { errors in
-                                                print("Video Processor finished with errors:")
-                                                for error in errors {
-                                                    print("\t\(error)")
-                                                }
+                                  onFailure: { errors in
+                                    print("Video Processor finished with errors:")
+                                    for error in errors {
+                                        print("\t\(error)")
+                                    }
         })
     }
 
-    private func finishedProcessing(results compressedTimeseries: [TATimeseries]) {
-        self.timeseriesArray = compressedTimeseries
+    private func finishedProcessing(results timeseries: [TATimeseries]) {
+        self.timeseriesArray = timeseries
 
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
@@ -197,7 +197,7 @@ class AnalysisController: UIViewController {
             }
         }
 
-        if let series = compressedTimeseries.element(atIndex: selectedTimeseries) {
+        if let series = timeseries.element(atIndex: selectedTimeseries) {
             bestGuessLabel.text = "Predicting..."
             let algo = TAKnnDtw(warpingWindow: 100, minConfidence: 0.2)
             algoQueue.async {

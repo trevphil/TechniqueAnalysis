@@ -59,9 +59,12 @@ extension VideoSelectionController: UITableViewDataSource {
                 return UITableViewCell()
         }
 
-        cell.configure(exerciseName: video.meta.exerciseName,
-                       exerciseDetail: video.meta.exerciseDetail,
-                       cameraAngle: video.meta.angle.rawValue.capitalized)
+        let testCase = TestModel.TestCase(url: video.url,
+                                          meta: video.meta,
+                                          predictionScore: nil,
+                                          predictedCorrectExercise: nil,
+                                          predictedCorrectOverall: nil)
+        cell.configure(with: testCase)
         return cell
     }
 
