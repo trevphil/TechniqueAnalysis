@@ -1,5 +1,5 @@
 //
-//  BodyPart.swift
+//  TABodyPart.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 04.12.18.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum BodyPart: Int, CaseIterable, Codable {
+public enum TABodyPart: Int, CaseIterable, Codable {
 
     case top
     case neck
@@ -24,7 +24,7 @@ public enum BodyPart: Int, CaseIterable, Codable {
     case leftKnee
     case leftAnkle
 
-    public static var joints: [(BodyPart, BodyPart)] {
+    public static var joints: [(TABodyPart, TABodyPart)] {
         return [
             (.top, .neck),
             (.neck, .rightShoulder),

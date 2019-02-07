@@ -14,14 +14,14 @@ class HeatmapController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet private weak var videoPreviewContainer: UIView!
-    private var heatmapView: HeatmapView?
+    private var heatmapView: TAHeatmapView?
 
-    private let model: PoseEstimationModel?
+    private let model: TAPoseEstimationModel?
 
     // MARK: - Initialization
 
     init() {
-        self.model = PoseEstimationModel(type: .cpm)
+        self.model = TAPoseEstimationModel(type: .cpm)
         super.init(nibName: nil, bundle: nil)
         self.model?.delegate = self
         self.title = "Heatmap"
@@ -46,8 +46,8 @@ class HeatmapController: UIViewController {
 
     // MARK: - Private Functions
 
-    private func setupHeatmapView(with heatmapModel: HeatmapViewModel) {
-        let hmView = HeatmapView(model: heatmapModel)
+    private func setupHeatmapView(with heatmapModel: TAHeatmapViewModel) {
+        let hmView = TAHeatmapView(model: heatmapModel)
         view.addSubview(hmView)
         hmView.translatesAutoresizingMaskIntoConstraints = false
         hmView.leftAnchor.constraint(equalTo: videoPreviewContainer.leftAnchor).isActive = true
@@ -60,10 +60,10 @@ class HeatmapController: UIViewController {
 
 }
 
-extension HeatmapController: PoseEstimationDelegate {
+extension HeatmapController: TAPoseEstimationDelegate {
 
     func visionRequestDidComplete(heatmap: MLMultiArray) {
-        if let heatmapModel = HeatmapViewModel(heatmap: heatmap) {
+        if let heatmapModel = TAHeatmapViewModel(heatmap: heatmap) {
             if let heatmapView = heatmapView {
                 heatmapView.configure(with: heatmapModel)
             } else {

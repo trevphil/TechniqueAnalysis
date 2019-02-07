@@ -16,7 +16,7 @@ class AnalysisController: UIViewController {
     // MARK: - Properties
 
     private let avpController: AVPlayerViewController
-    private let processor: VideoProcessor?
+    private let processor: TAVideoProcessor?
     @IBOutlet private weak var videoViewContainer: UIView!
     @IBOutlet private weak var poseViewContainer: UIView!
     @IBOutlet private weak var processingCacheView: UIView?
@@ -28,10 +28,10 @@ class AnalysisController: UIViewController {
     @IBOutlet private weak var infoLabel: UILabel!
     @IBOutlet private weak var bestGuessLabel: UILabel!
     @IBOutlet private weak var processingCacheStatus: UILabel?
-    private weak var poseView: PoseView?
+    private weak var poseView: TAPoseView?
 
     // Array of `CompressedTimeseries` objects derived from a sample video
-    private var timeseriesArray = [CompressedTimeseries]()
+    private var timeseriesArray = [TATimeseries]()
 
     /// The index of timeseries from `timeseriesArray` to be shown in a heatmap
     private var selectedTimeseries: Int {
@@ -53,9 +53,9 @@ class AnalysisController: UIViewController {
     init() {
         self.avpController = AVPlayerViewController()
         do {
-            self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+            self.processor = try TAVideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
         } catch {
-            print("Error while initializing VideoProcessor: \(error)")
+            print("Error while initializing TAVideoProcessor: \(error)")
             self.processor = nil
         }
 
@@ -168,7 +168,7 @@ class AnalysisController: UIViewController {
         controller.view.bottomAnchor.constraint(equalTo: videoSelectionContainer.bottomAnchor).isActive = true
     }
 
-    private func processVideo(videoURL: URL, meta: Meta) {
+    private func processVideo(videoURL: URL, meta: TAMeta) {
         bestGuessLabel.text = ""
         processor?.makeCompressedTimeseries(videoURL: videoURL,
                                             meta: meta,
@@ -185,7 +185,7 @@ class AnalysisController: UIViewController {
         })
     }
 
-    private func finishedProcessing(results compressedTimeseries: [CompressedTimeseries]) {
+    private func finishedProcessing(results compressedTimeseries: [TATimeseries]) {
         self.timeseriesArray = compressedTimeseries
 
         timer?.invalidate()
@@ -199,7 +199,7 @@ class AnalysisController: UIViewController {
 
         if let series = compressedTimeseries.element(atIndex: selectedTimeseries) {
             bestGuessLabel.text = "Predicting..."
-            let algo = KnnDtw(warpingWindow: 100, minConfidence: 0.2)
+            let algo = TAKnnDtw(warpingWindow: 100, minConfidence: 0.2)
             algoQueue.async {
                 let newText: String
                 if let result = algo.nearestNeighbor(unknownItem: series, knownItems: CacheManager.shared.cached) {
@@ -232,8 +232,8 @@ class AnalysisController: UIViewController {
 
         do {
             let slice = try timeseries.timeSlice(forSample: sampleIndex)
-            let model = PoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
-            let poseView = PoseView(model: model, delegate: nil, jointLineColor: .red)
+            let model = TAPoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
+            let poseView = TAPoseView(model: model, delegate: nil, jointLineColor: .red)
 
             poseViewContainer.addSubview(poseView)
             poseView.translatesAutoresizingMaskIntoConstraints = false
@@ -252,12 +252,12 @@ class AnalysisController: UIViewController {
         avpController.player = player
     }
 
-    private func updatePoseView(with timeseries: CompressedTimeseries) {
+    private func updatePoseView(with timeseries: TATimeseries) {
         guard let slice = try? timeseries.timeSlice(forSample: sampleIndex) else {
             return
         }
 
-        let model = PoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
+        let model = TAPoseViewModel(bodyPoints: slice, confidenceThreshold: 0.2)
         poseView?.configure(with: model)
     }
 

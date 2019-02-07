@@ -1,5 +1,5 @@
 //
-//  PoseView.swift
+//  TAPoseView.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 04.12.18.
@@ -7,23 +7,23 @@
 
 import UIKit
 
-public protocol PoseViewDelegate: class {
-    func color(for bodyPart: BodyPart) -> UIColor?
-    func string(for bodyPart: BodyPart) -> String?
+public protocol TAPoseViewDelegate: class {
+    func color(for bodyPart: TABodyPart) -> UIColor?
+    func string(for bodyPart: TABodyPart) -> String?
 }
 
-public class PoseView: UIView {
+public class TAPoseView: UIView {
     
     // MARK: - Properties
 
-    private weak var delegate: PoseViewDelegate?
+    private weak var delegate: TAPoseViewDelegate?
     private var views = [UIView]()
-    private var model: PoseViewModel
+    private var model: TAPoseViewModel
     private let jointLineColor: CGColor
 
     // MARK: - Initialization
 
-    public init(model: PoseViewModel, delegate: PoseViewDelegate?, jointLineColor: UIColor) {
+    public init(model: TAPoseViewModel, delegate: TAPoseViewDelegate?, jointLineColor: UIColor) {
         self.model = model
         self.delegate = delegate
         self.jointLineColor = jointLineColor.cgColor
@@ -41,12 +41,12 @@ public class PoseView: UIView {
         if let context = UIGraphicsGetCurrentContext() {
             context.clear(rect)
             
-            guard BodyPart.allCases.count == model.bodyPoints.count else {
+            guard TABodyPart.allCases.count == model.bodyPoints.count else {
                 return
             }
             
             let size = bounds.size
-            BodyPart.joints.forEach { (firstPart, secondPart) in
+            TABodyPart.joints.forEach { (firstPart, secondPart) in
                 if let pointOne = model.point(for: firstPart), let pointTwo = model.point(for: secondPart) {
                     let scaledPointOne = CGPoint(x: pointOne.point.x * size.width, y: pointOne.point.y * size.height)
                     let scaledPointTwo = CGPoint(x: pointTwo.point.x * size.width, y: pointTwo.point.y * size.height)
@@ -58,7 +58,7 @@ public class PoseView: UIView {
 
     // MARK: - Public Functions
 
-    public func configure(with model: PoseViewModel) {
+    public func configure(with model: TAPoseViewModel) {
         self.model = model
         setNeedsDisplay()
         drawKeypoints(with: model.bodyPoints)
@@ -69,7 +69,7 @@ public class PoseView: UIView {
             view.removeFromSuperview()
         }
 
-        views = BodyPart.allCases.map { bodyPart in
+        views = TABodyPart.allCases.map { bodyPart in
             let view = UIView(frame: CGRect(x: 0, y: 0, width: 4, height: 4))
             view.backgroundColor = delegate?.color(for: bodyPart) ?? .white
             view.clipsToBounds = false
@@ -93,7 +93,7 @@ public class PoseView: UIView {
         context.strokePath()
     }
     
-    private func drawKeypoints(with pointEstimates: [PointEstimate]) {
+    private func drawKeypoints(with pointEstimates: [TAPointEstimate]) {
         guard let imageFrame = views.first?.superview?.frame else {
             return
         }

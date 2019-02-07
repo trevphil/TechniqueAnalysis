@@ -16,9 +16,9 @@ class CacheManager {
     /// Shared Singleton Instance
     static let shared = CacheManager()
 
-    private(set) var cached: [CompressedTimeseries]
-    private var processingQueue = [(url: URL, meta: Meta)]()
-    private let processor: VideoProcessor?
+    private(set) var cached: [TATimeseries]
+    private var processingQueue = [(url: URL, meta: TAMeta)]()
+    private let processor: TAVideoProcessor?
 
     private static let cachedTimeseriesExtension = "ts"
 
@@ -42,16 +42,16 @@ class CacheManager {
         self.cached = CacheManager.retrieveCache()
 
         do {
-            self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+            self.processor = try TAVideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
         } catch {
-            print("Error while initializing VideoProcessor in CacheManager: \(error)")
+            print("Error while initializing TAVideoProcessor in CacheManager: \(error)")
             self.processor = nil
         }
     }
 
     // MARK: - Exposed Functions
 
-    func cache(_ compressedTimeseries: CompressedTimeseries) -> Bool {
+    func cache(_ compressedTimeseries: TATimeseries) -> Bool {
         let encoder = JSONEncoder()
         guard let directory = CacheManager.cacheDirectory,
             let data = try? encoder.encode(compressedTimeseries) else {
@@ -94,7 +94,7 @@ class CacheManager {
 
     // MARK: - Private Functions
 
-    private func cache(contains meta: Meta) -> Bool {
+    private func cache(contains meta: TAMeta) -> Bool {
         return cached.contains(where: { cachedSeries -> Bool in
             cachedSeries.meta.exerciseName == meta.exerciseName &&
                 cachedSeries.meta.exerciseDetail == meta.exerciseDetail &&
@@ -132,13 +132,13 @@ class CacheManager {
                                            onFailure: { _ in })
     }
 
-    private static func retrieveCache() -> [CompressedTimeseries] {
+    private static func retrieveCache() -> [TATimeseries] {
         guard let directory = cacheDirectory,
             let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory).sorted() else {
                 return []
         }
 
-        var decodedSeries = [CompressedTimeseries]()
+        var decodedSeries = [TATimeseries]()
         let decoder = JSONDecoder()
 
         for filename in cachedFilenames {
@@ -146,7 +146,7 @@ class CacheManager {
 
             guard FileNamer.fileExtension(filename) == cachedTimeseriesExtension,
                 let data = try? Data(contentsOf: fileURL),
-                let decoded = try? decoder.decode(CompressedTimeseries.self, from: data) else {
+                let decoded = try? decoder.decode(TATimeseries.self, from: data) else {
                     continue
             }
 

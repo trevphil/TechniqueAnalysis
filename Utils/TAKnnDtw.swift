@@ -1,5 +1,5 @@
 //
-//  KnnDtw.swift
+//  TAKnnDtw.swift
 //  TechniqueAnalysis
 //
 //  Created by Trevor on 05.02.19.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public enum KnnDtwError: Error {
+public enum TAKnnDtwError: Error {
     case shapeMismatchError
 }
 
-public struct KnnDtw {
+public struct TAKnnDtw {
 
     // MARK: - Properties
 
@@ -27,10 +27,10 @@ public struct KnnDtw {
 
     // MARK: - Public Functions
 
-    public func nearestNeighbor(unknownItem: CompressedTimeseries,
-                                knownItems: [CompressedTimeseries]) -> (score: Double, timeseries: CompressedTimeseries)? {
+    public func nearestNeighbor(unknownItem: TATimeseries,
+                                knownItems: [TATimeseries]) -> (score: Double, timeseries: TATimeseries)? {
         var bestScore = Double.greatestFiniteMagnitude
-        var closestSeries: CompressedTimeseries?
+        var closestSeries: TATimeseries?
 
         for known in knownItems {
             do {
@@ -53,7 +53,7 @@ public struct KnnDtw {
 
     // MARK: - Private Functions
 
-    private func distance(timeseriesA: CompressedTimeseries, timeseriesB: CompressedTimeseries) throws -> Double {
+    private func distance(timeseriesA: TATimeseries, timeseriesB: TATimeseries) throws -> Double {
         let numRows = timeseriesA.numSamples
         let numCols = timeseriesB.numSamples
         let sampleCol = Array(repeating: Double.greatestFiniteMagnitude, count: numCols)
@@ -92,9 +92,9 @@ public struct KnnDtw {
         return cost.last?.last ?? Double.greatestFiniteMagnitude
     }
 
-    private func distance(sliceA: [PointEstimate], sliceB: [PointEstimate]) throws -> Double {
+    private func distance(sliceA: [TAPointEstimate], sliceB: [TAPointEstimate]) throws -> Double {
         guard sliceA.count == sliceB.count else {
-            throw KnnDtwError.shapeMismatchError
+            throw TAKnnDtwError.shapeMismatchError
         }
 
         let numBodyPoints = sliceA.count
@@ -112,7 +112,7 @@ public struct KnnDtw {
         return distances.reduce(0, +)
     }
 
-    private func distance(pointA: PointEstimate, pointB: PointEstimate) -> Double {
+    private func distance(pointA: TAPointEstimate, pointB: TAPointEstimate) -> Double {
         let euclideanDistance = Double(sqrt(pow(pointB.point.x - pointA.point.x, 2) +
             pow(pointB.point.y - pointA.point.y, 2)))
         return pointA.confidence >= minConfidence && pointB.confidence >= minConfidence ?
