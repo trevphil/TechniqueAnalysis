@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreML
 import TechniqueAnalysis
 
 class JointController: UIViewController {
@@ -19,17 +18,15 @@ class JointController: UIViewController {
     @IBOutlet private weak var etimeLabel: UILabel!
     @IBOutlet private weak var fpsLabel: UILabel!
     private var poseView: TAPoseView?
-
-    private let model: TAPoseEstimationModel?
-    private var tableData = [TAPointEstimate]()
+    private let model: JointModel
 
     // MARK: - Initialization
 
-    init() {
-        self.model = TAPoseEstimationModel(type: .cpm)
+    init(model: JointModel) {
+        self.model = model
         super.init(nibName: nil, bundle: nil)
-        self.model?.delegate = self
-        self.title = "Joints"
+        self.title = model.title
+        model.delegate = self
     }
 
     @available(*, unavailable)
@@ -50,7 +47,7 @@ class JointController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        model?.setupCameraPreview(withinView: videoPreviewContainer)
+        model.setupCameraPreview(withinView: videoPreviewContainer)
         if let poseView = poseView {
             videoPreviewContainer.bringSubviewToFront(poseView)
         }
@@ -58,7 +55,7 @@ class JointController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        model?.tearDownCameraPreview()
+        model.tearDownCameraPreview()
     }
 
     // MARK: - Private Functions
@@ -69,17 +66,10 @@ class JointController: UIViewController {
                               jointLineColor: TABodyPart.jointLineColor)
         videoPreviewContainer.addSubview(pose)
         pose.frame = videoPreviewContainer.bounds
-        model?.videoPreviewLayer?.frame = videoPreviewContainer.bounds
+        model.updateVideoPreviewFrame(videoPreviewContainer.bounds)
         pose.setupOutputComponent()
         pose.backgroundColor = .clear
         self.poseView = pose
-    }
-
-    private func showKeypointsDescription(with bodyPoints: [TAPointEstimate]) {
-        tableData = bodyPoints.sorted(by: {
-            ($0.bodyPart?.rawValue ?? 0) < ($1.bodyPart?.rawValue ?? 1)
-        })
-        labelsTableView.reloadData()
     }
 
     private func text(for pointEstimate: TAPointEstimate) -> String {
@@ -95,13 +85,13 @@ class JointController: UIViewController {
 extension JointController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableData.count
+        return model.tableData.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: LabelCell.identifier,
                                                        for: indexPath) as? LabelCell,
-            let bodyPoint = tableData.element(atIndex: indexPath.row) else {
+            let bodyPoint = model.tableData.element(atIndex: indexPath.row) else {
                 return UITableViewCell()
         }
 
@@ -120,21 +110,16 @@ extension JointController: UITableViewDelegate {
 
 }
 
-extension JointController: TAPoseEstimationDelegate {
+extension JointController: JointModelDelegate {
 
-    func visionRequestDidComplete(heatmap: MLMultiArray) {
-        if let poseModel = TAPoseViewModel(heatmap: heatmap) {
-            if let poseView = poseView {
-                poseView.configure(with: poseModel)
-            } else {
-                setupPoseView(with: poseModel)
-            }
-            showKeypointsDescription(with: poseModel.bodyPoints)
+    func updatePoseView(with poseViewModel: TAPoseViewModel) {
+        if let poseView = poseView {
+            poseView.configure(with: poseViewModel)
+        } else {
+            setupPoseView(with: poseViewModel)
         }
-    }
 
-    func visionRequestDidFail(error: Error?) {
-        print("ERROR: - Vision request failed. Error=\(error?.localizedDescription ?? "(no message)")")
+        labelsTableView.reloadData()
     }
 
     func didSamplePerformance(inferenceTime: Double, executionTime: Double, fps: Int) {

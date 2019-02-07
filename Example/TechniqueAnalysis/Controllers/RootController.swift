@@ -10,9 +10,14 @@ import UIKit
 
 class RootController: UITabBarController {
 
+    // MARK: - Properties
+
+    let model: RootModel
+
     // MARK: - Initialization
 
-    init() {
+    init(model: RootModel) {
+        self.model = model
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -33,40 +38,36 @@ class RootController: UITabBarController {
     // MARK: - Private Functions
 
     private func configureControllers() {
-        let heatmapController = HeatmapController()
-        let jointController = JointController()
-        let analysisController = AnalysisController()
-        viewControllers = [heatmapController, jointController, analysisController]
+        viewControllers = generateControllers()
         reloadInputViews()
-        selectedIndex = 0
+        selectedIndex = model.initiallySelected
     }
 
     private func configureTabBar() {
-        if let heatmapTab = tabBar.items?[0], let fire = "🔥".asImage?.withRenderingMode(.alwaysTemplate) {
-            heatmapTab.image = fire
+        guard let items = tabBar.items else {
+            return
         }
-        if let jointTab = tabBar.items?[1], let arm = "💪".asImage?.withRenderingMode(.alwaysTemplate) {
-            jointTab.image = arm
-        }
-        if let analysisTab = tabBar.items?[2], let video = "🎥".asImage?.withRenderingMode(.alwaysTemplate) {
-            analysisTab.image = video
+
+        for (idx, tab) in items.enumerated() {
+            if let icon = model.string(for: idx)?.asImage?.withRenderingMode(.alwaysTemplate) {
+                tab.image = icon
+            }
         }
     }
 
-}
-
-fileprivate extension String {
-
-    var asImage: UIImage? {
-        let size = CGSize(width: 35, height: 30)
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        UIColor.clear.set()
-        let rect = CGRect(origin: .zero, size: size)
-        UIRectFill(CGRect(origin: .zero, size: size))
-        (self as NSString).draw(in: rect, withAttributes: [.font: UIFont.systemFont(ofSize: 30)])
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
+    private func generateControllers() -> [UIViewController] {
+        return model.viewModelTypes.map { type in
+            switch type {
+            case .heatmap(let heatmapModel):
+                return HeatmapController(model: heatmapModel)
+            case .joint(let jointModel):
+                return JointController(model: jointModel)
+            case .analysis(let analysisModel):
+                return AnalysisController(model: analysisModel)
+            case .test(let testModel):
+                return TestController(model: testModel)
+            }
+        }
     }
 
 }
