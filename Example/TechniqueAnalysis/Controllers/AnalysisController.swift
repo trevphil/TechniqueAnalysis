@@ -202,7 +202,7 @@ class AnalysisController: UIViewController {
             let algo = KnnDtw(warpingWindow: 100, minConfidence: 0.2)
             algoQueue.async {
                 let newText: String
-                if let result = algo.nearestNeighbor(unknownItem: series, knownItems: CacheManager.shared.cache) {
+                if let result = algo.nearestNeighbor(unknownItem: series, knownItems: CacheManager.shared.cached) {
                     newText = "Prediction: \(result.timeseries.meta.exerciseName), " +
                         "\(result.timeseries.meta.exerciseDetail), " +
                         "\(result.timeseries.meta.angle.rawValue.capitalized) (score=\(Int(result.score)))"

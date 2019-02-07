@@ -16,7 +16,7 @@ class CacheManager {
     /// Shared Singleton Instance
     static let shared = CacheManager()
 
-    private(set) var cache: [CompressedTimeseries]
+    private(set) var cached: [CompressedTimeseries]
     private var processingQueue = [(url: URL, meta: Meta)]()
     private let processor: VideoProcessor?
 
@@ -39,7 +39,7 @@ class CacheManager {
                                                      attributes: nil)
         }
 
-        self.cache = CacheManager.retrieveCache()
+        self.cached = CacheManager.retrieveCache()
 
         do {
             self.processor = try VideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
@@ -68,7 +68,7 @@ class CacheManager {
         FileManager.default.createFile(atPath: filePath,
                                        contents: data,
                                        attributes: [:])
-        cache.append(compressedTimeseries)
+        cached.append(compressedTimeseries)
         return true
     }
 
@@ -95,7 +95,7 @@ class CacheManager {
     // MARK: - Private Functions
 
     private func cache(contains meta: Meta) -> Bool {
-        return cache.contains(where: { cachedSeries -> Bool in
+        return cached.contains(where: { cachedSeries -> Bool in
             cachedSeries.meta.exerciseName == meta.exerciseName &&
                 cachedSeries.meta.exerciseDetail == meta.exerciseDetail &&
                 cachedSeries.meta.angle == meta.angle &&
@@ -120,6 +120,7 @@ class CacheManager {
                                             }
 
                                             if self.processingQueue.isEmpty {
+                                                self.generateAndCacheReflections()
                                                 onFinish()
                                             } else {
                                                 onItemProcessed(originalSize - self.processingQueue.count, originalSize)
@@ -133,7 +134,7 @@ class CacheManager {
 
     private static func retrieveCache() -> [CompressedTimeseries] {
         guard let directory = cacheDirectory,
-            let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory) else {
+            let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory).sorted() else {
                 return []
         }
 
@@ -150,9 +151,17 @@ class CacheManager {
             }
 
             decodedSeries.append(decoded)
+            print("Loaded from cache: \(filename)")
         }
 
         return decodedSeries
+    }
+
+    private func generateAndCacheReflections() {
+        let reflections = cached.compactMap({ $0.reflected }).filter { !cache(contains: $0.meta) }
+        for reflection in reflections {
+            _ = cache(reflection)
+        }
     }
 
 }

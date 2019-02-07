@@ -90,7 +90,7 @@
                             <rect key="frame" x="0.0" y="577" width="375" height="70"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="8sG-0y-m7J">
-                                    <rect key="frame" x="0.0" y="35" width="375" height="0.0"/>
+                                    <rect key="frame" x="16" y="35" width="343" height="0.0"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
@@ -98,8 +98,8 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstAttribute="trailing" secondItem="8sG-0y-m7J" secondAttribute="trailing" id="UEx-XC-3td"/>
-                                <constraint firstItem="8sG-0y-m7J" firstAttribute="leading" secondItem="7bj-Rg-e5L" secondAttribute="leading" id="fL7-dY-CKP"/>
+                                <constraint firstAttribute="trailing" secondItem="8sG-0y-m7J" secondAttribute="trailing" constant="16" id="UEx-XC-3td"/>
+                                <constraint firstItem="8sG-0y-m7J" firstAttribute="leading" secondItem="7bj-Rg-e5L" secondAttribute="leading" constant="16" id="fL7-dY-CKP"/>
                                 <constraint firstItem="8sG-0y-m7J" firstAttribute="centerY" secondItem="7bj-Rg-e5L" secondAttribute="centerY" id="he9-8X-mPv"/>
                                 <constraint firstAttribute="height" constant="70" id="oXc-bA-7SE"/>
                             </constraints>
