@@ -52,7 +52,7 @@ struct VideoManager {
             return []
         }
 
-        let videos = videoFileNames()
+        let videos = videoFileNames().sorted()
         return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: true) }
     }
 
@@ -61,7 +61,7 @@ struct VideoManager {
             return []
         }
 
-        let videos = videoFileNames()
+        let videos = videoFileNames().sorted()
         return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: false) }
     }
 

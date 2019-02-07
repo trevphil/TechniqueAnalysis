@@ -134,7 +134,7 @@ class CacheManager {
 
     private static func retrieveCache() -> [CompressedTimeseries] {
         guard let directory = cacheDirectory,
-            let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory) else {
+            let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory).sorted() else {
                 return []
         }
 
@@ -151,29 +151,14 @@ class CacheManager {
             }
 
             decodedSeries.append(decoded)
+            print("Loaded from cache: \(filename)")
         }
 
         return decodedSeries
     }
 
     private func generateAndCacheReflections() {
-        let reflections: [CompressedTimeseries] = cached.compactMap {
-            guard let oppositeAngle = $0.meta.angle.opposite else {
-                return nil
-            }
-
-            let reflected = Meta(isLabeled: $0.meta.isLabeled,
-                                 exerciseName: $0.meta.exerciseName,
-                                 exerciseDetail: $0.meta.exerciseDetail,
-                                 angle: oppositeAngle)
-
-            guard !cache(contains: reflected) else {
-                return nil
-            }
-
-            return try? CompressedTimeseries(data: $0.reflectedData, meta: reflected)
-        }
-
+        let reflections = cached.compactMap({ $0.reflected }).filter { !cache(contains: $0.meta) }
         for reflection in reflections {
             _ = cache(reflection)
         }

@@ -69,7 +69,16 @@ public struct CompressedTimeseries: Codable {
         return data.count
     }
 
-    public var reflectedData: [[PointEstimate]] {
+    public var reflected: CompressedTimeseries? {
+        guard let oppositeAngle = meta.angle.opposite else {
+            return nil
+        }
+
+        let oppositeMeta = Meta(isLabeled: meta.isLabeled,
+                                exerciseName: meta.exerciseName,
+                                exerciseDetail: meta.exerciseDetail,
+                                angle: oppositeAngle)
+
         var reflections = [[PointEstimate]]()
         for sample in data {
             let flippedPoints: [PointEstimate] = sample.map { pointEstimate in
@@ -80,7 +89,8 @@ public struct CompressedTimeseries: Codable {
             }
             reflections.append(flippedPoints)
         }
-        return reflections
+
+        return try? CompressedTimeseries(data: reflections, meta: oppositeMeta)
     }
 
     // MARK: - Initialization
