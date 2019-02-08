@@ -18,7 +18,7 @@ class ExerciseSelectionModel {
     // MARK: - Initialization
 
     init() {
-        self.title = "Analysis"
+        self.title = "Exercises"
         let exercises: Set<String> = Set(VideoManager.shared.unlabeledVideos.map {
             $0.meta.exerciseName
         })

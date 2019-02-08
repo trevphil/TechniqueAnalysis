@@ -6,22 +6,65 @@
 //  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
-import Foundation
+import TechniqueAnalysis
+
+protocol AnalysisModelDelegate: class {
+    func didAnalyze(with result: TestResult)
+}
 
 class AnalysisModel {
 
     // MARK: - Properties
 
     let title: String
-    let exerciseType: String
+    let exerciseName: String
     let videoURL: URL
+    private let tester: TestModel
+    weak var delegate: AnalysisModelDelegate?
 
     // MARK: - Initialization
 
-    init(exerciseType: String, videoURL: URL) {
-        self.title = "Analysis"
-        self.exerciseType = exerciseType
+    init(exerciseName: String, videoURL: URL) {
+        self.title = "Analyze"
+        self.exerciseName = exerciseName
         self.videoURL = videoURL
+        let meta = TAMeta(isLabeled: false,
+                          exerciseName: exerciseName,
+                          exerciseDetail: "",
+                          angle: .unknown)
+        let testCase = TestResult(url: videoURL, testMeta: meta)
+        self.tester = TestModel(testCases: [testCase],
+                                printStats: false,
+                                exerciseFilter: exerciseName)
+        self.tester.delegate = self
+    }
+
+    // MARK: - Exposed Functions
+
+    func analyzeVideo() {
+        tester.beginTesting()
+    }
+
+    func deleteVideo() {
+        _ = try? FileManager.default.removeItem(at: videoURL)
+    }
+
+}
+
+extension AnalysisModel: TestModelDelegate {
+
+    func didBeginTesting() {}
+
+    func didProcessLabeledData(_ index: Int, outOf total: Int) {
+        // TODO: - Possibly use notification observers for the processing of labeled data
+    }
+
+    func didUpdateTestCase(atIndex index: Int) {
+        guard index == 0, let result = tester.testCases.element(atIndex: 0) else {
+            return
+        }
+
+        delegate?.didAnalyze(with: result)
     }
 
 }

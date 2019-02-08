@@ -12,6 +12,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AnalysisController" customModule="TechniqueAnalysis_Example" customModuleProvider="target">
             <connections>
+                <outlet property="exerciseNameLabel" destination="TTI-rW-N2P" id="csK-c8-Xol"/>
+                <outlet property="formSuggestionLabel" destination="e8w-8T-z2c" id="3XS-E5-wFq"/>
+                <outlet property="loadingSpinner" destination="zPQ-2e-cnW" id="rw6-Vi-CbZ"/>
+                <outlet property="videoPreviewContainer" destination="xjY-pA-OB2" id="RIZ-Ze-vv7"/>
                 <outlet property="view" destination="iN0-l3-epB" id="bF4-Ub-GZu"/>
             </connections>
         </placeholder>
@@ -19,8 +23,50 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xjY-pA-OB2">
+                    <rect key="frame" x="0.0" y="60" width="375" height="507"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Burpees" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TTI-rW-N2P">
+                    <rect key="frame" x="151.5" y="28" width="72.5" height="24"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="CB9-SF-l3y">
+                    <rect key="frame" x="0.0" y="567" width="375" height="100"/>
+                    <subviews>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="zPQ-2e-cnW">
+                            <rect key="frame" x="0.0" y="0.0" width="92" height="100"/>
+                        </activityIndicatorView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Correct Form" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8w-8T-z2c">
+                            <rect key="frame" x="92" y="0.0" width="283" height="100"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="6PI-5J-k05"/>
+                    </constraints>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="xjY-pA-OB2" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="72N-ad-0pg"/>
+                <constraint firstItem="CB9-SF-l3y" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Tlt-Jq-9kX"/>
+                <constraint firstItem="TTI-rW-N2P" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="cIp-XQ-2cY"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="CB9-SF-l3y" secondAttribute="bottom" id="fqY-CZ-7hF"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="CB9-SF-l3y" secondAttribute="trailing" id="jbs-ab-7Lx"/>
+                <constraint firstItem="CB9-SF-l3y" firstAttribute="top" secondItem="xjY-pA-OB2" secondAttribute="bottom" id="oft-l5-Qlt"/>
+                <constraint firstItem="xjY-pA-OB2" firstAttribute="top" secondItem="TTI-rW-N2P" secondAttribute="bottom" constant="8" id="qcL-TI-Yev"/>
+                <constraint firstItem="TTI-rW-N2P" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="vOF-xn-0tl"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xjY-pA-OB2" secondAttribute="trailing" id="z47-Cu-UiZ"/>
+            </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="53.600000000000001" y="71.514242878560722"/>
         </view>
     </objects>
 </document>

@@ -13,10 +13,7 @@ class AnalysisCoordinator {
     // MARK: - Properties
 
     private let navController: UINavigationController
-    private var exerciseSelectionController: ExerciseSelectionController?
-    private var recorderController: RecorderController?
-    private var analysisController: AnalysisController?
-    private var exerciseType: String?
+    private var exerciseName: String?
     private var videoURL: URL?
 
     // MARK: - Initialization
@@ -31,14 +28,11 @@ class AnalysisCoordinator {
 
     func start() -> UIViewController {
         let model = ExerciseSelectionModel()
-        navController.title = model.title
-
+        navController.title = "Analysis"
         let exerciseSelection = ExerciseSelectionController(model: model) { exercise in
-            self.exerciseType = exercise
+            self.exerciseName = exercise
             self.showVideoRecorder()
         }
-        self.exerciseSelectionController = exerciseSelection
-
         navController.setViewControllers([exerciseSelection], animated: false)
         return navController
     }
@@ -46,33 +40,21 @@ class AnalysisCoordinator {
     // MARK: - Private Functions
 
     private func showVideoRecorder() {
-        if let recorder = recorderController {
-            navController.pushViewController(recorder, animated: true)
-            return
-        }
-
         let recorder = RecorderController(model: RecorderModel()) { videoURL in
             self.videoURL = videoURL
             self.showAnalysis()
         }
-        self.recorderController = recorder
         navController.pushViewController(recorder, animated: true)
     }
 
     private func showAnalysis() {
-        if let analysis = analysisController {
-            navController.pushViewController(analysis, animated: true)
-            return
-        }
-
-        guard let exerciseType = exerciseType,
+        guard let exerciseName = exerciseName,
             let url = videoURL else {
                 return
         }
 
-        let model = AnalysisModel(exerciseType: exerciseType, videoURL: url)
+        let model = AnalysisModel(exerciseName: exerciseName, videoURL: url)
         let analysis = AnalysisController(model: model)
-        self.analysisController = analysis
         navController.pushViewController(analysis, animated: true)
     }
 

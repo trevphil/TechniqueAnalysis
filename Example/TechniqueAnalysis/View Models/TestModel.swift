@@ -20,9 +20,11 @@ class TestModel {
     // MARK: - Properties
 
     let title: String
+    private let printStats: Bool
     private let selectedTimeseries = 0
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
+    private var exerciseFilter: String?
     private var testCaseIndex = 0
     private(set) var testCases: [TestResult]
     weak var delegate: TestModelDelegate?
@@ -35,12 +37,11 @@ class TestModel {
 
     // MARK: - Initialization
 
-    init() {
+    init(testCases: [TestResult], printStats: Bool, exerciseFilter: String? = nil) {
         self.title = "Tests"
-
-        self.testCases = VideoManager.shared.unlabeledVideos.map {
-            TestResult(url: $0.url, testMeta: $0.meta)
-        }
+        self.printStats = printStats
+        self.exerciseFilter = exerciseFilter
+        self.testCases = testCases
 
         do {
             self.processor = try TAVideoProcessor(sampleLength: Params.clipLength,
@@ -78,7 +79,7 @@ class TestModel {
     private func testNext() {
         let testIndex = testCaseIndex
         guard let testCase = testCases.element(atIndex: testIndex) else {
-            printTestStatistics()
+            if printStats { printTestStatistics() }
             return
         }
 
@@ -101,8 +102,12 @@ class TestModel {
     }
 
     private func compare(_ unknown: TATimeseries, forIndex testIndex: Int) {
-        guard let known = labeledSeries else {
+        guard var known = labeledSeries else {
             return
+        }
+
+        if let filter = exerciseFilter {
+            known = known.filter { $0.meta.exerciseName == filter }
         }
 
         let testIndex = testCaseIndex
@@ -124,7 +129,7 @@ class TestModel {
         let correctExercises = Double(testCases.filter({ $0.predictedCorrectExercise == true }).count)
         let correctOverall = Double(testCases.filter({ $0.predictedCorrectOverall == true }).count)
         let total = Double(testCases.count)
-        print("\n-------------- FINISHED TESTING --------------")
+        print("\n-------------- FINISHED TESTING (\(Int(total)) total) --------------")
         print("\(Int(round(correctExercises / total * 100.0)))% classified into correct exercise.")
         print("\(Int(round(correctOverall / total * 100.0)))% classified perfectly.")
         print("Params: \(Params.debugDescription)\n")

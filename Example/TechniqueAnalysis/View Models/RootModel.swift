@@ -19,14 +19,16 @@ struct RootModel {
 
     // MARK: - Properties
 
+    private let tabIcons = ["🔥", "💪", "🎥", "✔️"]
     let initiallySelected = 0
     let viewModelTypes: [ModelType] = [
         .heatmap(HeatmapModel()),
         .joint(JointModel()),
         .analysis,
-        .test(TestModel())
+        .test(TestModel(testCases: VideoManager.shared.unlabeledVideos.map {
+            TestResult(url: $0.url, testMeta: $0.meta)
+        }, printStats: true))
     ]
-    private let tabIcons = ["🔥", "💪", "🎥", "✔️"]
 
     // MARK: - Exposed Functions
 

@@ -32,7 +32,7 @@ class RecorderModel: NSObject {
     // MARK: - Initialization
 
     override init() {
-        self.title = "Analysis"
+        self.title = "Record"
     }
 
     // MARK: - Exposed Functions
@@ -80,10 +80,6 @@ class RecorderModel: NSObject {
                 return
         }
 
-        if connection.isVideoOrientationSupported {
-            connection.videoOrientation = currentVideoOrientation()
-        }
-
         if connection.isVideoStabilizationSupported {
             connection.preferredVideoStabilizationMode = .auto
         }
@@ -124,23 +120,6 @@ class RecorderModel: NSObject {
         DispatchQueue.main.async { [weak self] in
             self?.delegate?.didStopRecording()
         }
-    }
-
-    private func currentVideoOrientation() -> AVCaptureVideoOrientation {
-        var orientation: AVCaptureVideoOrientation
-
-        switch UIDevice.current.orientation {
-        case .portrait:
-            orientation = .portrait
-        case .landscapeRight:
-            orientation = .landscapeLeft
-        case .portraitUpsideDown:
-            orientation = .portraitUpsideDown
-        default:
-            orientation = .landscapeRight
-        }
-
-        return orientation
     }
 
     private func tempURL() -> URL? {
