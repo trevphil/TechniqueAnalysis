@@ -26,7 +26,7 @@ class HeatmapModel {
 
     init() {
         self.title = "Heatmap"
-        self.poseEstimationModel = TAPoseEstimationModel(type: .cpm)
+        self.poseEstimationModel = TAPoseEstimationModel(type: Params.modelType)
         self.poseEstimationModel?.delegate = self
     }
 

@@ -39,8 +39,8 @@ class TestController: UIViewController {
         super.viewDidLoad()
 
         tableView.dataSource = self
-        tableView.register(UINib(nibName: String(describing: VideoCell.self), bundle: nil),
-                           forCellReuseIdentifier: VideoCell.identifier)
+        tableView.register(UINib(nibName: String(describing: TestResultCell.self), bundle: nil),
+                           forCellReuseIdentifier: TestResultCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         tableView.backgroundColor = .black
@@ -61,8 +61,8 @@ extension TestController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: VideoCell.identifier,
-                                                       for: indexPath) as? VideoCell,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TestResultCell.identifier,
+                                                       for: indexPath) as? TestResultCell,
             let testCase = model.testCases.element(atIndex: indexPath.row) else {
                 return UITableViewCell()
         }

@@ -62,8 +62,8 @@ class RootController: UITabBarController {
                 return HeatmapController(model: heatmapModel)
             case .joint(let jointModel):
                 return JointController(model: jointModel)
-            case .analysis(let analysisModel):
-                return AnalysisController(model: analysisModel)
+            case .analysis:
+                return AnalysisCoordinator().start()
             case .test(let testModel):
                 return TestController(model: testModel)
             }

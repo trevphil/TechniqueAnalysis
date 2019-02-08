@@ -1,5 +1,5 @@
 //
-//  VideoCell.swift
+//  TestResultCell.swift
 //  TechniqueAnalysis_Example
 //
 //  Created by Trevor on 01.02.19.
@@ -9,11 +9,11 @@
 import UIKit
 import TechniqueAnalysis
 
-class VideoCell: UITableViewCell {
+class TestResultCell: UITableViewCell {
 
     // MARK: - Properties
 
-    static let identifier = "VideoCell"
+    static let identifier = "TestResultCell"
     @IBOutlet private weak var exerciseNameLabel: UILabel!
     @IBOutlet private weak var exerciseDetailLabel: UILabel!
     @IBOutlet private weak var correctExerciseLabel: UILabel!

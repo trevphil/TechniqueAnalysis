@@ -30,7 +30,8 @@ class TestModel {
     /// Worker queue for running the Knn DTW algorithm
     private let algoQueue = DispatchQueue(label: "KnnDTW")
     /// Algorithm instance
-    private let algo = TAKnnDtw(warpingWindow: 100, minConfidence: 0.2)
+    private let algo = TAKnnDtw(warpingWindow: Params.warpingWindow,
+                                minConfidence: Params.minConfidence)
 
     // MARK: - Initialization
 
@@ -42,7 +43,10 @@ class TestModel {
         }
 
         do {
-            self.processor = try TAVideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+            self.processor = try TAVideoProcessor(sampleLength: Params.clipLength,
+                                                  insetPercent: Params.insetPercent,
+                                                  fps: Params.fps,
+                                                  modelType: Params.modelType)
         } catch {
             print("Error while initializing TAVideoProcessor: \(error)")
             self.processor = nil
@@ -74,6 +78,7 @@ class TestModel {
     private func testNext() {
         let testIndex = testCaseIndex
         guard let testCase = testCases.element(atIndex: testIndex) else {
+            printTestStatistics()
             return
         }
 
@@ -113,6 +118,16 @@ class TestModel {
                 }
             }
         }
+    }
+
+    private func printTestStatistics() {
+        let correctExercises = Double(testCases.filter({ $0.predictedCorrectExercise == true }).count)
+        let correctOverall = Double(testCases.filter({ $0.predictedCorrectOverall == true }).count)
+        let total = Double(testCases.count)
+        print("\n-------------- FINISHED TESTING --------------")
+        print("\(Int(round(correctExercises / total * 100.0)))% classified into correct exercise.")
+        print("\(Int(round(correctOverall / total * 100.0)))% classified perfectly.")
+        print("Params: \(Params.debugDescription)\n")
     }
 
 }

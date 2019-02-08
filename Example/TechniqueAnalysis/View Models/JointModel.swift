@@ -28,7 +28,7 @@ class JointModel {
 
     init() {
         self.title = "Joints"
-        self.poseEstimationModel = TAPoseEstimationModel(type: .cpm)
+        self.poseEstimationModel = TAPoseEstimationModel(type: Params.modelType)
         self.poseEstimationModel?.delegate = self
     }
 

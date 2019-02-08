@@ -11,7 +11,7 @@ import Foundation
 enum ModelType {
     case heatmap(HeatmapModel)
     case joint(JointModel)
-    case analysis(AnalysisModel)
+    case analysis
     case test(TestModel)
 }
 
@@ -23,7 +23,7 @@ struct RootModel {
     let viewModelTypes: [ModelType] = [
         .heatmap(HeatmapModel()),
         .joint(JointModel()),
-        .analysis(AnalysisModel()),
+        .analysis,
         .test(TestModel())
     ]
     private let tabIcons = ["🔥", "💪", "🎥", "✔️"]

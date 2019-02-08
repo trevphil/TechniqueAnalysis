@@ -53,6 +53,16 @@
 		0F55CEBF2203B58C00CAF55B /* push-up_upper-body-first_left.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0F55CE652203B11600CAF55B /* push-up_upper-body-first_left.mov */; };
 		0F55CEC02203B58C00CAF55B /* push-up_wide-arms_front.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0F55CE722203B11600CAF55B /* push-up_wide-arms_front.mov */; };
 		0F55CEC12203B58C00CAF55B /* push-up_wide-arms_left.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0F55CE782203B11700CAF55B /* push-up_wide-arms_left.mov */; };
+		0F7CD87B220E1D9700377061 /* AnalysisCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7CD87A220E1D9700377061 /* AnalysisCoordinator.swift */; };
+		0F7CD87D220E1DE800377061 /* ExerciseSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7CD87C220E1DE800377061 /* ExerciseSelectionController.swift */; };
+		0F7CD87F220E1E5000377061 /* ExerciseSelectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7CD87E220E1E5000377061 /* ExerciseSelectionModel.swift */; };
+		0F7CD881220E203B00377061 /* ExerciseSelectionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F7CD880220E203B00377061 /* ExerciseSelectionController.xib */; };
+		0F7CD883220E215F00377061 /* ExerciseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7CD882220E215F00377061 /* ExerciseCell.swift */; };
+		0F7CD885220E218D00377061 /* ExerciseCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F7CD884220E218D00377061 /* ExerciseCell.xib */; };
+		0F7E6647220E2C18002679BD /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7E6646220E2C18002679BD /* AnalysisController.swift */; };
+		0F7E6649220E2C31002679BD /* AnalysisController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F7E6648220E2C31002679BD /* AnalysisController.xib */; };
+		0F7E664B220E2C62002679BD /* AnalysisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7E664A220E2C62002679BD /* AnalysisModel.swift */; };
+		0F7E664D220E2EF4002679BD /* Params.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7E664C220E2EF4002679BD /* Params.swift */; };
 		0F9A694A21C7083A000502B7 /* RootController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693D21C7083A000502B7 /* RootController.swift */; };
 		0F9A694B21C7083A000502B7 /* HeatmapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693E21C7083A000502B7 /* HeatmapController.swift */; };
 		0F9A694C21C7083A000502B7 /* JointController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693F21C7083A000502B7 /* JointController.swift */; };
@@ -68,12 +78,12 @@
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		692CF3DB2204708700FC5D00 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692CF3DA2204708700FC5D00 /* VideoCell.xib */; };
-		692CF3DD2204711100FC5D00 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692CF3DC2204711100FC5D00 /* VideoCell.swift */; };
-		6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* AnalysisController.swift */; };
-		6935FF242200AE00005E4FAA /* AnalysisController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6935FF232200AE00005E4FAA /* AnalysisController.xib */; };
+		692CF3DB2204708700FC5D00 /* TestResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692CF3DA2204708700FC5D00 /* TestResultCell.xib */; };
+		692CF3DD2204711100FC5D00 /* TestResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692CF3DC2204711100FC5D00 /* TestResultCell.swift */; };
+		6935FF222200A02D005E4FAA /* RecorderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* RecorderController.swift */; };
+		6935FF242200AE00005E4FAA /* RecorderController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6935FF232200AE00005E4FAA /* RecorderController.xib */; };
 		6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF2A2202F438005E4FAA /* Array+Additions.swift */; };
-		698CBB61220C62B300C60015 /* AnalysisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB60220C62B300C60015 /* AnalysisModel.swift */; };
+		698CBB61220C62B300C60015 /* RecorderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB60220C62B300C60015 /* RecorderModel.swift */; };
 		698CBB63220C62CA00C60015 /* HeatmapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB62220C62CA00C60015 /* HeatmapModel.swift */; };
 		698CBB65220C62F600C60015 /* JointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB64220C62F600C60015 /* JointModel.swift */; };
 		698CBB67220C630400C60015 /* RootModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB66220C630400C60015 /* RootModel.swift */; };
@@ -144,6 +154,16 @@
 		0F55CE792203B11700CAF55B /* bw-squat_caving-knees_front.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "bw-squat_caving-knees_front.mov"; sourceTree = "<group>"; };
 		0F55CE7A2203B11700CAF55B /* pull-up_correct_back.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "pull-up_correct_back.mov"; sourceTree = "<group>"; };
 		0F55CE942203B2BF00CAF55B /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
+		0F7CD87A220E1D9700377061 /* AnalysisCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisCoordinator.swift; sourceTree = "<group>"; };
+		0F7CD87C220E1DE800377061 /* ExerciseSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionController.swift; sourceTree = "<group>"; };
+		0F7CD87E220E1E5000377061 /* ExerciseSelectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionModel.swift; sourceTree = "<group>"; };
+		0F7CD880220E203B00377061 /* ExerciseSelectionController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExerciseSelectionController.xib; sourceTree = "<group>"; };
+		0F7CD882220E215F00377061 /* ExerciseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCell.swift; sourceTree = "<group>"; };
+		0F7CD884220E218D00377061 /* ExerciseCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExerciseCell.xib; sourceTree = "<group>"; };
+		0F7E6646220E2C18002679BD /* AnalysisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisController.swift; sourceTree = "<group>"; };
+		0F7E6648220E2C31002679BD /* AnalysisController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalysisController.xib; sourceTree = "<group>"; };
+		0F7E664A220E2C62002679BD /* AnalysisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisModel.swift; sourceTree = "<group>"; };
+		0F7E664C220E2EF4002679BD /* Params.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Params.swift; sourceTree = "<group>"; };
 		0F9A693D21C7083A000502B7 /* RootController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootController.swift; sourceTree = "<group>"; };
 		0F9A693E21C7083A000502B7 /* HeatmapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapController.swift; sourceTree = "<group>"; };
 		0F9A693F21C7083A000502B7 /* JointController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JointController.swift; sourceTree = "<group>"; };
@@ -162,12 +182,12 @@
 		607FACE51AFB9204008FA782 /* TechniqueAnalysis_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TechniqueAnalysis_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		692CF3DA2204708700FC5D00 /* VideoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
-		692CF3DC2204711100FC5D00 /* VideoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
-		6935FF212200A02D005E4FAA /* AnalysisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisController.swift; sourceTree = "<group>"; };
-		6935FF232200AE00005E4FAA /* AnalysisController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalysisController.xib; sourceTree = "<group>"; };
+		692CF3DA2204708700FC5D00 /* TestResultCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestResultCell.xib; sourceTree = "<group>"; };
+		692CF3DC2204711100FC5D00 /* TestResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultCell.swift; sourceTree = "<group>"; };
+		6935FF212200A02D005E4FAA /* RecorderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderController.swift; sourceTree = "<group>"; };
+		6935FF232200AE00005E4FAA /* RecorderController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecorderController.xib; sourceTree = "<group>"; };
 		6935FF2A2202F438005E4FAA /* Array+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
-		698CBB60220C62B300C60015 /* AnalysisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisModel.swift; sourceTree = "<group>"; };
+		698CBB60220C62B300C60015 /* RecorderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderModel.swift; sourceTree = "<group>"; };
 		698CBB62220C62CA00C60015 /* HeatmapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapModel.swift; sourceTree = "<group>"; };
 		698CBB64220C62F600C60015 /* JointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointModel.swift; sourceTree = "<group>"; };
 		698CBB66220C630400C60015 /* RootModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootModel.swift; sourceTree = "<group>"; };
@@ -280,6 +300,7 @@
 			children = (
 				69E32C902209D68500EF84F0 /* CacheManager.swift */,
 				69E32C922209DDAE00EF84F0 /* FileNamer.swift */,
+				0F7E664C220E2EF4002679BD /* Params.swift */,
 				0F55CE942203B2BF00CAF55B /* VideoManager.swift */,
 			);
 			path = Utils;
@@ -288,9 +309,11 @@
 		0F9A693C21C7083A000502B7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				6935FF212200A02D005E4FAA /* AnalysisController.swift */,
+				0F7E6646220E2C18002679BD /* AnalysisController.swift */,
+				0F7CD87C220E1DE800377061 /* ExerciseSelectionController.swift */,
 				0F9A693E21C7083A000502B7 /* HeatmapController.swift */,
 				0F9A693F21C7083A000502B7 /* JointController.swift */,
+				6935FF212200A02D005E4FAA /* RecorderController.swift */,
 				0F9A693D21C7083A000502B7 /* RootController.swift */,
 				698CBB6F220C86F900C60015 /* TestController.swift */,
 			);
@@ -301,10 +324,12 @@
 			isa = PBXGroup;
 			children = (
 				698CBB6C220C797B00C60015 /* Cells */,
-				6935FF232200AE00005E4FAA /* AnalysisController.xib */,
+				0F7E6648220E2C31002679BD /* AnalysisController.xib */,
+				0F7CD880220E203B00377061 /* ExerciseSelectionController.xib */,
 				0F9A694521C7083A000502B7 /* HeatmapController.xib */,
 				0F9A694721C7083A000502B7 /* JointController.xib */,
 				0F9A694321C7083A000502B7 /* LaunchScreen.xib */,
+				6935FF232200AE00005E4FAA /* RecorderController.xib */,
 				0F9A694221C7083A000502B7 /* RootController.xib */,
 				698CBB71220C870500C60015 /* TestController.xib */,
 			);
@@ -314,6 +339,7 @@
 		0F9A694821C7083A000502B7 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
+				0F7CD87A220E1D9700377061 /* AnalysisCoordinator.swift */,
 				0F9A694921C7083A000502B7 /* RootCoordinator.swift */,
 			);
 			path = Coordinators;
@@ -397,9 +423,11 @@
 		698CBB5F220C628A00C60015 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
-				698CBB60220C62B300C60015 /* AnalysisModel.swift */,
+				0F7E664A220E2C62002679BD /* AnalysisModel.swift */,
+				0F7CD87E220E1E5000377061 /* ExerciseSelectionModel.swift */,
 				698CBB62220C62CA00C60015 /* HeatmapModel.swift */,
 				698CBB64220C62F600C60015 /* JointModel.swift */,
+				698CBB60220C62B300C60015 /* RecorderModel.swift */,
 				698CBB66220C630400C60015 /* RootModel.swift */,
 				698CBB68220C632700C60015 /* TestModel.swift */,
 				698CBB73220DF28E00C60015 /* TestResult.swift */,
@@ -410,10 +438,12 @@
 		698CBB6C220C797B00C60015 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0F7CD882220E215F00377061 /* ExerciseCell.swift */,
+				0F7CD884220E218D00377061 /* ExerciseCell.xib */,
 				0F9A694621C7083A000502B7 /* LabelCell.swift */,
 				0F9A694121C7083A000502B7 /* LabelCell.xib */,
-				692CF3DC2204711100FC5D00 /* VideoCell.swift */,
-				692CF3DA2204708700FC5D00 /* VideoCell.xib */,
+				692CF3DC2204711100FC5D00 /* TestResultCell.swift */,
+				692CF3DA2204708700FC5D00 /* TestResultCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -559,8 +589,10 @@
 				0F55CEA62203B57E00CAF55B /* test_push-up_correct_left.mov in Resources */,
 				0F55CEB82203B58C00CAF55B /* pull-up_correct_right.mov in Resources */,
 				0F55CEC02203B58C00CAF55B /* push-up_wide-arms_front.mov in Resources */,
+				0F7CD885220E218D00377061 /* ExerciseCell.xib in Resources */,
 				0F55CE992203B57E00CAF55B /* test_bw-squat_bad-upper-body_left.mov in Resources */,
 				0F55CEA22203B57E00CAF55B /* test_pull-up_kipping_back.mov in Resources */,
+				0F7CD881220E203B00377061 /* ExerciseSelectionController.xib in Resources */,
 				0F55CE962203B57E00CAF55B /* test_bw-squat_bad-heels_front.mov in Resources */,
 				0F55CEB62203B58C00CAF55B /* pull-up_correct_back.mov in Resources */,
 				0F55CEA02203B57E00CAF55B /* test_pull-up_correct_front.mov in Resources */,
@@ -572,14 +604,15 @@
 				0F55CEB02203B58C00CAF55B /* bw-squat_caving-knees_right.mov in Resources */,
 				0F55CE9E2203B57E00CAF55B /* test_pull-up_chin-below-bar_right.mov in Resources */,
 				0F9A694F21C7083A000502B7 /* LaunchScreen.xib in Resources */,
-				692CF3DB2204708700FC5D00 /* VideoCell.xib in Resources */,
+				692CF3DB2204708700FC5D00 /* TestResultCell.xib in Resources */,
 				0F55CEB42203B58C00CAF55B /* pull-up_chin-below-bar_front.mov in Resources */,
 				0F55CEB52203B58C00CAF55B /* pull-up_chin-below-bar_right.mov in Resources */,
 				0F55CE9B2203B57E00CAF55B /* test_bw-squat_correct_left.mov in Resources */,
 				0F9A694E21C7083A000502B7 /* RootController.xib in Resources */,
 				0F55CEAC2203B58C00CAF55B /* bw-squat_bad-heels_right.mov in Resources */,
-				6935FF242200AE00005E4FAA /* AnalysisController.xib in Resources */,
+				6935FF242200AE00005E4FAA /* RecorderController.xib in Resources */,
 				0F55CE9C2203B57E00CAF55B /* test_pull-up_chin-below-bar_back.mov in Resources */,
+				0F7E6649220E2C31002679BD /* AnalysisController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +719,7 @@
 				69E32C912209D68500EF84F0 /* CacheManager.swift in Sources */,
 				698CBB69220C632700C60015 /* TestModel.swift in Sources */,
 				6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */,
+				0F7CD883220E215F00377061 /* ExerciseCell.swift in Sources */,
 				0F9A694C21C7083A000502B7 /* JointController.swift in Sources */,
 				698CBB65220C62F600C60015 /* JointModel.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
@@ -693,16 +727,22 @@
 				698CBB6B220C791200C60015 /* String+Additions.swift in Sources */,
 				0F9A694B21C7083A000502B7 /* HeatmapController.swift in Sources */,
 				0F9A695121C7083A000502B7 /* LabelCell.swift in Sources */,
-				692CF3DD2204711100FC5D00 /* VideoCell.swift in Sources */,
-				6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */,
+				692CF3DD2204711100FC5D00 /* TestResultCell.swift in Sources */,
+				6935FF222200A02D005E4FAA /* RecorderController.swift in Sources */,
+				0F7E6647220E2C18002679BD /* AnalysisController.swift in Sources */,
 				698CBB74220DF28E00C60015 /* TestResult.swift in Sources */,
-				698CBB61220C62B300C60015 /* AnalysisModel.swift in Sources */,
+				0F7E664D220E2EF4002679BD /* Params.swift in Sources */,
+				698CBB61220C62B300C60015 /* RecorderModel.swift in Sources */,
+				0F7CD87F220E1E5000377061 /* ExerciseSelectionModel.swift in Sources */,
 				0F9A694A21C7083A000502B7 /* RootController.swift in Sources */,
 				0F55CE952203B2BF00CAF55B /* VideoManager.swift in Sources */,
 				0F9A695321C7083A000502B7 /* RootCoordinator.swift in Sources */,
 				0F9A695521C7085A000502B7 /* TABodyPart+Additions.swift in Sources */,
+				0F7E664B220E2C62002679BD /* AnalysisModel.swift in Sources */,
 				698CBB67220C630400C60015 /* RootModel.swift in Sources */,
 				698CBB63220C62CA00C60015 /* HeatmapModel.swift in Sources */,
+				0F7CD87D220E1DE800377061 /* ExerciseSelectionController.swift in Sources */,
+				0F7CD87B220E1D9700377061 /* AnalysisCoordinator.swift in Sources */,
 				69E32C932209DDAE00EF84F0 /* FileNamer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

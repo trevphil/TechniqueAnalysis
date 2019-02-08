@@ -42,7 +42,10 @@ class CacheManager {
         self.cached = CacheManager.retrieveCache()
 
         do {
-            self.processor = try TAVideoProcessor(sampleLength: 5, insetPercent: 0.1, fps: 25, modelType: .cpm)
+            self.processor = try TAVideoProcessor(sampleLength: Params.clipLength,
+                                                  insetPercent: Params.insetPercent,
+                                                  fps: Params.fps,
+                                                  modelType: Params.modelType)
         } catch {
             print("Error while initializing TAVideoProcessor in CacheManager: \(error)")
             self.processor = nil

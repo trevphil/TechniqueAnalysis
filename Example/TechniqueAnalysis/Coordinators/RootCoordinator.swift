@@ -10,7 +10,7 @@ import UIKit
 
 struct RootCoordinator {
 
-    func start() -> UIViewController? {
+    func start() -> UIViewController {
         return RootController(model: RootModel())
     }
 
