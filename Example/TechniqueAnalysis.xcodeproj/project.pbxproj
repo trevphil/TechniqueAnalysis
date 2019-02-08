@@ -68,8 +68,6 @@
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		692CF3D722045DF100FC5D00 /* VideoSelectionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692CF3D622045DF100FC5D00 /* VideoSelectionController.xib */; };
-		692CF3D922046F0A00FC5D00 /* VideoSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692CF3D822046F0A00FC5D00 /* VideoSelectionController.swift */; };
 		692CF3DB2204708700FC5D00 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692CF3DA2204708700FC5D00 /* VideoCell.xib */; };
 		692CF3DD2204711100FC5D00 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692CF3DC2204711100FC5D00 /* VideoCell.swift */; };
 		6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* AnalysisController.swift */; };
@@ -83,6 +81,7 @@
 		698CBB6B220C791200C60015 /* String+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB6A220C791200C60015 /* String+Additions.swift */; };
 		698CBB70220C86F900C60015 /* TestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB6F220C86F900C60015 /* TestController.swift */; };
 		698CBB72220C870500C60015 /* TestController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 698CBB71220C870500C60015 /* TestController.xib */; };
+		698CBB74220DF28E00C60015 /* TestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB73220DF28E00C60015 /* TestResult.swift */; };
 		69E32C912209D68500EF84F0 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C902209D68500EF84F0 /* CacheManager.swift */; };
 		69E32C932209DDAE00EF84F0 /* FileNamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E32C922209DDAE00EF84F0 /* FileNamer.swift */; };
 /* End PBXBuildFile section */
@@ -163,8 +162,6 @@
 		607FACE51AFB9204008FA782 /* TechniqueAnalysis_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TechniqueAnalysis_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		692CF3D622045DF100FC5D00 /* VideoSelectionController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoSelectionController.xib; sourceTree = "<group>"; };
-		692CF3D822046F0A00FC5D00 /* VideoSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSelectionController.swift; sourceTree = "<group>"; };
 		692CF3DA2204708700FC5D00 /* VideoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
 		692CF3DC2204711100FC5D00 /* VideoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		6935FF212200A02D005E4FAA /* AnalysisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisController.swift; sourceTree = "<group>"; };
@@ -178,6 +175,7 @@
 		698CBB6A220C791200C60015 /* String+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		698CBB6F220C86F900C60015 /* TestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestController.swift; sourceTree = "<group>"; };
 		698CBB71220C870500C60015 /* TestController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestController.xib; sourceTree = "<group>"; };
+		698CBB73220DF28E00C60015 /* TestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResult.swift; sourceTree = "<group>"; };
 		69E32C902209D68500EF84F0 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		69E32C922209DDAE00EF84F0 /* FileNamer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNamer.swift; sourceTree = "<group>"; };
 		6E75238D061C1DCA3A28F1F5 /* Pods_TechniqueAnalysis_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TechniqueAnalysis_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -295,7 +293,6 @@
 				0F9A693F21C7083A000502B7 /* JointController.swift */,
 				0F9A693D21C7083A000502B7 /* RootController.swift */,
 				698CBB6F220C86F900C60015 /* TestController.swift */,
-				692CF3D822046F0A00FC5D00 /* VideoSelectionController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -310,7 +307,6 @@
 				0F9A694321C7083A000502B7 /* LaunchScreen.xib */,
 				0F9A694221C7083A000502B7 /* RootController.xib */,
 				698CBB71220C870500C60015 /* TestController.xib */,
-				692CF3D622045DF100FC5D00 /* VideoSelectionController.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -406,6 +402,7 @@
 				698CBB64220C62F600C60015 /* JointModel.swift */,
 				698CBB66220C630400C60015 /* RootModel.swift */,
 				698CBB68220C632700C60015 /* TestModel.swift */,
+				698CBB73220DF28E00C60015 /* TestResult.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -557,7 +554,6 @@
 				0F55CE972203B57E00CAF55B /* test_bw-squat_bad-heels_left.mov in Resources */,
 				0F55CEBA2203B58C00CAF55B /* pull-up_kipping_front.mov in Resources */,
 				0F55CEC12203B58C00CAF55B /* push-up_wide-arms_left.mov in Resources */,
-				692CF3D722045DF100FC5D00 /* VideoSelectionController.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				0F55CEBF2203B58C00CAF55B /* push-up_upper-body-first_left.mov in Resources */,
 				0F55CEA62203B57E00CAF55B /* test_push-up_correct_left.mov in Resources */,
@@ -698,8 +694,8 @@
 				0F9A694B21C7083A000502B7 /* HeatmapController.swift in Sources */,
 				0F9A695121C7083A000502B7 /* LabelCell.swift in Sources */,
 				692CF3DD2204711100FC5D00 /* VideoCell.swift in Sources */,
-				692CF3D922046F0A00FC5D00 /* VideoSelectionController.swift in Sources */,
 				6935FF222200A02D005E4FAA /* AnalysisController.swift in Sources */,
+				698CBB74220DF28E00C60015 /* TestResult.swift in Sources */,
 				698CBB61220C62B300C60015 /* AnalysisModel.swift in Sources */,
 				0F9A694A21C7083A000502B7 /* RootController.swift in Sources */,
 				0F55CE952203B2BF00CAF55B /* VideoManager.swift in Sources */,

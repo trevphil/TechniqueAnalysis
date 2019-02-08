@@ -10,19 +10,12 @@ import Foundation
 import TechniqueAnalysis
 
 protocol TestModelDelegate: class {
+    func didBeginTesting()
     func didProcessLabeledData(_ index: Int, outOf total: Int)
     func didUpdateTestCase(atIndex index: Int)
 }
 
 class TestModel {
-
-    struct TestCase {
-        let url: URL
-        let meta: TAMeta
-        let predictionScore: Double?
-        let predictedCorrectExercise: Bool?
-        let predictedCorrectOverall: Bool?
-    }
 
     // MARK: - Properties
 
@@ -31,7 +24,7 @@ class TestModel {
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
     private var testCaseIndex = 0
-    private(set) var testCases: [TestCase]
+    private(set) var testCases: [TestResult]
     weak var delegate: TestModelDelegate?
 
     /// Worker queue for running the Knn DTW algorithm
@@ -45,11 +38,7 @@ class TestModel {
         self.title = "Tests"
 
         self.testCases = VideoManager.shared.unlabeledVideos.map {
-            TestCase(url: $0.url,
-                     meta: $0.meta,
-                     predictionScore: nil,
-                     predictedCorrectExercise: nil,
-                     predictedCorrectOverall: nil)
+            TestResult(url: $0.url, testMeta: $0.meta)
         }
 
         do {
@@ -71,6 +60,9 @@ class TestModel {
                                                          onFinish: { [weak self] in
                                                             self?.labeledSeries = CacheManager.shared.cached
                                                             self?.testNext()
+                                                            DispatchQueue.main.async {
+                                                                self?.delegate?.didBeginTesting()
+                                                            }
             },
                                                          onError: { errorMessage in
                                                             print(errorMessage)
@@ -86,7 +78,7 @@ class TestModel {
         }
 
         processor?.makeTimeseries(videoURL: testCase.url,
-                                  meta: testCase.meta,
+                                  meta: testCase.testMeta,
                                   onFinish: { [weak self] timeseries in
                                     if let strongSelf = self,
                                         let series = timeseries.element(atIndex: strongSelf.selectedTimeseries) {
@@ -111,18 +103,9 @@ class TestModel {
         let testIndex = testCaseIndex
 
         algoQueue.async { [weak self] in
-            if let result = self?.algo.nearestNeighbor(unknownItem: unknown, knownItems: known),
-                let currentTest = self?.testCases.element(atIndex: testIndex) {
-                let correctExercise = unknown.meta.exerciseName == result.timeseries.meta.exerciseName
-                let correctOverall = correctExercise &&
-                    unknown.meta.exerciseDetail == result.timeseries.meta.exerciseDetail &&
-                    unknown.meta.angle == result.timeseries.meta.angle
-                let updatedTest = TestCase(url: currentTest.url,
-                                           meta: currentTest.meta,
-                                           predictionScore: result.score,
-                                           predictedCorrectExercise: correctExercise,
-                                           predictedCorrectOverall: correctOverall)
-                self?.testCases[testIndex] = updatedTest
+            if let result = self?.algo.nearestNeighbor(unknownItem: unknown, knownItems: known) {
+                self?.testCases.element(atIndex: testIndex)?.predictionScore = result.score
+                self?.testCases.element(atIndex: testIndex)?.predictionMeta = result.timeseries.meta
                 DispatchQueue.main.async {
                     self?.delegate?.didUpdateTestCase(atIndex: testIndex)
                 }

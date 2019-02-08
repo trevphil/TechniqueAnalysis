@@ -26,7 +26,7 @@ struct RootModel {
         .analysis(AnalysisModel()),
         .test(TestModel())
     ]
-    private let tabIcons = ["🔥", "💪", "🎥"]
+    private let tabIcons = ["🔥", "💪", "🎥", "✔️"]
 
     // MARK: - Exposed Functions
 

@@ -13,6 +13,10 @@ class TestController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var processingStatusLabel: UILabel!
+    @IBOutlet private weak var processingStatusHeight: NSLayoutConstraint!
+    @IBOutlet private weak var processingStatusContainer: UIView!
+    @IBOutlet private weak var processingActivityIndicator: UIActivityIndicatorView!
     private let model: TestModel
 
     // MARK: - Initialization
@@ -42,6 +46,9 @@ class TestController: UIViewController {
         tableView.backgroundColor = .black
         view.backgroundColor = .black
 
+        processingStatusLabel.text = "Processing..."
+        processingStatusHeight.constant = 100
+
         model.beginTesting()
     }
 
@@ -68,13 +75,25 @@ extension TestController: UITableViewDataSource {
 
 extension TestController: TestModelDelegate {
 
+    func didBeginTesting() {
+        processingStatusHeight.constant = 0
+        processingActivityIndicator.isHidden = true
+        UIView.animate(withDuration: 0.25,
+                       animations: { [weak self] in
+                        self?.view.layoutIfNeeded()
+        },
+                       completion: { [weak self] _ in
+                        self?.processingStatusContainer.isHidden = true
+        })
+    }
+
     func didUpdateTestCase(atIndex index: Int) {
         let indexPath = IndexPath(row: index, section: 0)
         tableView.reloadRows(at: [indexPath], with: .left)
     }
 
     func didProcessLabeledData(_ index: Int, outOf total: Int) {
-        print("Processed \(index)/\(total)")
+        processingStatusLabel.text = "Processed \(index)/\(total)"
     }
 
 }
