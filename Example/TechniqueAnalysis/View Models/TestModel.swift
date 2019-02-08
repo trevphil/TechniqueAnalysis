@@ -103,13 +103,14 @@ class TestModel {
         let testIndex = testCaseIndex
 
         algoQueue.async { [weak self] in
-            if let result = self?.algo.nearestNeighbor(unknownItem: unknown, knownItems: known) {
-                self?.testCases.element(atIndex: testIndex)?.predictionScore = result.score
-                self?.testCases.element(atIndex: testIndex)?.predictionMeta = result.timeseries.meta
+            if let results = self?.algo.nearestNeighbors(unknownItem: unknown, knownItems: known) {
+                self?.testCases.element(atIndex: testIndex)?.predictionScore = results.element(atIndex: 0)?.score
+                self?.testCases.element(atIndex: testIndex)?.predictionMeta = results.element(atIndex: 0)?.series.meta
+                self?.testCases.element(atIndex: testIndex)?.runnerUpScore = results.element(atIndex: 1)?.score
+                self?.testCases.element(atIndex: testIndex)?.runnerUpMeta = results.element(atIndex: 1)?.series.meta
                 DispatchQueue.main.async {
                     self?.delegate?.didUpdateTestCase(atIndex: testIndex)
                 }
-
             }
         }
     }
