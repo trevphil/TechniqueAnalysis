@@ -13,10 +13,10 @@ class TestController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var processingStatusLabel: UILabel!
-    @IBOutlet private weak var processingStatusHeight: NSLayoutConstraint!
-    @IBOutlet private weak var processingStatusContainer: UIView!
-    @IBOutlet private weak var processingActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var processingStatusLabel: UILabel?
+    @IBOutlet private weak var processingStatusHeight: NSLayoutConstraint?
+    @IBOutlet private weak var processingStatusContainer: UIView?
+    @IBOutlet private weak var processingActivityIndicator: UIActivityIndicatorView?
     private let model: TestModel
 
     // MARK: - Initialization
@@ -49,8 +49,8 @@ class TestController: UIViewController {
         model.beginTesting()
 
         if model.shouldWaitForProcessing {
-            processingStatusLabel.text = "Processing..."
-            processingStatusHeight.constant = 100
+            processingStatusLabel?.text = "Processing..."
+            processingStatusHeight?.constant = 100
         } else {
             hideProcessingHeader()
         }
@@ -59,14 +59,14 @@ class TestController: UIViewController {
     // MARK: - Private Functions
 
     private func hideProcessingHeader() {
-        processingStatusHeight.constant = 0
-        processingActivityIndicator.isHidden = true
+        processingStatusHeight?.constant = 0
+        processingActivityIndicator?.isHidden = true
         UIView.animate(withDuration: 0.25,
                        animations: { [weak self] in
                         self?.view.layoutIfNeeded()
             },
                        completion: { [weak self] _ in
-                        self?.processingStatusContainer.isHidden = true
+                        self?.processingStatusContainer?.isHidden = true
         })
     }
 
@@ -108,7 +108,7 @@ extension TestController: TestModelDelegate {
     }
 
     func didProcess(_ itemIndex: Int, outOf total: Int) {
-        processingStatusLabel.text = "Processed \(itemIndex)/\(total)"
+        processingStatusLabel?.text = "Processed \(itemIndex)/\(total)"
     }
 
 }

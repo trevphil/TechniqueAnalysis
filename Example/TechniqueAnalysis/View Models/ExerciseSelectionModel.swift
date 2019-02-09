@@ -43,6 +43,14 @@ class ExerciseSelectionModel {
         unsubscribeFromCacheNotifications()
     }
 
+    // MARK: - Exposed Functions
+
+    func processLabeledVideosIfNeeded() {
+        if shouldWaitForProcessing {
+            CacheManager.shared.processLabeledVideos()
+        }
+    }
+
     // MARK: - Private Functions
 
     private func subscribeToCacheNotifications() {
