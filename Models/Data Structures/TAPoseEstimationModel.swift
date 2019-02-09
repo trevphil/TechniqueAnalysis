@@ -23,6 +23,15 @@ public class TAPoseEstimationModel {
 
     public enum ModelType {
         case cpm, hourglass
+
+        var outputShape: [Int] {
+            switch self {
+            case .cpm:
+                return [14, 96, 96]
+            case .hourglass:
+                return [14, 48, 48]
+            }
+        }
     }
 
     // MARK: - Properties

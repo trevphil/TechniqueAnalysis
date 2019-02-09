@@ -84,7 +84,6 @@ class TestModel {
     private func testNext() {
         let testIndex = testCaseIndex
         guard let testCase = testCases.element(atIndex: testIndex) else {
-            printTestStatistics()
             return
         }
 
@@ -129,6 +128,9 @@ class TestModel {
                 self?.testCases.element(atIndex: testIndex)?.runnerUpScore = results.element(atIndex: 1)?.score
                 self?.testCases.element(atIndex: testIndex)?.runnerUpMeta = results.element(atIndex: 1)?.series.meta
                 self?.testCases.element(atIndex: testIndex)?.status = .finished
+                if testIndex == (self?.testCases.count ?? 0) - 1 {
+                    self?.printTestStatistics()
+                }
                 DispatchQueue.main.async {
                     self?.delegate?.didFinishTestingCase(atIndex: testIndex)
                 }
