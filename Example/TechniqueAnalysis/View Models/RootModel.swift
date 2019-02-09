@@ -21,14 +21,23 @@ struct RootModel {
 
     private let tabIcons = ["🔥", "💪", "🎥", "✔️"]
     let initiallySelected = 0
-    let viewModelTypes: [ModelType] = [
-        .heatmap(HeatmapModel()),
-        .joint(JointModel()),
-        .analysis,
-        .test(TestModel(testCases: VideoManager.shared.unlabeledVideos.map {
+    let viewModelTypes: [ModelType]
+
+    // MARK: - Initialization
+
+    init() {
+        let testCases = VideoManager.unlabeledVideos.map {
             TestResult(url: $0.url, testMeta: $0.meta)
-        }, printStats: true))
-    ]
+        }
+        let testModel = TestModel(testCases: testCases, printStats: true)
+
+        viewModelTypes = [
+            .heatmap(HeatmapModel()),
+            .joint(JointModel()),
+            .analysis,
+            .test(testModel)
+        ]
+    }
 
     // MARK: - Exposed Functions
 

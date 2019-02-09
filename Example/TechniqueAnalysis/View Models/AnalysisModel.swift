@@ -30,7 +30,7 @@ class AnalysisModel {
         self.videoURL = videoURL
         let meta = TAMeta(isLabeled: false,
                           exerciseName: exerciseName,
-                          exerciseDetail: "",
+                          exerciseDetail: nil,
                           angle: .unknown)
         let testCase = TestResult(url: videoURL, testMeta: meta)
         self.tester = TestModel(testCases: [testCase],
@@ -55,12 +55,10 @@ extension AnalysisModel: TestModelDelegate {
 
     func didBeginTesting() {}
 
-    func didProcessLabeledData(_ index: Int, outOf total: Int) {
-        // TODO: - Possibly use notification observers for the processing of labeled data
-    }
+    func didProcess(_ itemIndex: Int, outOf total: Int) {}
 
     func didUpdateTestCase(atIndex index: Int) {
-        guard index == 0, let result = tester.testCases.element(atIndex: 0) else {
+        guard let result = tester.testCases.element(atIndex: 0) else {
             return
         }
 

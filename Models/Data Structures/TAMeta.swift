@@ -23,10 +23,10 @@ public struct TAMeta: Codable {
 
     // MARK: - Initialization
 
-    public init(isLabeled: Bool, exerciseName: String, exerciseDetail: String, angle: TACameraAngle) {
+    public init(isLabeled: Bool, exerciseName: String, exerciseDetail: String?, angle: TACameraAngle) {
         self.isLabeled = isLabeled
         self.exerciseName = exerciseName
-        self.exerciseDetail = exerciseDetail
+        self.exerciseDetail = exerciseDetail ?? ""
         self.angle = angle
     }
 

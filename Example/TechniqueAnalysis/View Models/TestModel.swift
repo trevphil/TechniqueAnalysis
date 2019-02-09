@@ -11,7 +11,7 @@ import TechniqueAnalysis
 
 protocol TestModelDelegate: class {
     func didBeginTesting()
-    func didProcessLabeledData(_ index: Int, outOf total: Int)
+    func didProcess(_ itemIndex: Int, outOf total: Int)
     func didUpdateTestCase(atIndex index: Int)
 }
 
@@ -28,6 +28,12 @@ class TestModel {
     private var testCaseIndex = 0
     private(set) var testCases: [TestResult]
     weak var delegate: TestModelDelegate?
+    private var processingFinishedObserver: NSObjectProtocol?
+    private var itemProcessedObserver: NSObjectProtocol?
+
+    var shouldWaitForProcessing: Bool {
+        return !CacheManager.shared.processingFinished
+    }
 
     /// Worker queue for running the Knn DTW algorithm
     private let algoQueue = DispatchQueue(label: "KnnDTW")
@@ -52,26 +58,24 @@ class TestModel {
             print("Error while initializing TAVideoProcessor: \(error)")
             self.processor = nil
         }
+
+        subscribeToCacheNotifications()
+    }
+
+    deinit {
+        unsubscribeFromCacheNotifications()
     }
 
     // MARK: - Exposed Functions
 
     func beginTesting() {
-        CacheManager.shared.processUncachedLabeledVideos(onItemProcessed: { [weak self] (current, total) in
-            DispatchQueue.main.async {
-                self?.delegate?.didProcessLabeledData(current, outOf: total)
-            }
-            },
-                                                         onFinish: { [weak self] in
-                                                            self?.labeledSeries = CacheManager.shared.cached
-                                                            self?.testNext()
-                                                            DispatchQueue.main.async {
-                                                                self?.delegate?.didBeginTesting()
-                                                            }
-            },
-                                                         onError: { errorMessage in
-                                                            print(errorMessage)
-        })
+        if shouldWaitForProcessing {
+            CacheManager.shared.processLabeledVideos()
+        } else {
+            self.labeledSeries = CacheManager.shared.cached
+            self.testNext()
+            self.delegate?.didBeginTesting()
+        }
     }
 
     // MARK: - Private Functions
@@ -79,7 +83,7 @@ class TestModel {
     private func testNext() {
         let testIndex = testCaseIndex
         guard let testCase = testCases.element(atIndex: testIndex) else {
-            if printStats { printTestStatistics() }
+            printTestStatistics()
             return
         }
 
@@ -126,6 +130,10 @@ class TestModel {
     }
 
     private func printTestStatistics() {
+        guard printStats else {
+            return
+        }
+
         let correctExercises = Double(testCases.filter({ $0.predictedCorrectExercise == true }).count)
         let correctOverall = Double(testCases.filter({ $0.predictedCorrectOverall == true }).count)
         let total = Double(testCases.count)
@@ -133,6 +141,43 @@ class TestModel {
         print("\(Int(round(correctExercises / total * 100.0)))% classified into correct exercise.")
         print("\(Int(round(correctOverall / total * 100.0)))% classified perfectly.")
         print("Params: \(Params.debugDescription)\n")
+    }
+
+    private func subscribeToCacheNotifications() {
+        if processingFinishedObserver == nil {
+            let processingFinished = CacheManager.CacheNotification.processingFinished.name
+            processingFinishedObserver = NotificationCenter.default
+                .addObserver(forName: processingFinished,
+                             object: nil,
+                             queue: .main) { _ in
+                                self.labeledSeries = CacheManager.shared.cached
+                                self.testNext()
+                                self.delegate?.didBeginTesting()
+            }
+        }
+
+        if itemProcessedObserver == nil {
+            let processedItem = CacheManager.CacheNotification.processedItem.name
+            itemProcessedObserver = NotificationCenter.default
+                .addObserver(forName: processedItem,
+                             object: nil,
+                             queue: .main) { notification in
+                                guard let current = notification.userInfo?["current"] as? Int,
+                                    let total = notification.userInfo?["total"] as? Int else {
+                                        return
+                                }
+                                self.delegate?.didProcess(current, outOf: total)
+            }
+        }
+    }
+
+    private func unsubscribeFromCacheNotifications() {
+        if let processingFinishedObserver = processingFinishedObserver {
+            NotificationCenter.default.removeObserver(processingFinishedObserver)
+        }
+        if let itemProcessedObserver = itemProcessedObserver {
+            NotificationCenter.default.removeObserver(itemProcessedObserver)
+        }
     }
 
 }

@@ -13,24 +13,17 @@ struct VideoManager {
 
     // MARK: - Properties
 
-    /// Shared Singleton Instance
-    static let shared = VideoManager()
-
     private static let supportedFormats = [
         "avi", "flv", "wmv", "mov", "mp4"
     ]
 
-    let labeledVideos: [(url: URL, meta: TAMeta)] = {
-        return VideoManager.labeledVideos()
+    static let labeledVideos: [(url: URL, meta: TAMeta)] = {
+        return VideoManager.getLabeledVideos()
     }()
 
-    let unlabeledVideos: [(url: URL, meta: TAMeta)] = {
-        return VideoManager.unlabeledVideos()
+    static let unlabeledVideos: [(url: URL, meta: TAMeta)] = {
+        return VideoManager.getUnlabeledVideos()
     }()
-
-    // MARK: - Initialization
-
-    private init() {}
 
     // MARK: - Private Functions
 
@@ -47,7 +40,7 @@ struct VideoManager {
         }
     }
 
-    private static func labeledVideos() -> [(URL, TAMeta)] {
+    private static func getLabeledVideos() -> [(URL, TAMeta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }
@@ -56,7 +49,7 @@ struct VideoManager {
         return videos.compactMap { FileNamer.meta(from: $0, baseURL: path, isLabeled: true) }
     }
 
-    private static func unlabeledVideos() -> [(URL, TAMeta)] {
+    private static func getUnlabeledVideos() -> [(URL, TAMeta)] {
         guard let path = Bundle.main.resourceURL else {
             return []
         }

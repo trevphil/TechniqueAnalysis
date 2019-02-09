@@ -12,6 +12,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExerciseSelectionController" customModule="TechniqueAnalysis_Example" customModuleProvider="target">
             <connections>
+                <outlet property="processingBlocker" destination="bw2-bw-CTg" id="waG-Vr-iMb"/>
+                <outlet property="processingStatusLabel" destination="lK3-MN-gdE" id="nGN-Cv-D0D"/>
                 <outlet property="tableView" destination="2EJ-0L-2a1" id="8az-10-0Oc"/>
                 <outlet property="view" destination="iN0-l3-epB" id="FiW-rG-T4d"/>
             </connections>
@@ -32,15 +34,50 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bw2-bw-CTg">
+                    <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                    <subviews>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="9oa-se-qUu">
+                            <rect key="frame" x="169" y="265" width="37" height="37"/>
+                        </activityIndicatorView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lK3-MN-gdE">
+                            <rect key="frame" x="117.5" y="318" width="140" height="30"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing the labeled data set is necessary in order to predict unlabeled data." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="emG-Ek-e3I">
+                            <rect key="frame" x="32" y="356" width="311" height="61"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="emG-Ek-e3I" firstAttribute="leading" secondItem="bw2-bw-CTg" secondAttribute="leading" constant="32" id="JFz-Uk-aUE"/>
+                        <constraint firstItem="9oa-se-qUu" firstAttribute="centerX" secondItem="bw2-bw-CTg" secondAttribute="centerX" id="Lul-an-FSu"/>
+                        <constraint firstItem="emG-Ek-e3I" firstAttribute="top" secondItem="lK3-MN-gdE" secondAttribute="bottom" constant="8" id="RiJ-2D-AlT"/>
+                        <constraint firstItem="lK3-MN-gdE" firstAttribute="centerX" secondItem="bw2-bw-CTg" secondAttribute="centerX" id="VB6-dC-Xku"/>
+                        <constraint firstItem="lK3-MN-gdE" firstAttribute="top" secondItem="9oa-se-qUu" secondAttribute="bottom" constant="16" id="ZB5-A4-Jqb"/>
+                        <constraint firstItem="emG-Ek-e3I" firstAttribute="centerX" secondItem="bw2-bw-CTg" secondAttribute="centerX" id="n5Q-uU-tJf"/>
+                        <constraint firstAttribute="trailing" secondItem="emG-Ek-e3I" secondAttribute="trailing" constant="32" id="sP0-A8-YV0"/>
+                        <constraint firstItem="9oa-se-qUu" firstAttribute="centerY" secondItem="bw2-bw-CTg" secondAttribute="centerY" constant="-40" id="ypL-14-Zxy"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="bw2-bw-CTg" secondAttribute="bottom" id="5s5-ii-QpT"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="2EJ-0L-2a1" secondAttribute="bottom" constant="16" id="Aag-zM-5QZ"/>
+                <constraint firstItem="bw2-bw-CTg" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Gb5-fK-0qz"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="2EJ-0L-2a1" secondAttribute="trailing" constant="16" id="GqM-RW-x2a"/>
                 <constraint firstItem="2EJ-0L-2a1" firstAttribute="top" secondItem="aRu-c6-7dW" secondAttribute="bottom" constant="8" id="I6W-KO-Qea"/>
                 <constraint firstItem="aRu-c6-7dW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="Yhg-Y7-Sh3"/>
                 <constraint firstAttribute="trailing" secondItem="aRu-c6-7dW" secondAttribute="trailing" constant="16" id="ccc-r5-5iQ"/>
+                <constraint firstItem="bw2-bw-CTg" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="jFW-fm-kAS"/>
                 <constraint firstItem="2EJ-0L-2a1" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="p0f-OI-cfV"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="bw2-bw-CTg" secondAttribute="trailing" id="vyJ-Vs-jPU"/>
                 <constraint firstItem="aRu-c6-7dW" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="16" id="zmJ-Ff-B9L"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

@@ -11,6 +11,11 @@ import TechniqueAnalysis
 
 class CacheManager {
 
+    enum CacheNotification: String, NotificationName {
+        case processingFinished = "processed_all_labeled_data"
+        case processedItem = "processed_new_labeled_data_item"
+    }
+
     // MARK: - Properties
 
     /// Shared Singleton Instance
@@ -19,6 +24,10 @@ class CacheManager {
     private(set) var cached: [TATimeseries]
     private var processingQueue = [(url: URL, meta: TAMeta)]()
     private let processor: TAVideoProcessor?
+
+    var processingFinished: Bool {
+        return processingQueue.isEmpty && cached.count >= VideoManager.labeledVideos.count
+    }
 
     private static let cachedTimeseriesExtension = "ts"
 
@@ -75,27 +84,31 @@ class CacheManager {
         return true
     }
 
-    func processUncachedLabeledVideos(onItemProcessed: @escaping ((Int, Int) -> Void),
-                                      onFinish: @escaping (() -> Void),
-                                      onError: @escaping ((String) -> Void)) {
+    func processLabeledVideos() {
         guard processingQueue.isEmpty else {
-            onError("CacheManager is already processing videos, please wait!")
+            print("CacheManager Error: Processing labeled videos is already in progress")
             return
         }
 
-        let labeledVideos = VideoManager.shared.labeledVideos
+        let labeledVideos = VideoManager.labeledVideos
         let toProcess = labeledVideos.filter { !cache(contains: $0.meta) }
-
-        if toProcess.isEmpty {
-            onFinish()
-            return
-        }
+        if toProcess.isEmpty { return }
 
         self.processingQueue = toProcess
-        processNext(originalSize: toProcess.count, onItemProcessed: onItemProcessed, onFinish: onFinish)
+        processNext(originalSize: toProcess.count)
     }
 
     // MARK: - Private Functions
+
+    private func notifyProcessingFinished() {
+        NotificationCenter.default.post(name: CacheNotification.processingFinished.name, object: self)
+    }
+
+    private func notifyItemProcessed(_ itemIndex: Int, total: Int) {
+        NotificationCenter.default.post(name: CacheNotification.processedItem.name,
+                                        object: self,
+                                        userInfo: [ "current": itemIndex, "total": total ])
+    }
 
     private func cache(contains meta: TAMeta) -> Bool {
         return cached.contains(where: { cachedSeries -> Bool in
@@ -106,12 +119,10 @@ class CacheManager {
         })
     }
 
-    private func processNext(originalSize: Int,
-                             onItemProcessed: @escaping ((Int, Int) -> Void),
-                             onFinish: @escaping (() -> Void)) {
+    private func processNext(originalSize: Int) {
         guard let next = processingQueue.popLast(),
             let processor = processor else {
-                onFinish()
+                notifyProcessingFinished()
                 return
         }
 
@@ -124,12 +135,11 @@ class CacheManager {
 
                                     if self.processingQueue.isEmpty {
                                         self.generateAndCacheReflections()
-                                        onFinish()
+                                        self.notifyProcessingFinished()
                                     } else {
-                                        onItemProcessed(originalSize - self.processingQueue.count, originalSize)
-                                        self.processNext(originalSize: originalSize,
-                                                         onItemProcessed: onItemProcessed,
-                                                         onFinish: onFinish)
+                                        self.notifyItemProcessed(originalSize - self.processingQueue.count,
+                                                                 total: originalSize)
+                                        self.processNext(originalSize: originalSize)
                                     }
         },
                                  onFailure: { _ in })

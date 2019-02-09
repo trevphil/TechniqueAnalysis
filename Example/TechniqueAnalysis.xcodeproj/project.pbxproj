@@ -63,6 +63,7 @@
 		0F7E6649220E2C31002679BD /* AnalysisController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F7E6648220E2C31002679BD /* AnalysisController.xib */; };
 		0F7E664B220E2C62002679BD /* AnalysisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7E664A220E2C62002679BD /* AnalysisModel.swift */; };
 		0F7E664D220E2EF4002679BD /* Params.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7E664C220E2EF4002679BD /* Params.swift */; };
+		0F8A9FA2220EC7620000BAB6 /* RawRepresentable+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8A9FA1220EC7620000BAB6 /* RawRepresentable+Additions.swift */; };
 		0F9A694A21C7083A000502B7 /* RootController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693D21C7083A000502B7 /* RootController.swift */; };
 		0F9A694B21C7083A000502B7 /* HeatmapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693E21C7083A000502B7 /* HeatmapController.swift */; };
 		0F9A694C21C7083A000502B7 /* JointController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A693F21C7083A000502B7 /* JointController.swift */; };
@@ -164,6 +165,7 @@
 		0F7E6648220E2C31002679BD /* AnalysisController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalysisController.xib; sourceTree = "<group>"; };
 		0F7E664A220E2C62002679BD /* AnalysisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisModel.swift; sourceTree = "<group>"; };
 		0F7E664C220E2EF4002679BD /* Params.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Params.swift; sourceTree = "<group>"; };
+		0F8A9FA1220EC7620000BAB6 /* RawRepresentable+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RawRepresentable+Additions.swift"; sourceTree = "<group>"; };
 		0F9A693D21C7083A000502B7 /* RootController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootController.swift; sourceTree = "<group>"; };
 		0F9A693E21C7083A000502B7 /* HeatmapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapController.swift; sourceTree = "<group>"; };
 		0F9A693F21C7083A000502B7 /* JointController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JointController.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				6935FF2A2202F438005E4FAA /* Array+Additions.swift */,
+				0F8A9FA1220EC7620000BAB6 /* RawRepresentable+Additions.swift */,
 				698CBB6A220C791200C60015 /* String+Additions.swift */,
 				0F9A695421C7085A000502B7 /* TABodyPart+Additions.swift */,
 			);
@@ -718,6 +721,7 @@
 			files = (
 				69E32C912209D68500EF84F0 /* CacheManager.swift in Sources */,
 				698CBB69220C632700C60015 /* TestModel.swift in Sources */,
+				0F8A9FA2220EC7620000BAB6 /* RawRepresentable+Additions.swift in Sources */,
 				6935FF2B2202F438005E4FAA /* Array+Additions.swift in Sources */,
 				0F7CD883220E215F00377061 /* ExerciseCell.swift in Sources */,
 				0F9A694C21C7083A000502B7 /* JointController.swift in Sources */,

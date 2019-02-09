@@ -15,6 +15,8 @@ class ExerciseSelectionController: UIViewController {
     private let model: ExerciseSelectionModel
     private let onExerciseSelection: ((String) -> Void)
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var processingBlocker: UIView!
+    @IBOutlet private weak var processingStatusLabel: UILabel!
 
     // MARK: - Initialization
 
@@ -23,6 +25,7 @@ class ExerciseSelectionController: UIViewController {
         self.model = model
         self.onExerciseSelection = onExerciseSelection
         super.init(nibName: nil, bundle: nil)
+        self.model.delegate = self
     }
 
     @available(*, unavailable)
@@ -40,6 +43,19 @@ class ExerciseSelectionController: UIViewController {
         tableView.separatorColor = .clear
         tableView.register(UINib(nibName: String(describing: ExerciseCell.self), bundle: nil),
                            forCellReuseIdentifier: ExerciseCell.identifier)
+
+        if model.shouldWaitForProcessing {
+            showProcessingBlocker()
+        } else {
+            processingBlocker.isHidden = true
+        }
+    }
+
+    // MARK: - Private Functions
+
+    private func showProcessingBlocker() {
+        processingBlocker.isHidden = false
+        processingStatusLabel.text = "Processing..."
     }
 
 }
@@ -75,6 +91,18 @@ extension ExerciseSelectionController: UITableViewDelegate {
         }
 
         onExerciseSelection(exercise)
+    }
+
+}
+
+extension ExerciseSelectionController: ExerciseSelectionModelDelegate {
+
+    func didProcess(_ itemIndex: Int, outOf total: Int) {
+        processingStatusLabel.text = "Processed \(itemIndex)/\(total)"
+    }
+
+    func didFinishProcessing() {
+        processingBlocker.isHidden = true
     }
 
 }

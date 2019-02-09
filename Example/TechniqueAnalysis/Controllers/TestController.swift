@@ -46,10 +46,28 @@ class TestController: UIViewController {
         tableView.backgroundColor = .black
         view.backgroundColor = .black
 
-        processingStatusLabel.text = "Processing..."
-        processingStatusHeight.constant = 100
-
         model.beginTesting()
+
+        if model.shouldWaitForProcessing {
+            processingStatusLabel.text = "Processing..."
+            processingStatusHeight.constant = 100
+        } else {
+            hideProcessingHeader()
+        }
+    }
+
+    // MARK: - Private Functions
+
+    private func hideProcessingHeader() {
+        processingStatusHeight.constant = 0
+        processingActivityIndicator.isHidden = true
+        UIView.animate(withDuration: 0.25,
+                       animations: { [weak self] in
+                        self?.view.layoutIfNeeded()
+            },
+                       completion: { [weak self] _ in
+                        self?.processingStatusContainer.isHidden = true
+        })
     }
 
 }
@@ -76,15 +94,7 @@ extension TestController: UITableViewDataSource {
 extension TestController: TestModelDelegate {
 
     func didBeginTesting() {
-        processingStatusHeight.constant = 0
-        processingActivityIndicator.isHidden = true
-        UIView.animate(withDuration: 0.25,
-                       animations: { [weak self] in
-                        self?.view.layoutIfNeeded()
-        },
-                       completion: { [weak self] _ in
-                        self?.processingStatusContainer.isHidden = true
-        })
+        hideProcessingHeader()
     }
 
     func didUpdateTestCase(atIndex index: Int) {
@@ -92,8 +102,8 @@ extension TestController: TestModelDelegate {
         tableView.reloadRows(at: [indexPath], with: .left)
     }
 
-    func didProcessLabeledData(_ index: Int, outOf total: Int) {
-        processingStatusLabel.text = "Processed \(index)/\(total)"
+    func didProcess(_ itemIndex: Int, outOf total: Int) {
+        processingStatusLabel.text = "Processed \(itemIndex)/\(total)"
     }
 
 }
