@@ -6,25 +6,23 @@
 //
 
 import UIKit
-import CoreML
 import TechniqueAnalysis
 
 class HeatmapController: UIViewController {
 
     // MARK: - Properties
 
+    private let model: HeatmapModel
     @IBOutlet private weak var videoPreviewContainer: UIView!
     private var heatmapView: TAHeatmapView?
 
-    private let model: TAPoseEstimationModel?
-
     // MARK: - Initialization
 
-    init() {
-        self.model = TAPoseEstimationModel(type: .cpm)
+    init(model: HeatmapModel) {
+        self.model = model
         super.init(nibName: nil, bundle: nil)
-        self.model?.delegate = self
-        self.title = "Heatmap"
+        self.title = model.title
+        model.delegate = self
     }
 
     @available(*, unavailable)
@@ -36,12 +34,12 @@ class HeatmapController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        model?.setupCameraPreview(withinView: videoPreviewContainer)
+        model.setupCameraPreview(withinView: videoPreviewContainer)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        model?.tearDownCameraPreview()
+        model.tearDownCameraPreview()
     }
 
     // MARK: - Private Functions
@@ -60,23 +58,14 @@ class HeatmapController: UIViewController {
 
 }
 
-extension HeatmapController: TAPoseEstimationDelegate {
+extension HeatmapController: HeatmapModelDelegate {
 
-    func visionRequestDidComplete(heatmap: MLMultiArray) {
-        if let heatmapModel = TAHeatmapViewModel(heatmap: heatmap) {
-            if let heatmapView = heatmapView {
-                heatmapView.configure(with: heatmapModel)
-            } else {
-                setupHeatmapView(with: heatmapModel)
-            }
+    func updateHeatmapView(with heatmapViewModel: TAHeatmapViewModel) {
+        if let heatmapView = heatmapView {
+            heatmapView.configure(with: heatmapViewModel)
+        } else {
+            setupHeatmapView(with: heatmapViewModel)
         }
-    }
-
-    func visionRequestDidFail(error: Error?) {
-        print("ERROR: - Vision request failed. Error=\(error?.localizedDescription ?? "(no message)")")
-    }
-
-    func didSamplePerformance(inferenceTime: Double, executionTime: Double, fps: Int) {
     }
 
 }

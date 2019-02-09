@@ -27,28 +27,20 @@ public struct TAKnnDtw {
 
     // MARK: - Public Functions
 
-    public func nearestNeighbor(unknownItem: TATimeseries,
-                                knownItems: [TATimeseries]) -> (score: Double, timeseries: TATimeseries)? {
-        var bestScore = Double.greatestFiniteMagnitude
-        var closestSeries: TATimeseries?
-
+    public func nearestNeighbors(unknownItem: TATimeseries,
+                                 knownItems: [TATimeseries]) -> [(score: Double, series: TATimeseries)] {
+        var rankings = [(score: Double, series: TATimeseries)]()
+        
         for known in knownItems {
             do {
                 let score = try distance(timeseriesA: unknownItem, timeseriesB: known)
-                if score < bestScore {
-                    bestScore = score
-                    closestSeries = known
-                }
+                rankings.append((score, known))
             } catch {
                 print("Error while comparing timeseries: \(error)")
             }
         }
 
-        if let closest = closestSeries {
-            return (bestScore, closest)
-        } else {
-            return nil
-        }
+        return rankings.sorted(by: { $0.score < $1.score })
     }
 
     // MARK: - Private Functions

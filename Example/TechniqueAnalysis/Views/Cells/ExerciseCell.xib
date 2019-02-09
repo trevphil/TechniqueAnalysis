@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ExerciseCell" rowHeight="58" id="mVH-g7-S2y" customClass="ExerciseCell" customModule="TechniqueAnalysis_Example" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="58"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mVH-g7-S2y" id="dl3-XR-Cl4">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="57.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B5b-8a-HFr">
+                        <rect key="frame" x="8" y="8" width="359" height="41.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Burpees" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gsJ-e4-dmU">
+                                <rect key="frame" x="16" y="8" width="79" height="25.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="gsJ-e4-dmU" firstAttribute="top" secondItem="B5b-8a-HFr" secondAttribute="top" constant="8" id="EhS-Cc-RfV"/>
+                            <constraint firstItem="gsJ-e4-dmU" firstAttribute="leading" secondItem="B5b-8a-HFr" secondAttribute="leading" constant="16" id="f0c-4M-W4b"/>
+                            <constraint firstAttribute="bottom" secondItem="gsJ-e4-dmU" secondAttribute="bottom" constant="8" id="fNm-gu-6j4"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="B5b-8a-HFr" firstAttribute="leading" secondItem="dl3-XR-Cl4" secondAttribute="leading" constant="8" id="Ahs-3W-PBs"/>
+                    <constraint firstAttribute="trailing" secondItem="B5b-8a-HFr" secondAttribute="trailing" constant="8" id="FHw-IT-JP7"/>
+                    <constraint firstItem="B5b-8a-HFr" firstAttribute="top" secondItem="dl3-XR-Cl4" secondAttribute="top" constant="8" id="ctU-9R-2yd"/>
+                    <constraint firstAttribute="bottom" secondItem="B5b-8a-HFr" secondAttribute="bottom" constant="8" id="okW-Bh-GXx"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="exerciseLabel" destination="gsJ-e4-dmU" id="6pv-QN-9vq"/>
+                <outlet property="roundedContainer" destination="B5b-8a-HFr" id="NyJ-7G-685"/>
+            </connections>
+            <point key="canvasLocation" x="-458.39999999999998" y="37.781109445277366"/>
+        </tableViewCell>
+    </objects>
+</document>

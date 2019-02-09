@@ -8,7 +8,7 @@
 import Foundation
 
 public enum TACameraAngle: String, Codable {
-    case front, back, left, right
+    case front, back, left, right, unknown
 
     public var opposite: TACameraAngle? {
         switch self {
