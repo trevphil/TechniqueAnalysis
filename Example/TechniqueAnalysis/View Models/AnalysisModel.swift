@@ -57,7 +57,9 @@ extension AnalysisModel: TestModelDelegate {
 
     func didProcess(_ itemIndex: Int, outOf total: Int) {}
 
-    func didUpdateTestCase(atIndex index: Int) {
+    func didBeginTestingCase(atIndex index: Int) {}
+
+    func didFinishTestingCase(atIndex index: Int) {
         guard let result = tester.testCases.element(atIndex: 0) else {
             return
         }

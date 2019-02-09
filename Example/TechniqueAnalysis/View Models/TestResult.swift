@@ -10,6 +10,10 @@ import TechniqueAnalysis
 
 class TestResult {
 
+    enum Status {
+        case notStarted, running, finished
+    }
+
     // MARK: - Properties
 
     let url: URL
@@ -18,6 +22,7 @@ class TestResult {
     var predictionScore: Double?
     var runnerUpMeta: TAMeta?
     var runnerUpScore: Double?
+    var status: Status = .notStarted
 
     var predictedCorrectExercise: Bool? {
         guard let predictionMeta = predictionMeta else {

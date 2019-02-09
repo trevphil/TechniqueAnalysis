@@ -12,7 +12,8 @@ import TechniqueAnalysis
 protocol TestModelDelegate: class {
     func didBeginTesting()
     func didProcess(_ itemIndex: Int, outOf total: Int)
-    func didUpdateTestCase(atIndex index: Int)
+    func didBeginTestingCase(atIndex index: Int)
+    func didFinishTestingCase(atIndex index: Int)
 }
 
 class TestModel {
@@ -87,6 +88,11 @@ class TestModel {
             return
         }
 
+        testCase.status = .running
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.didBeginTestingCase(atIndex: testIndex)
+        }
+
         processor?.makeTimeseries(videoURL: testCase.url,
                                   meta: testCase.testMeta,
                                   onFinish: { [weak self] timeseries in
@@ -122,8 +128,9 @@ class TestModel {
                 self?.testCases.element(atIndex: testIndex)?.predictionMeta = results.element(atIndex: 0)?.series.meta
                 self?.testCases.element(atIndex: testIndex)?.runnerUpScore = results.element(atIndex: 1)?.score
                 self?.testCases.element(atIndex: testIndex)?.runnerUpMeta = results.element(atIndex: 1)?.series.meta
+                self?.testCases.element(atIndex: testIndex)?.status = .finished
                 DispatchQueue.main.async {
-                    self?.delegate?.didUpdateTestCase(atIndex: testIndex)
+                    self?.delegate?.didFinishTestingCase(atIndex: testIndex)
                 }
             }
         }

@@ -27,6 +27,7 @@ class TestResultCell: UITableViewCell {
     @IBOutlet private weak var runnerUpExerciseNameLabel: UILabel!
     @IBOutlet private weak var runnerUpExerciseDetailLabel: UILabel!
     @IBOutlet private weak var runnerUpScoreLabel: UILabel!
+    @IBOutlet private weak var loadingSpinner: UIActivityIndicatorView!
 
     // MARK: - Exposed Functions
 
@@ -34,6 +35,7 @@ class TestResultCell: UITableViewCell {
         configureResults(testResult)
         configurePrediction(testResult.predictionMeta)
         configureRunnerUp(testResult.runnerUpMeta, runnerUpScore: testResult.runnerUpScore)
+        configureLoadingSpinner(testResult.status)
     }
 
     // MARK: - Private Functions
@@ -91,6 +93,19 @@ class TestResultCell: UITableViewCell {
             runnerUpScoreLabel.text = "\(Int(runnerUpScore))"
         } else {
             runnerUpScoreLabel.text = "--"
+        }
+    }
+
+    private func configureLoadingSpinner(_ status: TestResult.Status) {
+        switch status {
+        case .notStarted where loadingSpinner.isAnimating:
+            loadingSpinner.stopAnimating()
+        case .finished where loadingSpinner.isAnimating:
+            loadingSpinner.stopAnimating()
+        case .running where !loadingSpinner.isAnimating:
+            loadingSpinner.startAnimating()
+        default:
+            break
         }
     }
 

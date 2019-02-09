@@ -97,7 +97,12 @@ extension TestController: TestModelDelegate {
         hideProcessingHeader()
     }
 
-    func didUpdateTestCase(atIndex index: Int) {
+    func didBeginTestingCase(atIndex index: Int) {
+        let indexPath = IndexPath(row: index, section: 0)
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+
+    func didFinishTestingCase(atIndex index: Int) {
         let indexPath = IndexPath(row: index, section: 0)
         tableView.reloadRows(at: [indexPath], with: .left)
     }
