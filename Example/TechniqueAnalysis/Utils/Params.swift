@@ -10,8 +10,8 @@ import TechniqueAnalysis
 
 struct Params {
 
-    static let warpingWindow: Int = 100
-    static let minConfidence: Double = 0.2
+    static let warpingWindow: Int = 75
+    static let minConfidence: Double = 0.05
     static let fps: Double = 25
     static let clipLength: TimeInterval = 5
     static let insetPercent: Double = 0.1

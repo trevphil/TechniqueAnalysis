@@ -87,7 +87,8 @@ public struct TATimeseries: Codable {
     // MARK: - Exposed Functions
 
     static func compress(_ heatmap: MLMultiArray) -> [TAPointEstimate]? {
-        guard validHeatmap(heatmap, expectedShape: [14, 96, 96]) else {
+        guard validHeatmap(heatmap, expectedShape: TAPoseEstimationModel.ModelType.cpm.outputShape) ||
+            validHeatmap(heatmap, expectedShape: TAPoseEstimationModel.ModelType.hourglass.outputShape) else {
             return nil
         }
 

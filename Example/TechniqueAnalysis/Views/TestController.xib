@@ -37,7 +37,7 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Processing 1/20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBz-Ra-mCD">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Processing 1/20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBz-Ra-mCD">
                             <rect key="frame" x="77" y="16" width="141" height="24"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -50,11 +50,11 @@
                         <constraint firstItem="MBz-Ra-mCD" firstAttribute="leading" secondItem="tRg-hj-FvJ" secondAttribute="trailing" constant="16" id="AA8-dq-aOm"/>
                         <constraint firstAttribute="height" constant="100" id="AcZ-BB-WWh"/>
                         <constraint firstItem="tRg-hj-FvJ" firstAttribute="centerY" secondItem="R86-jA-w04" secondAttribute="centerY" id="JBj-oK-fFQ"/>
-                        <constraint firstItem="M9z-FS-MIB" firstAttribute="top" secondItem="MBz-Ra-mCD" secondAttribute="bottom" constant="8" id="T7g-nB-67R"/>
+                        <constraint firstItem="M9z-FS-MIB" firstAttribute="top" secondItem="MBz-Ra-mCD" secondAttribute="bottom" priority="999" constant="8" id="T7g-nB-67R"/>
                         <constraint firstItem="M9z-FS-MIB" firstAttribute="leading" secondItem="MBz-Ra-mCD" secondAttribute="leading" id="UI9-in-A98"/>
                         <constraint firstItem="tRg-hj-FvJ" firstAttribute="leading" secondItem="R86-jA-w04" secondAttribute="leading" constant="24" id="WsH-iy-Wtf"/>
-                        <constraint firstAttribute="bottom" secondItem="M9z-FS-MIB" secondAttribute="bottom" constant="16" id="cmp-6D-GvI"/>
-                        <constraint firstItem="MBz-Ra-mCD" firstAttribute="top" secondItem="R86-jA-w04" secondAttribute="top" constant="16" id="evZ-7H-nwb"/>
+                        <constraint firstAttribute="bottom" secondItem="M9z-FS-MIB" secondAttribute="bottom" priority="999" constant="16" id="cmp-6D-GvI"/>
+                        <constraint firstItem="MBz-Ra-mCD" firstAttribute="top" secondItem="R86-jA-w04" secondAttribute="top" priority="999" constant="16" id="evZ-7H-nwb"/>
                     </constraints>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="UOs-2t-0dQ">
