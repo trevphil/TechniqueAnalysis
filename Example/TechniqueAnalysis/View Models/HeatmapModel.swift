@@ -10,16 +10,25 @@ import Foundation
 import CoreML
 import TechniqueAnalysis
 
+/// Delegate object which responds to events from `HeatmapModel`
 protocol HeatmapModelDelegate: class {
+
+    /// Alert the delegate that it should update its `TAHeatmapView` with a new model
+    ///
+    /// - Parameter heatmapViewModel: The model that should be used to update the `TAHeatmapView`
     func updateHeatmapView(with heatmapViewModel: TAHeatmapViewModel)
+
 }
 
+/// Model which helps visualize a heatmap of the predicted posture/pose of an image
 class HeatmapModel {
 
     // MARK: - Properties
 
     private let poseEstimationModel: TAPoseEstimationModel?
+    /// A delegate object responding to this model's events
     weak var delegate: HeatmapModelDelegate?
+    /// The model's title
     let title: String
 
     // MARK: - Initialization
@@ -32,10 +41,15 @@ class HeatmapModel {
 
     // MARK: - Exposed Functions
 
+    /// Creates a live stream video preview using the device’s camera and processes
+    /// the video feed in real time to determine data about a user’s posture
+    ///
+    /// - Parameter view: The `UIView` in which the video preview should appear
     func setupCameraPreview(withinView view: UIView) {
         poseEstimationModel?.setupCameraPreview(withinView: view)
     }
 
+    /// Remove and destroy any video preview sessions created by `setupCameraPreview(withinView:)`
     func tearDownCameraPreview() {
         poseEstimationModel?.tearDownCameraPreview()
     }

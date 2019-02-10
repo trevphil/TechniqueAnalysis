@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Controller which allows a user to pick an exercise that they want to videotape and analyze
 class ExerciseSelectionController: UIViewController {
 
     // MARK: - Properties
@@ -20,6 +21,9 @@ class ExerciseSelectionController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `ExerciseSelectionController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: ExerciseSelectionModel,
          onExerciseSelection: @escaping ((String) -> Void)) {
         self.model = model

@@ -9,6 +9,8 @@
 import UIKit
 import AVKit
 
+/// Controller which processes an unlabeled video and gives
+/// a best-guess on the closest labeled data point
 class AnalysisController: UIViewController {
 
     // MARK: - Properties
@@ -22,6 +24,9 @@ class AnalysisController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `AnalysisController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: AnalysisModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)

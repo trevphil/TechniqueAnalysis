@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Root controller which manages child view controllers
 class RootController: UITabBarController {
 
     // MARK: - Properties
@@ -16,6 +17,9 @@ class RootController: UITabBarController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `RootController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: RootModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)

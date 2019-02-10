@@ -9,17 +9,37 @@
 import Foundation
 import TechniqueAnalysis
 
+/// Delegate object which responds to events from `TestModel`
 protocol TestModelDelegate: class {
+
+    /// Notify the delegate on the main queue that testing began
     func didBeginTesting()
+
+    /// Notify the delegate on the main queue that an item was processed from the labeled dataset
+    ///
+    /// - Parameters:
+    ///   - itemIndex: The index of the item which was processed
+    ///   - total: The total number of items being processed
     func didProcess(_ itemIndex: Int, outOf total: Int)
+
+    /// Notify the delegate on the main queue that a test case has started
+    ///
+    /// - Parameter index: The index of the test case which was started
     func didBeginTestingCase(atIndex index: Int)
+
+    /// Notify the delegate on the main queue that a test case has finished
+    ///
+    /// - Parameter index: The index of the test case which was finished
     func didFinishTestingCase(atIndex index: Int)
+
 }
 
+/// Model class which runs tests on unlabeled data points (videos) against the labeled dataset
 class TestModel {
 
     // MARK: - Properties
 
+    /// The model's title
     let title: String
     private let printStats: Bool
     private let selectedTimeseries = 0
@@ -27,11 +47,15 @@ class TestModel {
     private var labeledSeries: [TATimeseries]?
     private var exerciseFilter: String?
     private var testCaseIndex = 0
+    /// An array of test cases which can be used to configure UI components
     private(set) var testCases: [TestResult]
+    /// A delegate object responding to this model's events
     weak var delegate: TestModelDelegate?
+
     private var processingFinishedObserver: NSObjectProtocol?
     private var itemProcessedObserver: NSObjectProtocol?
 
+    /// `true` if processing of the labeled dataset has not finished, and `false` otherwise
     var shouldWaitForProcessing: Bool {
         return !CacheManager.shared.processingFinished
     }
@@ -44,6 +68,16 @@ class TestModel {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `TestModel`
+    ///
+    /// - Parameters:
+    ///   - testCases: The test cases that the model should use when testing
+    ///   - printStats: `true` if the model should print total statistics on failure and
+    ///                 success rates at the end of testing, and `false` if it should be quiet
+    ///   - exerciseFilter: An optional filter to use when comparing timeseries. If a filter is
+    ///                     given, the unknown data (test cases) will only be compared against
+    ///                     known, labeled data with a matching exercise name as the filter.
+    ///                     This is useful if you already know the exercise of the unknown data.
     init(testCases: [TestResult], printStats: Bool, exerciseFilter: String? = nil) {
         self.title = "Tests"
         self.printStats = printStats
@@ -69,6 +103,9 @@ class TestModel {
 
     // MARK: - Exposed Functions
 
+    /// Start testing. If the import of the labeled dataset has not finished,
+    /// the model will first wait for this to finish before testing. Otherwise,
+    /// testing will begin immediately.
     func beginTesting() {
         if shouldWaitForProcessing {
             CacheManager.shared.processLabeledVideos()

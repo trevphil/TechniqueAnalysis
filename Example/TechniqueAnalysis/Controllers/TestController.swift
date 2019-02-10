@@ -8,6 +8,8 @@
 
 import UIKit
 
+/// Test controller which shows test results for unlabeled data points when
+/// compared against the labeled dataset (accuracy, score, etc.)
 class TestController: UIViewController {
 
     // MARK: - Properties
@@ -21,6 +23,9 @@ class TestController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `TestController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: TestModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)

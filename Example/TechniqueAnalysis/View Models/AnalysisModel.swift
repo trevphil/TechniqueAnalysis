@@ -8,22 +8,38 @@
 
 import TechniqueAnalysis
 
+/// Delegate object which responds to events from `AnalysisModel`
 protocol AnalysisModelDelegate: class {
+
+    /// Called when video analysis has finished
+    ///
+    /// - Parameter result: The result of the video analysis
     func didAnalyze(with result: TestResult)
+
 }
 
+/// Model for technique analysis from a user-recorded video. Internally, it reuses `TestModel`.
 class AnalysisModel {
 
     // MARK: - Properties
 
-    let title: String
-    let exerciseName: String
-    let videoURL: URL
     private let tester: TestModel
+    /// The model's title
+    let title: String
+    /// The name of the exercise being analyzed
+    let exerciseName: String
+    /// The video URL of the exercise being analyzed
+    let videoURL: URL
+    /// A delegate object responding to this model's events
     weak var delegate: AnalysisModelDelegate?
 
     // MARK: - Initialization
 
+    /// Create a new instance of `AnalysisModel`
+    ///
+    /// - Parameters:
+    ///   - exerciseName: The name of the exercise being analyzed
+    ///   - videoURL: The video URL of the exercise being analyzed
     init(exerciseName: String, videoURL: URL) {
         self.title = "Analyze"
         self.exerciseName = exerciseName
@@ -41,10 +57,12 @@ class AnalysisModel {
 
     // MARK: - Exposed Functions
 
+    /// Begin analyzing the input video
     func analyzeVideo() {
         tester.beginTesting()
     }
 
+    /// Delete the video that was analyzed
     func deleteVideo() {
         _ = try? FileManager.default.removeItem(at: videoURL)
     }

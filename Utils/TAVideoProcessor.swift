@@ -159,7 +159,7 @@ public class TAVideoProcessor {
         let sections = subclipIntervals(totalLength: duration)
 
         for (idx, section) in sections.enumerated() {
-            let preset = AVAssetExportPresetHighestQuality
+            let preset = AVAssetExportPresetMediumQuality
             guard let exportSession = AVAssetExportSession(asset: video, presetName: preset) else {
                 continue
             }

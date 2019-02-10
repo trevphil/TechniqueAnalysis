@@ -7,7 +7,6 @@ Pod::Spec.new do |s|
 This is a CocoaPod which processes video footage of a user doing an exercise and provides feedback on the user's form. The general idea is to capture a timeseries, where each data point contains an array of body point locations in 2D space, along with a confidence level on the accuracy of each body point. Timeseries are compared using k-Nearest Neighbor and Dynamic Time Warping to find the nearest neighbor.
                        DESC
   s.homepage         = 'https://github.com/trevphil/TechniqueAnalysis'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'trevphil' => 'trevor.j.phillips@uconn.edu' }
   s.source           = { :git => 'https://github.com/trevphil/TechniqueAnalysis.git', :tag => s.version.to_s }
