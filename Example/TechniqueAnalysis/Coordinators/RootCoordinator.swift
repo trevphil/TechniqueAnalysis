@@ -8,8 +8,12 @@
 
 import UIKit
 
+/// Coordinates the "top-most" level of application flow
 struct RootCoordinator {
 
+    /// Start the flow
+    ///
+    /// - Returns: The "root" view controller of the flow
     func start() -> UIViewController {
         return RootController(model: RootModel())
     }

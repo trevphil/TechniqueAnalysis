@@ -84,6 +84,10 @@ class RecorderModel: NSObject {
             connection.preferredVideoStabilizationMode = .auto
         }
 
+        if connection.isVideoOrientationSupported {
+            connection.videoOrientation = currentVideoOrientation()
+        }
+
         if device.isSmoothAutoFocusSupported {
             do {
                 try device.lockForConfiguration()
@@ -125,6 +129,23 @@ class RecorderModel: NSObject {
     private func tempURL() -> URL? {
         let temp = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         return temp.appendingPathComponent("\(UUID().uuidString).mp4", isDirectory: false)
+    }
+
+    private func currentVideoOrientation() -> AVCaptureVideoOrientation {
+        var orientation: AVCaptureVideoOrientation
+
+        switch UIDevice.current.orientation {
+        case .portrait:
+            orientation = AVCaptureVideoOrientation.portrait
+        case .landscapeRight:
+            orientation = AVCaptureVideoOrientation.landscapeLeft
+        case .portraitUpsideDown:
+            orientation = AVCaptureVideoOrientation.portraitUpsideDown
+        default:
+            orientation = AVCaptureVideoOrientation.landscapeRight
+        }
+
+        return orientation
     }
 
 }

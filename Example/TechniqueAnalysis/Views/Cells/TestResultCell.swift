@@ -9,10 +9,12 @@
 import UIKit
 import TechniqueAnalysis
 
+/// Table view cell for showing the results of testing an unlabeled data point
 class TestResultCell: UITableViewCell {
 
     // MARK: - Properties
 
+    /// Cell identifier
     static let identifier = "TestResultCell"
     @IBOutlet private weak var exerciseNameLabel: UILabel!
     @IBOutlet private weak var exerciseDetailLabel: UILabel!
@@ -31,6 +33,9 @@ class TestResultCell: UITableViewCell {
 
     // MARK: - Exposed Functions
 
+    /// Configures the cell and updates its UI
+    ///
+    /// - Parameter testResult: The `TestResult` object with information used to update UI
     func configure(with testResult: TestResult) {
         configureResults(testResult)
         configurePrediction(testResult.predictionMeta)
