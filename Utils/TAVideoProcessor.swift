@@ -8,12 +8,14 @@
 import CoreML
 import AVKit
 
+/// Error condition thrown by `TAVideoProcessor`
 public enum TAVideoProcessorError: Error {
     case initializationError(String)
     case noDataError(String)
     case filesystemAccessError(String)
 }
 
+/// Video processor for converting video inta `TATimeseries`
 public class TAVideoProcessor {
 
     // MARK: - Properties
@@ -27,6 +29,16 @@ public class TAVideoProcessor {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `TAVideoProcessor`
+    ///
+    /// - Parameters:
+    ///   - sampleLength: The maximum number of seconds that each sub-clip should have, when sampled from a video
+    ///   - insetPercent: A decimal between [0, 1] for how far into the video sub-clips should be sampled.
+    ///                   For example, a video with length 100s, `sampleLength`=5s, and `insetPercent`=0.1
+    ///                   would create sub-clips spanning times [10s, 15s] and [85s, 90s].
+    ///   - fps: The frames per second (data sample rate) used when constructing images from a video clip
+    ///   - modelType: ML model type used to determine a person's pose within a video
+    /// - Throws: `TAVideoProcessorError` if unable to initialize underlying ML model or bad filesystem access
     public init(sampleLength: TimeInterval,
                 insetPercent: Double,
                 fps: Double,
@@ -53,6 +65,18 @@ public class TAVideoProcessor {
 
     // MARK: - Public Functions
     
+    /// Construct an array of `TATimeseries` objects from a video
+    ///
+    /// - Parameters:
+    ///   - videoURL: The URL of the video that will be processed
+    ///   - meta: Meta-information about the video, such as name and detail
+    ///   - onFinish: Callback when the video has been processed and a timeseries has been created.
+    ///               One `TATimeseries` object is passed for each sub-clip sampled from the video.
+    ///               The callback will not be executed on the main queue.
+    ///   - onFailure: Callback when problems occurred during processing. An array of errors is passed.
+    ///                The callback will not be executed on the main queue.
+    /// - Warning: This function can be quite memory-intensive, and it is _not_ recommended to dispatch
+    ///            this function if a previous call to the function has not finished.
     public func makeTimeseries(videoURL: URL,
                                meta: TAMeta,
                                onFinish: @escaping (([TATimeseries]) -> ()),

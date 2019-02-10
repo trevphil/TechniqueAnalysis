@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Body parts which are tracked/predicted by the embedded pose estimation ML models
 public enum TABodyPart: Int, CaseIterable, Codable {
 
     case top
@@ -24,6 +25,7 @@ public enum TABodyPart: Int, CaseIterable, Codable {
     case leftKnee
     case leftAnkle
 
+    /// Tuples indicating which body parts "connect" together at joint locations
     public static var joints: [(TABodyPart, TABodyPart)] {
         return [
             (.top, .neck),

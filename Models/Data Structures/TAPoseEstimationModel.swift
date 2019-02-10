@@ -8,12 +8,34 @@
 import Vision
 import CoreMedia
 
+/// Delegate object responding to events from a `TAPoseEstimationModel` instance
 public protocol TAPoseEstimationDelegate: class {
+
+    /// Called on the main queue when a vision request has completed
+    ///
+    /// - Parameter heatmap: The output from one of the embedded CoreML models, with information
+    ///                      about body part locations and their respective confidence levels
     func visionRequestDidComplete(heatmap: MLMultiArray)
+
+    /// Called on the main queue when a vision request has completed unsuccessfully
+    ///
+    /// - Parameter error: The error which occurred
     func visionRequestDidFail(error: Error?)
+
+    /// Called on the main queue when time-based performance data regarding ML pose estimation is available
+    ///
+    /// - Parameters:
+    ///   - inferenceTime: The amount of time (in sec) it took for CoreVision and CoreML to
+    ///                    process an input image into meaningful data about body posture
+    ///   - executionTime: The total time (in sec) it took from inputting an image to CoreVision
+    ///                    and CoreML to processing the output
+    ///   - fps: The frames per second that are being processed
     func didSamplePerformance(inferenceTime: Double, executionTime: Double, fps: Int)
+
 }
 
+/// Model used to set up a video capture session (live stream feed from device camera)
+/// and execute CoreVision and CoreML requests on the capture session to estimate a user's posture
 public class TAPoseEstimationModel {
 
     // MARK: - Core ML Model
@@ -21,6 +43,9 @@ public class TAPoseEstimationModel {
     private typealias CPMEstimationModel = cpm_model
     private typealias HourglassEstimationModel = hourglass_model
 
+    /// The CoreML model type
+    /// - cpm: Pre-trained model with underlying training from Convolutional Pose Machine algorithm
+    /// - hourglass: Pre-trained model with underlying training from Stacked Hourglass algorithm
     public enum ModelType {
         case cpm, hourglass
 
@@ -36,17 +61,25 @@ public class TAPoseEstimationModel {
 
     // MARK: - Properties
 
+    /// Delegate object responding to events from the `TAPoseEstimationModel` instance
     public weak var delegate: TAPoseEstimationDelegate?
     private var videoCapture: TAVideoCapture
     private let performanceTool = TAPerformanceTool()
     private var request: VNCoreMLRequest?
     private var visionModel: VNCoreMLModel!
+
+    /// A `CALayer` showing a live stream from the device camera,
+    /// if `setupCameraPreview(withinView:)` has been called
     public var videoPreviewLayer: CALayer? {
         return videoCapture.previewLayer
     }
 
     // MARK: - Initialization
 
+    /// Create a new instance of `TAPoseEstimationModel`
+    ///
+    /// - Parameter type: The underlying ML model type to be used for video session processing
+    /// - Note: Initialization fails if the underlying ML model cannot be initialized
     public init?(type: ModelType) {
         self.videoCapture = TAVideoCapture(fps: 30)
 
@@ -68,6 +101,10 @@ public class TAPoseEstimationModel {
 
     // MARK: - Public Functions
 
+    /// Creates a live stream video preview using the device's camera and
+    /// processes the video feed in real time to determine data about a user's posture
+    ///
+    /// - Parameter view: The `UIView` in which the video preview should appear
     public func setupCameraPreview(withinView view: UIView) {
         videoCapture.setup(sessionPreset: .vga640x480) { [weak self] success in
             guard success else {
@@ -83,6 +120,7 @@ public class TAPoseEstimationModel {
         }
     }
 
+    /// Remove and destroy any video preview sessions created by `setupCameraPreview(withinView:)`
     public func tearDownCameraPreview() {
         videoCapture.stop()
         videoCapture.previewLayer?.removeFromSuperlayer()
@@ -126,7 +164,9 @@ public class TAPoseEstimationModel {
                 self.delegate?.visionRequestDidComplete(heatmap: heatmap)
             }
         } else {
-            delegate?.visionRequestDidFail(error: error)
+            DispatchQueue.main.async {
+                self.delegate?.visionRequestDidFail(error: error)
+            }
             performanceTool.stop()
         }
     }

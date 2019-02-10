@@ -8,6 +8,8 @@
 import UIKit
 import CoreML
 
+/// View showing a heatmap of a user's posture and pose based on probabilities
+/// (confidence levels) that a body point is at a particular 2D coordinate
 public class TAHeatmapView: UIView {
 
     // MARK: - Properties
@@ -16,6 +18,9 @@ public class TAHeatmapView: UIView {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `TAHeatmapView`
+    ///
+    /// - Parameter model: The model supplying data when the view is rendered
     public init(model: TAHeatmapViewModel) {
         self.model = model
         super.init(frame: .zero)
@@ -62,6 +67,9 @@ public class TAHeatmapView: UIView {
 
     // MARK: - Public Functions
 
+    /// Configure the view with a new model
+    ///
+    /// - Parameter model: The model supplying data when the view is rendered
     public func configure(with model: TAHeatmapViewModel) {
         self.model = model
         setNeedsDisplay()
