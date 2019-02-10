@@ -8,6 +8,8 @@
 import UIKit
 import TechniqueAnalysis
 
+/// Controller which shows a user's body points and joints in real time,
+/// with algorithm performance data
 class JointController: UIViewController {
 
     // MARK: - Properties
@@ -22,6 +24,9 @@ class JointController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `JointController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: JointModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)

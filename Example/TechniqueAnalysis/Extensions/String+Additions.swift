@@ -10,6 +10,7 @@ import UIKit
 
 extension String {
 
+    /// Attempts to convert a String into an image
     var asImage: UIImage? {
         let size = CGSize(width: 35, height: 30)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)

@@ -8,6 +8,7 @@
 import Foundation
 import CoreML
 
+/// View model used in conjunction with `TAHeatmapView` to show a heatmap of a user's posture
 public struct TAHeatmapViewModel {
 
     // MARK: - Properties
@@ -16,6 +17,12 @@ public struct TAHeatmapViewModel {
 
     // MARK: - Initialization
 
+    /// Creates a new `TAHeatmapViewModel` instance
+    ///
+    /// - Parameter heatmap: The relevant data for the model. You can use the argument given from
+    ///                      `TAPoseEstimationDelegate` `visionRequestDidComplete(heatmap:)` to
+    ///                      initialize a new instance.
+    /// - Note: Initialization fails if the given heatmap has an incompatible shape
     public init?(heatmap: MLMultiArray) {
         guard let converted = TAHeatmapViewModel.convertedHeatmap(heatmap) else {
             return nil

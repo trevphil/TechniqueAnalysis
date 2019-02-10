@@ -7,11 +7,24 @@
 
 import UIKit
 
+/// Delegate object supplying content for a `TAPoseView` instance
 public protocol TAPoseViewDelegate: class {
+
+    /// Color to draw a body point
+    ///
+    /// - Parameter bodyPart: The body point for which a color is needed
+    /// - Returns: The color to render the body part
     func color(for bodyPart: TABodyPart) -> UIColor?
+
+    /// Human-readable string for a given body part
+    ///
+    /// - Parameter bodyPart: The body part for which a string is needed
+    /// - Returns: A human-readable string for the given body part (e.g. "Left Hand")
     func string(for bodyPart: TABodyPart) -> String?
+
 }
 
+/// View showing body points of a user as well as lines connecting joints between body points
 public class TAPoseView: UIView {
     
     // MARK: - Properties
@@ -23,6 +36,12 @@ public class TAPoseView: UIView {
 
     // MARK: - Initialization
 
+    /// Create an new instance of `TAPoseView`
+    ///
+    /// - Parameters:
+    ///   - model: The model supplying data when the view is rendered
+    ///   - delegate: An optional delegate object supplying additional data to render the view
+    ///   - jointLineColor: The color that should be used when drawing lines between body parts
     public init(model: TAPoseViewModel, delegate: TAPoseViewDelegate?, jointLineColor: UIColor) {
         self.model = model
         self.delegate = delegate
@@ -58,12 +77,17 @@ public class TAPoseView: UIView {
 
     // MARK: - Public Functions
 
+    /// Configure the view with a new model
+    ///
+    /// - Parameter model: The model supplying data when the view is rendered
     public func configure(with model: TAPoseViewModel) {
         self.model = model
         setNeedsDisplay()
         drawKeypoints(with: model.bodyPoints)
     }
 
+    /// Call this function once when you are ready to add the `TAPoseView` to a superview,
+    /// in order to setup subviews and correctly render content
     public func setupOutputComponent() {
         for view in views {
             view.removeFromSuperview()

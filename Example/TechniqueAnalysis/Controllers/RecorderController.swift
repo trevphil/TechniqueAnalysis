@@ -9,6 +9,8 @@
 import UIKit
 import AVKit
 
+/// Controller which allows a user to take a video of himself,
+/// which can then be analyzed for technique
 class RecorderController: UIViewController {
 
     // MARK: - Properties
@@ -23,6 +25,9 @@ class RecorderController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `RecorderController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: RecorderModel,
          onVideoRecorded: @escaping ((URL) -> Void)) {
         self.model = model

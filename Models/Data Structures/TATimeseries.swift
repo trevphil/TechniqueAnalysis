@@ -8,24 +8,41 @@
 import Foundation
 import CoreML
 
+/// Error condition thrown by `TATimeseries`
 public enum TATimeseriesError: Error {
     case invalidShapeError(String)
     case indexOutOfBoundsError(String)
 }
 
+/// The core unit of computation for algorithmic operations comparing various timeseries.
+/// Each `TATimeseries` can be thought of as mapping to a video of a user performing some
+/// exercise, and once the video has been processed, relevant data about body posture is *here*.
 public struct TATimeseries: Codable {
 
     // MARK: - Properties
 
+    /// The timeseries data, a 2D array where each outer index represents a sample point in time
+    /// and gives an array of `TAPointEstimate` objects. Thus, each inner index is an array with
+    /// data about the position and confidence level of various body parts at a point in time.
     public let data: [[TAPointEstimate]]
+
+    /// Metadata about the timeseries. Useful for tracking if it is labeled or unlabeled data,
+    /// as well as the exercise name, camera angle, etc.
     public let meta: TAMeta
 
+    /// The number of time samples contained in this `TATimeseries` object
     public var numSamples: Int {
         return data.count
     }
 
+    /// Attempts to generate a new timeseries reflected across the y-axis if the camera angle of
+    /// the current timeseries is `left` or `right`
+    ///
+    /// - Note: This is useful, for example, because when constructing a labeled data set, you
+    ///         need only get data for either `left` or `right` and then take the reflection to
+    ///         get the opposite camera angle as well
     public var reflected: TATimeseries? {
-        guard let oppositeAngle = meta.angle.opposite else {
+        guard let oppositeAngle = meta.angle.oppositeSide else {
             return nil
         }
 
@@ -50,6 +67,13 @@ public struct TATimeseries: Codable {
 
     // MARK: - Initialization
 
+    /// Create a new `TATimeseries` object
+    ///
+    /// - Parameters:
+    ///   - data: An array of `MLMultiArray` objects derived from CoreVision requests
+    ///           using the CPM or Hourglass ML models, with data about a user's posture
+    ///   - meta: Metadata describing the timeseries to be created
+    /// - Throws: `TATimeseriesError` if the `MLMultiArray`s had an invalid shape
     public init(data: [MLMultiArray], meta: TAMeta) throws {
         let compressed = data.compactMap { TATimeseries.compress($0) }
         let validData = compressed.count > 0 && compressed.count == data.count
@@ -63,6 +87,13 @@ public struct TATimeseries: Codable {
         self.meta = meta
     }
 
+    /// Create a new `TATimeseries` object
+    ///
+    /// - Parameters:
+    ///   - data: A 2D array where each outer index is a point in time, and each inner array
+    ///           is an array of `TAPointEstimate` objects for various body parts
+    ///   - meta: Metadata describing the timeseries to be created
+    /// - Throws: `TATimeseriesError` if `data` is empty
     public init(data: [[TAPointEstimate]], meta: TAMeta) throws {
         guard data.count > 0 else {
             let message = "Timeseries initialized with empty data"
@@ -75,6 +106,11 @@ public struct TATimeseries: Codable {
 
     // MARK: - Public Functions
 
+    /// Retrieves a "time slice" at a point in time of the predicted locations of a user's body points
+    ///
+    /// - Parameter index: The sample point in time
+    /// - Returns: An array of `TAPointEstimate` objects, one for each body point predicted by ML
+    /// - Throws: `TATimeseriesError` if the requested sample time is out of bounds
     public func timeSlice(forSample index: Int) throws -> [TAPointEstimate] {
         guard let slice = data.element(atIndex: index) else {
             let message = "Index \(index) is not within the number of samples for the timeseries"

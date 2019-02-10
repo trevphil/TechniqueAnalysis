@@ -8,15 +8,27 @@
 import Foundation
 import CoreML
 
+/// View model used in conjunction with `TAPoseView` to show a user's posture
 public struct TAPoseViewModel {
 
     // MARK: - Properties
 
     private let confidenceThreshold: Double
+    /// An array of `TAPointEstimate` objects, one for each body parts. These objects
+    /// are used by `TAPoseView` while rendering content.
     public let bodyPoints: [TAPointEstimate]
 
     // MARK: - Initialization
 
+    /// Creates a new `TAPoseViewModel` instance
+    ///
+    /// - Parameters:
+    ///   - heatmap: The relevant data for the model. You can use the argument given from
+    ///              `TAPoseEstimationDelegate` `visionRequestDidComplete(heatmap:)` to
+    ///              initialize a new instance.
+    ///   - confidenceThreshold: The minimum confidence allowed. Any point estimates which
+    ///                          have a confidence below this threshold will not be rendered.
+    /// - Note: Initialization fails if the given heatmap has an incompatible shape
     public init?(heatmap: MLMultiArray, confidenceThreshold: Double = 0.5) {
         guard let converted = TATimeseries.compress(heatmap) else {
             return nil
@@ -25,6 +37,12 @@ public struct TAPoseViewModel {
         self.bodyPoints = converted
     }
 
+    /// Creates a new `TAPoseViewModel` instance
+    ///
+    /// - Parameters:
+    ///   - bodyPoints: An array of point estimates, one for each body part
+    ///   - confidenceThreshold: The minimum confidence allowed. Any point estimates which
+    ///                          have a confidence below this threshold will not be rendered.
     public init(bodyPoints: [TAPointEstimate], confidenceThreshold: Double = 0.5) {
         self.confidenceThreshold = confidenceThreshold
         self.bodyPoints = bodyPoints

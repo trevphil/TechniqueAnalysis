@@ -10,8 +10,10 @@ import TechniqueAnalysis
 
 extension TABodyPart {
 
+    /// The color that lines representing "joints" should have on-screen
     static let jointLineColor = UIColor(red: 87.0/255.0, green: 1.0, blue: 211.0/255.0, alpha: 0.5)
 
+    /// Color mapping for each body part
     var color: UIColor {
         switch self {
         case .top:
@@ -45,6 +47,7 @@ extension TABodyPart {
         }
     }
 
+    /// String mapping for each body part
     var asString: String {
         switch self {
         case .top:

@@ -9,10 +9,18 @@
 import Foundation
 import TechniqueAnalysis
 
+/// Assistant for converting between filenames and `TAMeta` objects
 struct FileNamer {
 
     // MARK: - Exposed Functions
 
+    /// Converts a filename into a `TAMeta` object
+    ///
+    /// - Parameters:
+    ///   - filename: The filename to parse
+    ///   - baseURL: The URL path where the file is located (not including the file itself in the URL)
+    ///   - isLabeled: `true` if the file is labeled data and `false` otherwise
+    /// - Returns: A tuple with the newly created `TAMeta` object and the full URL to the corresponding video
     static func meta(from filename: String, baseURL: URL, isLabeled: Bool) -> (url: URL, meta: TAMeta)? {
         let name = noExtension(filename)
         let parts = name.split(separator: "_").map { String($0) }
@@ -21,6 +29,13 @@ struct FileNamer {
             parseUnlabeled(parts: parts, videoName: filename, baseURL: baseURL)
     }
 
+    /// Converts a `TAMeta` object to a filename
+    ///
+    /// - Parameters:
+    ///   - meta: The `TAMeta` object to convert
+    ///   - ext: The desired extension for the filename
+    /// - Returns: The constructed filename
+    /// - Note: This is used by the cache manager to decide how to name the file for a cached timeseries
     static func dataFileName(from meta: TAMeta, ext: String) -> String {
         var parts = [
             meta.exerciseName.replacingOccurrences(of: " ", with: "-").lowercased(),
@@ -35,6 +50,11 @@ struct FileNamer {
         return "\(parts.joined(separator: "_")).\(ext)"
     }
 
+    /// Removes the file extension from a filename
+    ///
+    /// - Parameter filename: The filename from which the extension should be removed
+    /// - Returns: The same filename, but without the extension. Returns `nil` if the file
+    ///            has no extension.
     static func fileExtension(_ filename: String) -> String? {
         guard let index = filename.lastIndex(of: "."),
             index != filename.endIndex else {

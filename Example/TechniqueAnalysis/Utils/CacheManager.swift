@@ -9,8 +9,14 @@
 import Foundation
 import TechniqueAnalysis
 
+/// Manager class for saving/fetching cached `TATimeseries`
 class CacheManager {
 
+    /// Notification when the status of the cache has changed
+    ///
+    /// - processingFinished: Notification that all labeled items have been processed
+    /// - processedItem: Notification that a new labeled item has been processed. Contains
+    ///                  user info `"current"` and `"total"` (both `Int`) for the current progress.
     enum CacheNotification: String, NotificationName {
         case processingFinished = "processed_all_labeled_data"
         case processedItem = "processed_new_labeled_data_item"
@@ -18,13 +24,14 @@ class CacheManager {
 
     // MARK: - Properties
 
-    /// Shared Singleton Instance
+    /// Shared Singleton instance
     static let shared = CacheManager()
 
     private(set) var cached: [TATimeseries]
     private var processingQueue = [(url: URL, meta: TAMeta)]()
     private let processor: TAVideoProcessor?
 
+    /// `true` if the manager has processed all labeled videos, and `false` otherwise
     var processingFinished: Bool {
         return processingQueue.isEmpty && cached.count >= VideoManager.labeledVideos.count
     }
@@ -63,6 +70,10 @@ class CacheManager {
 
     // MARK: - Exposed Functions
 
+    /// Cache a `TATimeseries` in storage. Does not persist if app is deleted.
+    ///
+    /// - Parameter timeseries: The `TATimeseries` to cache
+    /// - Returns: `true` if caching was successful and `false` otherwise
     func cache(_ timeseries: TATimeseries) -> Bool {
         let encoder = JSONEncoder()
         guard let directory = CacheManager.cacheDirectory,
@@ -84,6 +95,7 @@ class CacheManager {
         return true
     }
 
+    /// Process all labeled videos from the resource bundle, if they are not already cached
     func processLabeledVideos() {
         guard processingQueue.isEmpty else {
             print("CacheManager Error: Processing labeled videos is already in progress")

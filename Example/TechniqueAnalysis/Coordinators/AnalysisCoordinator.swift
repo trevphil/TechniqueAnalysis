@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Coordinates flow when picking, recording, and analyzing an exercise video
 class AnalysisCoordinator {
 
     // MARK: - Properties
@@ -26,6 +27,9 @@ class AnalysisCoordinator {
 
     // MARK: - Exposed Functions
 
+    /// Start the flow
+    ///
+    /// - Returns: The "root" view controller of the flow
     func start() -> UIViewController {
         let model = ExerciseSelectionModel()
         navController.title = "Analysis"

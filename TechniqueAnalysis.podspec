@@ -1,42 +1,17 @@
-#
-# Be sure to run `pod lib lint TechniqueAnalysis.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
 
 Pod::Spec.new do |s|
   s.name             = 'TechniqueAnalysis'
   s.version          = '0.1.0'
   s.summary          = 'A CocoaPod to track body motion and analyze exercise technique.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+This is a CocoaPod which processes video footage of a user doing an exercise and provides feedback on the user's form. The general idea is to capture a timeseries, where each data point contains an array of body point locations in 2D space, along with a confidence level on the accuracy of each body point. Timeseries are compared using k-Nearest Neighbor and Dynamic Time Warping to find the nearest neighbor.
                        DESC
-
   s.homepage         = 'https://github.com/trevphil/TechniqueAnalysis'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'trevphil' => 'cheezemaker37@gmail.com' }
+  s.author           = { 'trevphil' => 'trevor.j.phillips@uconn.edu' }
   s.source           = { :git => 'https://github.com/trevphil/TechniqueAnalysis.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
-  s.ios.deployment_target = '11.0'
-
-  s.source_files = 'TechniqueAnalysis/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'TechniqueAnalysis' => ['TechniqueAnalysis/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.swift_version 	 = '4.2'
+  s.platform = :ios, '11.0'
+  s.source_files = 'Models/**/*', 'Utils/**/*', 'Views/**/*'
+  s.frameworks = 'UIKit', 'AVKit', 'CoreML', 'AVFoundation', 'Vision', 'CoreMedia'
 end

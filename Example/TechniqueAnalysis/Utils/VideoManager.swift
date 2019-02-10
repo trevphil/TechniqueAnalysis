@@ -9,6 +9,7 @@
 import Foundation
 import TechniqueAnalysis
 
+/// Manager of unlabeled and labeled videos included in the example project
 struct VideoManager {
 
     // MARK: - Properties
@@ -17,10 +18,12 @@ struct VideoManager {
         "avi", "flv", "wmv", "mov", "mp4"
     ]
 
+    /// An array of tuples with URLs of labeled videos, and their corresponding metadata
     static let labeledVideos: [(url: URL, meta: TAMeta)] = {
         return VideoManager.getLabeledVideos()
     }()
 
+    /// An array of tuples with URLs of unlabeled videos, and their corresponding metadata
     static let unlabeledVideos: [(url: URL, meta: TAMeta)] = {
         return VideoManager.getUnlabeledVideos()
     }()

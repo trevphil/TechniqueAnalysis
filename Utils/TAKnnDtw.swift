@@ -7,19 +7,35 @@
 
 import Foundation
 
+/// Error condition thrown by `TAKnnDtw`
 public enum TAKnnDtwError: Error {
     case shapeMismatchError
 }
 
+/// A wrapper struct for using the k-Nearest Neighbor (kNN)
+/// Dynamic Time Warping (DTW) algorithm with configurable parameters
 public struct TAKnnDtw {
 
     // MARK: - Properties
 
+    /// The warping window used by the algorithm. Smaller values imply a closer fit
+    /// between the timeseries being compared and will speed up runtime. Smaller values
+    /// may also actually improve algorithm accuracy (up to a point, otherwise accuracy
+    /// begins to degrade quite rapidly).
     public let warpingWindow: Int
+    
+    /// The minimum confidence allowed for two `TAPointEstimate` objects being compared
+    /// by the algorithm. If either point falls short of the threshold, the comparison
+    /// is discarded.
     public let minConfidence: Double
 
     // MARK: - Initialization
 
+    /// Create a new instance of the kNN DTW algorithm
+    ///
+    /// - Parameters:
+    ///   - warpingWindow: The warping window used by the algorithm
+    ///   - minConfidence: The minimum confidence allowed for two `TAPointEstimate` objects being compared by the algorithm.
     public init(warpingWindow: Int, minConfidence: Double) {
         self.warpingWindow = warpingWindow
         self.minConfidence = minConfidence
@@ -27,6 +43,16 @@ public struct TAKnnDtw {
 
     // MARK: - Public Functions
 
+    /// Determine the distances between some unknown timeseries and an array of known items
+    ///
+    /// - Parameters:
+    ///   - unknownItem: The `TATimeseries` object which will be compared with `knownItems`
+    ///   - knownItems: An array of labeled, known data (`TATimeseries` objects)
+    /// - Returns: Returns an array containing tuples where each tuple maps to an item from the original
+    ///            `knownItems` parameter plus its score with respect to "distance" from the unknown series.
+    ///            The returned array is sorted from smallest to greatest score. Lower score implies closer distance.
+    /// - Warning: This function will likely take non-trivial time to execute (depending on the number of items
+    ///            passed in `knownItems`), so you probably want to execute this off of the main queue.
     public func nearestNeighbors(unknownItem: TATimeseries,
                                  knownItems: [TATimeseries]) -> [(score: Double, series: TATimeseries)] {
         var rankings = [(score: Double, series: TATimeseries)]()

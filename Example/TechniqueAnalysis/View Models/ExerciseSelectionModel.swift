@@ -8,21 +8,37 @@
 
 import Foundation
 
+/// Delegate object which responds to events from `ExerciseSelectionModel`
 protocol ExerciseSelectionModelDelegate: class {
+
+    /// Called on the main queue when an item from the labeled data set has been processed
+    ///
+    /// - Parameters:
+    ///   - itemIndex: The index of the item which was processed
+    ///   - total: The total number of items being processed
     func didProcess(_ itemIndex: Int, outOf total: Int)
+
+    /// Alerts the delegate on the main queue, that all labeled data has been processed
     func didFinishProcessing()
+
 }
 
+/// Model which allows a user to pick an exercise that they want to videotape and analyze
 class ExerciseSelectionModel {
 
     // MARK: - Properties
 
+    /// The model's title
     let title: String
+    /// A list of exercises that the user can choose from, to be analyzed
     let availableExercises: [String]
-    private var processingFinishedObserver: NSObjectProtocol?
-    private var itemProcessedObserver: NSObjectProtocol?
+    /// A delegate object responding to this model's events
     weak var delegate: ExerciseSelectionModelDelegate?
 
+    private var processingFinishedObserver: NSObjectProtocol?
+    private var itemProcessedObserver: NSObjectProtocol?
+
+    /// `true` if processing of the labeled dataset has not finished, and `false` otherwise
     var shouldWaitForProcessing: Bool {
         return !CacheManager.shared.processingFinished
     }
@@ -45,6 +61,7 @@ class ExerciseSelectionModel {
 
     // MARK: - Exposed Functions
 
+    /// Process the labeled video dataset if necessary
     func processLabeledVideosIfNeeded() {
         if shouldWaitForProcessing {
             CacheManager.shared.processLabeledVideos()

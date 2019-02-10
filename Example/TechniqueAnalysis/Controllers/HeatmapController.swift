@@ -8,6 +8,7 @@
 import UIKit
 import TechniqueAnalysis
 
+/// Controller which shows a heatmap of the user's body in real time
 class HeatmapController: UIViewController {
 
     // MARK: - Properties
@@ -18,6 +19,9 @@ class HeatmapController: UIViewController {
 
     // MARK: - Initialization
 
+    /// Create a new instance of `HeatmapController`
+    ///
+    /// - Parameter model: The model used to configure the instance
     init(model: HeatmapModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
