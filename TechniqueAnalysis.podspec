@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TechniqueAnalysis'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'A CocoaPod to track body motion and analyze exercise technique.'
   s.description      = <<-DESC
 This is a CocoaPod which processes video footage of a user doing an exercise and provides feedback on the user's form. The general idea is to capture a timeseries, where each data point contains an array of body point locations in 2D space, along with a confidence level on the accuracy of each body point. Timeseries are compared using k-Nearest Neighbor and Dynamic Time Warping to find the nearest neighbor.
