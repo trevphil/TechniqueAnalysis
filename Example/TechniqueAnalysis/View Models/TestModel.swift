@@ -154,6 +154,8 @@ class TestModel {
 
         if let filter = exerciseFilter {
             known = known.filter { $0.meta.exerciseName == filter }
+        } else {
+            known = known.filter { $0.meta.exerciseName == unknown.meta.exerciseName }
         }
 
         let testIndex = testCaseIndex
@@ -180,12 +182,33 @@ class TestModel {
             return
         }
 
-        let correctExercises = Double(testCases.filter({ $0.predictedCorrectExercise == true }).count)
-        let correctOverall = Double(testCases.filter({ $0.predictedCorrectOverall == true }).count)
+        let correctExercises = testCases.filter({ $0.predictedCorrectExercise == true })
+        let correctOverall = testCases.filter({ $0.predictedCorrectOverall == true })
+        let correctScores = correctOverall.compactMap({ $0.predictionScore }).map({ Int($0) }).sorted()
+        let correctDiffRunnerUp = (0..<correctScores.count).map { idx in
+            // swiftlint:disable:next force_unwrapping
+            correctScores[idx] - Int(correctOverall[idx].runnerUpScore!)
+        }
+        let minScoreCorrect = correctOverall.compactMap({ $0.predictionScore }).min() ?? Double.nan
+        let maxScoreCorrect = correctOverall.compactMap({ $0.predictionScore }).max() ?? Double.nan
+        let incorrectOverall = testCases.filter({ $0.predictedCorrectOverall == false })
+        let incorrectScores = incorrectOverall.compactMap({ $0.predictionScore }).map({ Int($0) }).sorted()
+        let incorrectDiffRunnerUp = (0..<incorrectScores.count).map { idx in
+            // swiftlint:disable:next force_unwrapping
+            incorrectScores[idx] - Int(incorrectOverall[idx].runnerUpScore!)
+        }
+        let minScoreIncorrect = incorrectOverall.compactMap({ $0.predictionScore }).min() ?? Double.nan
+        let maxScoreIncorrect = incorrectOverall.compactMap({ $0.predictionScore }).max() ?? Double.nan
         let total = Double(testCases.count)
         print("\n-------------- FINISHED TESTING (\(Int(total)) total) --------------")
-        print("\(Int(round(correctExercises / total * 100.0)))% classified into correct exercise.")
-        print("\(Int(round(correctOverall / total * 100.0)))% classified perfectly.")
+        print("\(Int(round(Double(correctExercises.count) / total * 100.0)))% classified into correct exercise.")
+        print("\(Int(round(Double(correctOverall.count) / total * 100.0)))% classified perfectly.\n")
+        print("For items classified perfectly, min_distance=\(Int(minScoreCorrect)) " +
+            "and max_distance=\(Int(maxScoreCorrect))\n\tdistances=\(correctScores)")
+        print("\tdiff_to_runner_up=\(correctDiffRunnerUp)\n")
+        print("For items classified NOT perfectly, min_distance=\(Int(minScoreIncorrect)) " +
+            "and max_distance=\(Int(maxScoreIncorrect))\n\tdistances=\(incorrectScores)")
+        print("\tdiff_to_runner_up=\(incorrectDiffRunnerUp)\n")
         print("Params: \(Params.debugDescription)\n")
     }
 

@@ -194,6 +194,7 @@ class CacheManager {
             print("Loaded from cache: \(filename)")
         }
 
+        print("\(decodedSeries.count) items loaded from cache")
         return decodedSeries
     }
 

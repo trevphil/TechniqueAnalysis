@@ -18,8 +18,6 @@ class TestResultCell: UITableViewCell {
     static let identifier = "TestResultCell"
     @IBOutlet private weak var exerciseNameLabel: UILabel!
     @IBOutlet private weak var exerciseDetailLabel: UILabel!
-    @IBOutlet private weak var correctExerciseLabel: UILabel!
-    @IBOutlet private weak var correctExerciseIcon: UILabel!
     @IBOutlet private weak var correctOverallLabel: UILabel!
     @IBOutlet private weak var correctOverallIcon: UILabel!
     @IBOutlet private weak var scoreLabel: UILabel!
@@ -50,16 +48,8 @@ class TestResultCell: UITableViewCell {
         "(\(testResult.testMeta.angle.rawValue.capitalized))"
         exerciseDetailLabel.text = testResult.testMeta.exerciseDetail
 
-        if let correctExercise = testResult.predictedCorrectExercise {
-            correctExerciseLabel.text = "Correct\nExercise"
-            correctExerciseIcon.text = correctExercise ? "✅" : "❌"
-        } else {
-            correctExerciseLabel.text = ""
-            correctExerciseIcon.text = ""
-        }
-
         if let correctOverall = testResult.predictedCorrectOverall {
-            correctOverallLabel.text = "Correct\nOverall"
+            correctOverallLabel.text = "Correctly\nClassified"
             correctOverallIcon.text = correctOverall ? "✅" : "❌"
         } else {
             correctOverallLabel.text = ""

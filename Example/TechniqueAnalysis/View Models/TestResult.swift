@@ -52,9 +52,7 @@ class TestResult {
             return nil
         }
 
-        return correctExercise &&
-            testMeta.exerciseDetail == predictionMeta.exerciseDetail &&
-            testMeta.angle == predictionMeta.angle
+        return correctExercise && testMeta.exerciseDetail == predictionMeta.exerciseDetail
     }
 
     // MARK: - Initialization

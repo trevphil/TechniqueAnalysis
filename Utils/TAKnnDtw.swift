@@ -116,7 +116,7 @@ public struct TAKnnDtw {
         }
 
         let numBodyPoints = sliceA.count
-        var distances = Array(repeating: 0.0, count: numBodyPoints)
+        var distances = [Double]()
         for bodyPoint in 0..<numBodyPoints {
             let pointA = sliceA[bodyPoint]
             let pointB = sliceB[bodyPoint]
@@ -125,7 +125,7 @@ public struct TAKnnDtw {
         }
 
         let validNums = distances.filter { !$0.isNaN }
-        let nanFill = mean(validNums) // validNums.max() ?? Double.greatestFiniteMagnitude
+        let nanFill = validNums.max() ?? 0.5
         distances = distances.map { $0.isNaN ? nanFill : $0 }
         return distances.reduce(0, +)
     }
@@ -135,18 +135,6 @@ public struct TAKnnDtw {
             pow(pointB.point.y - pointA.point.y, 2)))
         return pointA.confidence >= minConfidence && pointB.confidence >= minConfidence ?
             euclideanDistance : Double.nan
-    }
-
-    private func mean(_ numbers: [Double]) -> Double {
-        guard !numbers.isEmpty else {
-            return Double.greatestFiniteMagnitude / Double(numbers.count)
-        }
-
-        var total: Double = 0
-        for number in numbers {
-            total += number
-        }
-        return total / Double(numbers.count)
     }
 
 }
