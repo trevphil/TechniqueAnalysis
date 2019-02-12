@@ -125,7 +125,7 @@ public struct TAKnnDtw {
         }
 
         let validNums = distances.filter { !$0.isNaN }
-        let nanFill = validNums.max() ?? Double.greatestFiniteMagnitude
+        let nanFill = mean(validNums) // validNums.max() ?? Double.greatestFiniteMagnitude
         distances = distances.map { $0.isNaN ? nanFill : $0 }
         return distances.reduce(0, +)
     }
@@ -135,6 +135,18 @@ public struct TAKnnDtw {
             pow(pointB.point.y - pointA.point.y, 2)))
         return pointA.confidence >= minConfidence && pointB.confidence >= minConfidence ?
             euclideanDistance : Double.nan
+    }
+
+    private func mean(_ numbers: [Double]) -> Double {
+        guard !numbers.isEmpty else {
+            return Double.greatestFiniteMagnitude / Double(numbers.count)
+        }
+
+        var total: Double = 0
+        for number in numbers {
+            total += number
+        }
+        return total / Double(numbers.count)
     }
 
 }
