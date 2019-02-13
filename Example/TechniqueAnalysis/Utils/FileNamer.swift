@@ -40,7 +40,8 @@ struct FileNamer {
         var parts = [
             meta.exerciseName.replacingOccurrences(of: " ", with: "-").lowercased(),
             meta.exerciseDetail.replacingOccurrences(of: " ", with: "-").lowercased(),
-            meta.angle.rawValue
+            meta.angle.rawValue,
+            UUID().uuidString
         ]
 
         if !meta.isLabeled {

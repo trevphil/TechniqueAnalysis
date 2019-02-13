@@ -27,6 +27,7 @@ class CacheManager {
     /// Shared Singleton instance
     static let shared = CacheManager()
 
+    /// An array of cached `TATimeseries` objects
     private(set) var cached: [TATimeseries]
     private var processingQueue = [(url: URL, meta: TAMeta)]()
     private let processor: TAVideoProcessor?
@@ -157,6 +158,19 @@ class CacheManager {
                                  onFailure: { _ in })
     }
 
+    private static func clearCache() {
+        guard let cacheDirectory = cacheDirectory,
+            let contents = try? FileManager.default.contentsOfDirectory(atPath: cacheDirectory) else {
+                return
+        }
+
+        for cachedItem in contents {
+            if let fullPath = URL(string: cacheDirectory)?.appendingPathComponent(cachedItem, isDirectory: false) {
+                _ = try? FileManager.default.removeItem(at: fullPath)
+            }
+        }
+    }
+
     private static func retrieveCache() -> [TATimeseries] {
         guard let directory = cacheDirectory,
             let cachedFilenames = try? FileManager.default.contentsOfDirectory(atPath: directory).sorted() else {
@@ -179,11 +193,12 @@ class CacheManager {
             print("Loaded from cache: \(filename)")
         }
 
+        print("\(decodedSeries.count) items loaded from cache")
         return decodedSeries
     }
 
     private func generateAndCacheReflections() {
-        let reflections = cached.compactMap({ $0.reflected }).filter { !cache(contains: $0.meta) }
+        let reflections = cached.compactMap({ $0.reflected })
         for reflection in reflections {
             _ = cache(reflection)
         }
