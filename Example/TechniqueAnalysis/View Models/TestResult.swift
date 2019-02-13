@@ -27,32 +27,29 @@ class TestResult {
     /// Metadata extracted from the filename in the original URL
     let testMeta: TAMeta
     /// Metadata of the `TATimeseries` most closely matching that of the test case
-    var predictionMeta: TAMeta?
+    var bestGuessMeta: TAMeta?
     /// The score of the `TATimeseries` most closely matching that of the test case
-    var predictionScore: Double?
+    var bestGuessScore: Double?
     /// Metadata of the `TATimeseries` that came in second place for most closely matching the test case
-    var runnerUpMeta: TAMeta?
+    var secondBestMeta: TAMeta?
     /// The score of the `TATimeseries` that came in second place for most closely matching the test case
-    var runnerUpScore: Double?
+    var secondBestScore: Double?
     /// The status of the test case
     var status: Status = .notStarted
 
-    /// `true` if the test case correctly predicted the *exercise name* of the unknown data, and `false` otherwise
-    var predictedCorrectExercise: Bool? {
-        guard let predictionMeta = predictionMeta else {
+    /// `true` if the test case correctly predicted the unknown data, and `false` otherwise
+    var predictedCorrectly: Bool? {
+        guard let bestGuessMeta = bestGuessMeta else {
             return nil
         }
 
-        return testMeta.exerciseName == predictionMeta.exerciseName
+        return testMeta.exerciseName == bestGuessMeta.exerciseName &&
+            testMeta.exerciseDetail == bestGuessMeta.exerciseDetail
     }
 
-    /// `true` if the test case correctly matched *exactly* the unknown data, and `false` otherwise
-    var predictedCorrectOverall: Bool? {
-        guard let predictionMeta = predictionMeta, let correctExercise = predictedCorrectExercise else {
-            return nil
-        }
-
-        return correctExercise && testMeta.exerciseDetail == predictionMeta.exerciseDetail
+    /// The name of the unknown video being tested
+    var filename: String {
+        return url.lastPathComponent
     }
 
     // MARK: - Initialization

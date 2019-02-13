@@ -69,7 +69,7 @@ extension AnalysisController: AnalysisModelDelegate {
 
     func didAnalyze(with result: TestResult) {
         loadingSpinner.isHidden = true
-        formSuggestionLabel.text = result.predictionMeta?.exerciseDetail ?? "(No Prediction)"
+        formSuggestionLabel.text = result.bestGuessMeta?.exerciseDetail ?? "(No Prediction)"
     }
 
 }

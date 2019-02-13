@@ -18,7 +18,7 @@ The ML frameworks compatible with CoreML on iOS (e.g. [scikit-learn](https://sci
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example project, clone the repo, and run `pod install` from the Example directory first. You should use Xcode's **Legacy Build System** to correctly include the videos in Bundle Resources (File → Workspace Settings → Shared Workspace Settings → Build System).
 
 ![demo](https://trevphil.com/assets/ta_demo.png)
 

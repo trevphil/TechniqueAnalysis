@@ -48,18 +48,23 @@ public struct TAKnnDtw {
     /// - Parameters:
     ///   - unknownItem: The `TATimeseries` object which will be compared with `knownItems`
     ///   - knownItems: An array of labeled, known data (`TATimeseries` objects)
+    ///   - relevantBodyParts: A list of body parts which should be considered when computing the distances
+    ///                        between timeseries. All other body parts will be ignored. By omitting this
+    ///                        parameter, all body parts will be considered.
     /// - Returns: Returns an array containing tuples where each tuple maps to an item from the original
     ///            `knownItems` parameter plus its score with respect to "distance" from the unknown series.
     ///            The returned array is sorted from smallest to greatest score. Lower score implies closer distance.
     /// - Warning: This function will likely take non-trivial time to execute (depending on the number of items
     ///            passed in `knownItems`), so you probably want to execute this off of the main queue.
     public func nearestNeighbors(unknownItem: TATimeseries,
-                                 knownItems: [TATimeseries]) -> [(score: Double, series: TATimeseries)] {
+                                 knownItems: [TATimeseries],
+                                 relevantBodyParts: [TABodyPart] = TABodyPart.allCases) -> [(score: Double, series: TATimeseries)] {
+        let bodyPartsRaw = relevantBodyParts.map { $0.rawValue }
         var rankings = [(score: Double, series: TATimeseries)]()
         
         for known in knownItems {
             do {
-                let score = try distance(timeseriesA: unknownItem, timeseriesB: known)
+                let score = try distance(timeseriesA: unknownItem, timeseriesB: known, relevantBodyParts: bodyPartsRaw)
                 rankings.append((score, known))
             } catch {
                 print("Error while comparing timeseries: \(error)")
@@ -71,7 +76,9 @@ public struct TAKnnDtw {
 
     // MARK: - Private Functions
 
-    private func distance(timeseriesA: TATimeseries, timeseriesB: TATimeseries) throws -> Double {
+    private func distance(timeseriesA: TATimeseries,
+                          timeseriesB: TATimeseries,
+                          relevantBodyParts: [Int]) throws -> Double {
         let numRows = timeseriesA.numSamples
         let numCols = timeseriesB.numSamples
         let sampleCol = Array(repeating: Double.greatestFiniteMagnitude, count: numCols)
@@ -79,17 +86,17 @@ public struct TAKnnDtw {
 
         let firstSliceA = try timeseriesA.timeSlice(forSample: 0)
         let firstSliceB = try timeseriesB.timeSlice(forSample: 0)
-        cost[0][0] = try distance(sliceA: firstSliceA, sliceB: firstSliceB)
+        cost[0][0] = try distance(sliceA: firstSliceA, sliceB: firstSliceB, relevantBodyParts: relevantBodyParts)
 
         for rowIndex in 1..<numRows {
             let sliceA = try timeseriesA.timeSlice(forSample: rowIndex)
-            let dist = try distance(sliceA: sliceA, sliceB: firstSliceB)
+            let dist = try distance(sliceA: sliceA, sliceB: firstSliceB, relevantBodyParts: relevantBodyParts)
             cost[rowIndex][0] = cost[rowIndex - 1][0] + dist
         }
 
         for colIndex in 1..<numCols {
             let sliceB = try timeseriesB.timeSlice(forSample: colIndex)
-            let dist = try distance(sliceA: firstSliceA, sliceB: sliceB)
+            let dist = try distance(sliceA: firstSliceA, sliceB: sliceB, relevantBodyParts: relevantBodyParts)
             cost[0][colIndex] = cost[0][colIndex - 1] + dist
         }
 
@@ -102,7 +109,7 @@ public struct TAKnnDtw {
                 ]
                 let sliceA = try timeseriesA.timeSlice(forSample: row)
                 let sliceB = try timeseriesB.timeSlice(forSample: col)
-                let dist = try distance(sliceA: sliceA, sliceB: sliceB)
+                let dist = try distance(sliceA: sliceA, sliceB: sliceB, relevantBodyParts: relevantBodyParts)
                 cost[row][col] = (choices.min() ?? 0) + dist
             }
         }
@@ -110,7 +117,9 @@ public struct TAKnnDtw {
         return cost.last?.last ?? Double.greatestFiniteMagnitude
     }
 
-    private func distance(sliceA: [TAPointEstimate], sliceB: [TAPointEstimate]) throws -> Double {
+    private func distance(sliceA: [TAPointEstimate],
+                          sliceB: [TAPointEstimate],
+                          relevantBodyParts: [Int]) throws -> Double {
         guard sliceA.count == sliceB.count else {
             throw TAKnnDtwError.shapeMismatchError
         }
@@ -118,6 +127,10 @@ public struct TAKnnDtw {
         let numBodyPoints = sliceA.count
         var distances = [Double]()
         for bodyPoint in 0..<numBodyPoints {
+            guard relevantBodyParts.contains(bodyPoint) else {
+                continue
+            }
+
             let pointA = sliceA[bodyPoint]
             let pointB = sliceB[bodyPoint]
             let dist = distance(pointA: pointA, pointB: pointB)
@@ -125,7 +138,7 @@ public struct TAKnnDtw {
         }
 
         let validNums = distances.filter { !$0.isNaN }
-        let nanFill = validNums.max() ?? 0.5
+        let nanFill = validNums.max() ?? 1.0
         distances = distances.map { $0.isNaN ? nanFill : $0 }
         return distances.reduce(0, +)
     }

@@ -45,7 +45,6 @@ class TestModel {
     private let selectedTimeseries = 0
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
-    private var exerciseFilter: String?
     private var testCaseIndex = 0
     /// An array of test cases which can be used to configure UI components
     private(set) var testCases: [TestResult]
@@ -74,14 +73,9 @@ class TestModel {
     ///   - testCases: The test cases that the model should use when testing
     ///   - printStats: `true` if the model should print total statistics on failure and
     ///                 success rates at the end of testing, and `false` if it should be quiet
-    ///   - exerciseFilter: An optional filter to use when comparing timeseries. If a filter is
-    ///                     given, the unknown data (test cases) will only be compared against
-    ///                     known, labeled data with a matching exercise name as the filter.
-    ///                     This is useful if you already know the exercise of the unknown data.
-    init(testCases: [TestResult], printStats: Bool, exerciseFilter: String? = nil) {
+    init(testCases: [TestResult], printStats: Bool) {
         self.title = "Tests"
         self.printStats = printStats
-        self.exerciseFilter = exerciseFilter
         self.testCases = testCases
 
         do {
@@ -152,21 +146,17 @@ class TestModel {
             return
         }
 
-        if let filter = exerciseFilter {
-            known = known.filter { $0.meta.exerciseName == filter }
-        } else {
-            known = known.filter { $0.meta.exerciseName == unknown.meta.exerciseName }
-        }
-
+        known = known.filter { $0.meta.exerciseName == unknown.meta.exerciseName }
         let testIndex = testCaseIndex
 
         algoQueue.async { [weak self] in
-            if let results = self?.algo.nearestNeighbors(unknownItem: unknown, knownItems: known) {
-                self?.testCases.element(atIndex: testIndex)?.predictionScore = results.element(atIndex: 0)?.score
-                self?.testCases.element(atIndex: testIndex)?.predictionMeta = results.element(atIndex: 0)?.series.meta
-                self?.testCases.element(atIndex: testIndex)?.runnerUpScore = results.element(atIndex: 1)?.score
-                self?.testCases.element(atIndex: testIndex)?.runnerUpMeta = results.element(atIndex: 1)?.series.meta
-                self?.testCases.element(atIndex: testIndex)?.status = .finished
+            if let results = self?.algo.nearestNeighbors(unknownItem: unknown, knownItems: known),
+                let testCase = self?.testCases.element(atIndex: testIndex) {
+                testCase.bestGuessScore = results.element(atIndex: 0)?.score
+                testCase.bestGuessMeta = results.element(atIndex: 0)?.series.meta
+                testCase.secondBestScore = results.element(atIndex: 1)?.score
+                testCase.secondBestMeta = results.element(atIndex: 1)?.series.meta
+                testCase.status = .finished
                 if testIndex == (self?.testCases.count ?? 0) - 1 {
                     self?.printTestStatistics()
                 }
@@ -182,34 +172,10 @@ class TestModel {
             return
         }
 
-        let correctExercises = testCases.filter({ $0.predictedCorrectExercise == true })
-        let correctOverall = testCases.filter({ $0.predictedCorrectOverall == true })
-        let correctScores = correctOverall.compactMap({ $0.predictionScore }).map({ Int($0) }).sorted()
-        let correctDiffRunnerUp = (0..<correctScores.count).map { idx in
-            // swiftlint:disable:next force_unwrapping
-            correctScores[idx] - Int(correctOverall[idx].runnerUpScore!)
-        }
-        let minScoreCorrect = correctOverall.compactMap({ $0.predictionScore }).min() ?? Double.nan
-        let maxScoreCorrect = correctOverall.compactMap({ $0.predictionScore }).max() ?? Double.nan
-        let incorrectOverall = testCases.filter({ $0.predictedCorrectOverall == false })
-        let incorrectScores = incorrectOverall.compactMap({ $0.predictionScore }).map({ Int($0) }).sorted()
-        let incorrectDiffRunnerUp = (0..<incorrectScores.count).map { idx in
-            // swiftlint:disable:next force_unwrapping
-            incorrectScores[idx] - Int(incorrectOverall[idx].runnerUpScore!)
-        }
-        let minScoreIncorrect = incorrectOverall.compactMap({ $0.predictionScore }).min() ?? Double.nan
-        let maxScoreIncorrect = incorrectOverall.compactMap({ $0.predictionScore }).max() ?? Double.nan
-        let total = Double(testCases.count)
-        print("\n-------------- FINISHED TESTING (\(Int(total)) total) --------------")
-        print("\(Int(round(Double(correctExercises.count) / total * 100.0)))% classified into correct exercise.")
-        print("\(Int(round(Double(correctOverall.count) / total * 100.0)))% classified perfectly.\n")
-        print("For items classified perfectly, min_distance=\(Int(minScoreCorrect)) " +
-            "and max_distance=\(Int(maxScoreCorrect))\n\tdistances=\(correctScores)")
-        print("\tdiff_to_runner_up=\(correctDiffRunnerUp)\n")
-        print("For items classified NOT perfectly, min_distance=\(Int(minScoreIncorrect)) " +
-            "and max_distance=\(Int(maxScoreIncorrect))\n\tdistances=\(incorrectScores)")
-        print("\tdiff_to_runner_up=\(incorrectDiffRunnerUp)\n")
-        print("Params: \(Params.debugDescription)\n")
+        let logger = StatisticsLogger(testResults: testCases, labeledSeries: labeledSeries ?? [])
+        logger.printResults()
+        logger.simulateAndPrintRandomSelection()
+        logger.simulateAndPrintMostCommon()
     }
 
     private func subscribeToCacheNotifications() {

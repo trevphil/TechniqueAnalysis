@@ -93,7 +93,6 @@
 		6956AE0E2212BEE900CA1827 /* pull-up_not-low_front_0.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADD72212BEE100CA1827 /* pull-up_not-low_front_0.mov */; };
 		6956AE0F2212BEE900CA1827 /* bw-squat_correct_left_2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADD82212BEE100CA1827 /* bw-squat_correct_left_2.mov */; };
 		6956AE102212BEE900CA1827 /* bw-squat_not-low_front_1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADD92212BEE200CA1827 /* bw-squat_not-low_front_1.mov */; };
-		6956AE132212BEE900CA1827 /* pull-up_chin-below-bar_back_1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADDC2212BEE300CA1827 /* pull-up_chin-below-bar_back_1.mov */; };
 		6956AE142212BEE900CA1827 /* pull-up_chin-below-bar_front_2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADDD2212BEE300CA1827 /* pull-up_chin-below-bar_front_2.mov */; };
 		6956AE162212BEE900CA1827 /* push-up_upper-body-first_left_2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADDF2212BEE500CA1827 /* push-up_upper-body-first_left_2.mov */; };
 		6956AE172212BEE900CA1827 /* push-up_correct_left_1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADE02212BEE500CA1827 /* push-up_correct_left_1.mov */; };
@@ -101,6 +100,7 @@
 		6956AE192212BEE900CA1827 /* push-up_correct_front_2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADE22212BEE600CA1827 /* push-up_correct_front_2.mov */; };
 		6956AE1A2212BEE900CA1827 /* pull-up_correct_front_1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADE32212BEE600CA1827 /* pull-up_correct_front_1.mov */; };
 		6956AE1F2212BEE900CA1827 /* bw-squat_not-low_front_0.mov in Resources */ = {isa = PBXBuildFile; fileRef = 6956ADE82212BEE900CA1827 /* bw-squat_not-low_front_0.mov */; };
+		697D2C452214185800FFAF16 /* StatisticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697D2C442214185800FFAF16 /* StatisticsLogger.swift */; };
 		698CBB61220C62B300C60015 /* RecorderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB60220C62B300C60015 /* RecorderModel.swift */; };
 		698CBB63220C62CA00C60015 /* HeatmapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB62220C62CA00C60015 /* HeatmapModel.swift */; };
 		698CBB65220C62F600C60015 /* JointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698CBB64220C62F600C60015 /* JointModel.swift */; };
@@ -215,7 +215,6 @@
 		6956ADD72212BEE100CA1827 /* pull-up_not-low_front_0.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "pull-up_not-low_front_0.mov"; sourceTree = "<group>"; };
 		6956ADD82212BEE100CA1827 /* bw-squat_correct_left_2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "bw-squat_correct_left_2.mov"; sourceTree = "<group>"; };
 		6956ADD92212BEE200CA1827 /* bw-squat_not-low_front_1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "bw-squat_not-low_front_1.mov"; sourceTree = "<group>"; };
-		6956ADDC2212BEE300CA1827 /* pull-up_chin-below-bar_back_1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "pull-up_chin-below-bar_back_1.mov"; sourceTree = "<group>"; };
 		6956ADDD2212BEE300CA1827 /* pull-up_chin-below-bar_front_2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "pull-up_chin-below-bar_front_2.mov"; sourceTree = "<group>"; };
 		6956ADDF2212BEE500CA1827 /* push-up_upper-body-first_left_2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "push-up_upper-body-first_left_2.mov"; sourceTree = "<group>"; };
 		6956ADE02212BEE500CA1827 /* push-up_correct_left_1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "push-up_correct_left_1.mov"; sourceTree = "<group>"; };
@@ -223,6 +222,7 @@
 		6956ADE22212BEE600CA1827 /* push-up_correct_front_2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "push-up_correct_front_2.mov"; sourceTree = "<group>"; };
 		6956ADE32212BEE600CA1827 /* pull-up_correct_front_1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "pull-up_correct_front_1.mov"; sourceTree = "<group>"; };
 		6956ADE82212BEE900CA1827 /* bw-squat_not-low_front_0.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "bw-squat_not-low_front_0.mov"; sourceTree = "<group>"; };
+		697D2C442214185800FFAF16 /* StatisticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsLogger.swift; sourceTree = "<group>"; };
 		698CBB60220C62B300C60015 /* RecorderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderModel.swift; sourceTree = "<group>"; };
 		698CBB62220C62CA00C60015 /* HeatmapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapModel.swift; sourceTree = "<group>"; };
 		698CBB64220C62F600C60015 /* JointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointModel.swift; sourceTree = "<group>"; };
@@ -282,7 +282,6 @@
 				6956ADCA2212BEDB00CA1827 /* bw-squat_not-low_right_0.mov */,
 				6956ADB62212BED100CA1827 /* bw-squat_round-back_front_2.mov */,
 				0F55CE752203B11700CAF55B /* pull-up_chin-below-bar_back_0.mov */,
-				6956ADDC2212BEE300CA1827 /* pull-up_chin-below-bar_back_1.mov */,
 				6956ADCC2212BEDC00CA1827 /* pull-up_chin-below-bar_back_2.mov */,
 				0F55CE6F2203B11600CAF55B /* pull-up_chin-below-bar_front_0.mov */,
 				6956ADBE2212BED500CA1827 /* pull-up_chin-below-bar_front_1.mov */,
@@ -355,6 +354,7 @@
 				69E32C902209D68500EF84F0 /* CacheManager.swift */,
 				69E32C922209DDAE00EF84F0 /* FileNamer.swift */,
 				0F7E664C220E2EF4002679BD /* Params.swift */,
+				697D2C442214185800FFAF16 /* StatisticsLogger.swift */,
 				0F55CE942203B2BF00CAF55B /* VideoManager.swift */,
 			);
 			path = Utils;
@@ -641,7 +641,6 @@
 				0F55CEA52203B57E00CAF55B /* test_push-up_correct_front.mov in Resources */,
 				6956ADF12212BEE900CA1827 /* bw-squat_not-low_left_0.mov in Resources */,
 				6956ADF52212BEE900CA1827 /* pull-up_chin-below-bar_front_1.mov in Resources */,
-				6956AE132212BEE900CA1827 /* pull-up_chin-below-bar_back_1.mov in Resources */,
 				0F55CEAA2203B57E00CAF55B /* push-up_correct_left_3.mov in Resources */,
 				0F55CEB22203B58C00CAF55B /* bw-squat_correct_right_0.mov in Resources */,
 				6956ADFB2212BEE900CA1827 /* bw-squat_correct_front_3.mov in Resources */,
@@ -813,6 +812,7 @@
 				0F7E664B220E2C62002679BD /* AnalysisModel.swift in Sources */,
 				698CBB67220C630400C60015 /* RootModel.swift in Sources */,
 				698CBB63220C62CA00C60015 /* HeatmapModel.swift in Sources */,
+				697D2C452214185800FFAF16 /* StatisticsLogger.swift in Sources */,
 				0F7CD87D220E1DE800377061 /* ExerciseSelectionController.swift in Sources */,
 				0F7CD87B220E1D9700377061 /* AnalysisCoordinator.swift in Sources */,
 				69E32C932209DDAE00EF84F0 /* FileNamer.swift in Sources */,

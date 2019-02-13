@@ -16,17 +16,15 @@ class TestResultCell: UITableViewCell {
 
     /// Cell identifier
     static let identifier = "TestResultCell"
-    @IBOutlet private weak var exerciseNameLabel: UILabel!
-    @IBOutlet private weak var exerciseDetailLabel: UILabel!
-    @IBOutlet private weak var correctOverallLabel: UILabel!
-    @IBOutlet private weak var correctOverallIcon: UILabel!
-    @IBOutlet private weak var scoreLabel: UILabel!
-
-    @IBOutlet private weak var predictedExerciseNameLabel: UILabel!
-    @IBOutlet private weak var predictedExerciseDetailLabel: UILabel!
-    @IBOutlet private weak var runnerUpExerciseNameLabel: UILabel!
-    @IBOutlet private weak var runnerUpExerciseDetailLabel: UILabel!
-    @IBOutlet private weak var runnerUpScoreLabel: UILabel!
+    @IBOutlet private weak var filenameLabel: UILabel!
+    @IBOutlet private weak var correctPredictionLabel: UILabel!
+    @IBOutlet private weak var correctPredictionIcon: UILabel!
+    @IBOutlet private weak var bestGuessScoreLabel: UILabel!
+    @IBOutlet private weak var bestGuessExerciseName: UILabel!
+    @IBOutlet private weak var bestGuessExerciseDetail: UILabel!
+    @IBOutlet private weak var secondBestScoreLabel: UILabel!
+    @IBOutlet private weak var secondBestExerciseName: UILabel!
+    @IBOutlet private weak var secondBestExerciseDetail: UILabel!
     @IBOutlet private weak var loadingSpinner: UIActivityIndicatorView!
 
     // MARK: - Exposed Functions
@@ -36,58 +34,56 @@ class TestResultCell: UITableViewCell {
     /// - Parameter testResult: The `TestResult` object with information used to update UI
     func configure(with testResult: TestResult) {
         configureResults(testResult)
-        configurePrediction(testResult.predictionMeta)
-        configureRunnerUp(testResult.runnerUpMeta, runnerUpScore: testResult.runnerUpScore)
+        configurePrediction(testResult.bestGuessMeta)
+        configureSecondBest(testResult.secondBestMeta, secondBestScore: testResult.secondBestScore)
         configureLoadingSpinner(testResult.status)
     }
 
     // MARK: - Private Functions
 
     private func configureResults(_ testResult: TestResult) {
-        exerciseNameLabel.text = "\(testResult.testMeta.exerciseName) " +
-        "(\(testResult.testMeta.angle.rawValue.capitalized))"
-        exerciseDetailLabel.text = testResult.testMeta.exerciseDetail
+        filenameLabel.text = testResult.filename
 
-        if let correctOverall = testResult.predictedCorrectOverall {
-            correctOverallLabel.text = "Correctly\nClassified"
-            correctOverallIcon.text = correctOverall ? "✅" : "❌"
+        if let correctOverall = testResult.predictedCorrectly {
+            correctPredictionLabel.text = "Correctly\nClassified"
+            correctPredictionIcon.text = correctOverall ? "✅" : "❌"
         } else {
-            correctOverallLabel.text = ""
-            correctOverallIcon.text = ""
+            correctPredictionLabel.text = ""
+            correctPredictionIcon.text = ""
         }
 
-        if let score = testResult.predictionScore {
-            scoreLabel.text = "\(Int(score))"
+        if let score = testResult.bestGuessScore {
+            bestGuessScoreLabel.text = "\(Int(score))"
         } else {
-            scoreLabel.text = "--"
+            bestGuessScoreLabel.text = "--"
         }
     }
 
     private func configurePrediction(_ predictionMeta: TAMeta?) {
         if let predictionMeta = predictionMeta {
-            predictedExerciseNameLabel.text = "\(predictionMeta.exerciseName) " +
+            bestGuessExerciseName.text = "\(predictionMeta.exerciseName) " +
             "(\(predictionMeta.angle.rawValue.capitalized))"
-            predictedExerciseDetailLabel.text = predictionMeta.exerciseDetail
+            bestGuessExerciseDetail.text = predictionMeta.exerciseDetail
         } else {
-            predictedExerciseNameLabel.text = ""
-            predictedExerciseDetailLabel.text = ""
+            bestGuessExerciseName.text = ""
+            bestGuessExerciseDetail.text = ""
         }
     }
 
-    private func configureRunnerUp(_ runnerUpMeta: TAMeta?, runnerUpScore: Double?) {
-        if let runnerUpMeta = runnerUpMeta {
-            runnerUpExerciseNameLabel.text = "\(runnerUpMeta.exerciseName) " +
-            "(\(runnerUpMeta.angle.rawValue.capitalized))"
-            runnerUpExerciseDetailLabel.text = runnerUpMeta.exerciseDetail
+    private func configureSecondBest(_ secondBestMeta: TAMeta?, secondBestScore: Double?) {
+        if let secondBestMeta = secondBestMeta {
+            secondBestExerciseName.text = "\(secondBestMeta.exerciseName) " +
+            "(\(secondBestMeta.angle.rawValue.capitalized))"
+            secondBestExerciseDetail.text = secondBestMeta.exerciseDetail
         } else {
-            runnerUpExerciseNameLabel.text = ""
-            runnerUpExerciseDetailLabel.text = ""
+            secondBestExerciseName.text = ""
+            secondBestExerciseDetail.text = ""
         }
 
-        if let runnerUpScore = runnerUpScore {
-            runnerUpScoreLabel.text = "\(Int(runnerUpScore))"
+        if let secondBestScore = secondBestScore {
+            secondBestScoreLabel.text = "\(Int(secondBestScore))"
         } else {
-            runnerUpScoreLabel.text = "--"
+            secondBestScoreLabel.text = "--"
         }
     }
 
