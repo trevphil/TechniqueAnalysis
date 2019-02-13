@@ -56,7 +56,6 @@ class CacheManager {
                                                      attributes: nil)
         }
 
-        // CacheManager.clearCache()
         self.cached = CacheManager.retrieveCache()
 
         do {
