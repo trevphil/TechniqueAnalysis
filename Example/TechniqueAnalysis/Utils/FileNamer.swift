@@ -40,7 +40,7 @@ struct FileNamer {
         var parts = [
             meta.exerciseName.replacingOccurrences(of: " ", with: "-").lowercased(),
             meta.exerciseDetail.replacingOccurrences(of: " ", with: "-").lowercased(),
-            meta.angle.rawValue,
+            meta.angle == .left || meta.angle == .right ? "side" : meta.angle.rawValue,
             UUID().uuidString
         ]
 
@@ -80,7 +80,7 @@ struct FileNamer {
             let name = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let description = parts.element(atIndex: 2)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let angleString = parts.element(atIndex: 3),
-            let angle = TACameraAngle(rawValue: angleString) else {
+            let angle = angleString == "side" ? .left : TACameraAngle(rawValue: angleString) else {
                 return nil
         }
 
@@ -94,7 +94,7 @@ struct FileNamer {
             let name = parts.element(atIndex: 0)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let description = parts.element(atIndex: 1)?.replacingOccurrences(of: "-", with: " ").capitalized,
             let angleString = parts.element(atIndex: 2),
-            let angle = TACameraAngle(rawValue: angleString) else {
+            let angle = angleString == "side" ? .left : TACameraAngle(rawValue: angleString) else {
                 return nil
         }
 

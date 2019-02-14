@@ -150,13 +150,16 @@ class TestModel {
         let testIndex = testCaseIndex
 
         algoQueue.async { [weak self] in
-            if let results = self?.algo.nearestNeighbors(unknownItem: unknown, knownItems: known),
+            if let results = self?.algo.nearestNeighbors(unknownItem: unknown,
+                                                         knownItems: known,
+                                                         relevantBodyParts: unknown.bodyParts),
                 let testCase = self?.testCases.element(atIndex: testIndex) {
                 testCase.bestGuessScore = results.element(atIndex: 0)?.score
                 testCase.bestGuessMeta = results.element(atIndex: 0)?.series.meta
                 testCase.secondBestScore = results.element(atIndex: 1)?.score
                 testCase.secondBestMeta = results.element(atIndex: 1)?.series.meta
                 testCase.status = .finished
+                StatisticsLogger.printRankings(unknown: unknown, rankings: results, upTo: 5)
                 if testIndex == (self?.testCases.count ?? 0) - 1 {
                     self?.printTestStatistics()
                 }

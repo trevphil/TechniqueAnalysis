@@ -101,6 +101,20 @@ class StatisticsLogger {
         printGenericResults(results, headerMessage: header)
     }
 
+    static func printRankings(unknown: TATimeseries,
+                              rankings: [(score: Double, series: TATimeseries)],
+                              upTo maxRank: Int) {
+        print("\nFor \(unknown.meta.exerciseName), \(unknown.meta.exerciseDetail), " +
+            "\(unknown.meta.angle.rawValue)\tthe top \(maxRank) results are:")
+        var idx = 0
+        while idx < rankings.count && idx < maxRank {
+            guard let ranking = rankings.element(atIndex: idx) else { continue }
+            idx += 1
+            let score = Double(Int(ranking.score * 1000)) / 1000.0
+            print("\tScore \(score);\t\(ranking.series.meta.debugDescription)")
+        }
+    }
+
     // MARK: - Private Functions
 
     private func printGenericResults(_ results: [TestResult], headerMessage: String) {
