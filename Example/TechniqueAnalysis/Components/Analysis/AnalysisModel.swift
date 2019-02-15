@@ -49,7 +49,7 @@ class AnalysisModel {
                           exerciseDetail: nil,
                           angle: .unknown)
         let testCase = TestResult(url: videoURL, testMeta: meta)
-        self.tester = TestModel(testCases: [testCase], printStats: false)
+        self.tester = TestModel(testCases: [testCase], printStats: false, onTestCaseSelected: nil)
         self.tester.delegate = self
     }
 

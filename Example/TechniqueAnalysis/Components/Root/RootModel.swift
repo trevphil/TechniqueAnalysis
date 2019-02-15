@@ -13,7 +13,7 @@ enum ModelType {
     case heatmap(HeatmapModel)
     case joint(JointModel)
     case analysis
-    case test(TestModel)
+    case test
 }
 
 /// Model which determines the order of child view controllers and their respective models
@@ -30,16 +30,11 @@ struct RootModel {
     // MARK: - Initialization
 
     init() {
-        let testCases = VideoManager.unlabeledVideos.map {
-            TestResult(url: $0.url, testMeta: $0.meta)
-        }
-        let testModel = TestModel(testCases: testCases, printStats: true)
-
         viewModelTypes = [
             .heatmap(HeatmapModel()),
             .joint(JointModel()),
             .analysis,
-            .test(testModel)
+            .test
         ]
     }
 

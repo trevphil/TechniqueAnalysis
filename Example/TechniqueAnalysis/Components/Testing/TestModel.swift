@@ -42,6 +42,7 @@ class TestModel {
     /// The model's title
     let title: String
     private let printStats: Bool
+    private let onTestCaseSelected: ((TATimeseries, TATimeseries) -> Void)?
     private let selectedTimeseries = 0
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
@@ -73,10 +74,17 @@ class TestModel {
     ///   - testCases: The test cases that the model should use when testing
     ///   - printStats: `true` if the model should print total statistics on failure and
     ///                 success rates at the end of testing, and `false` if it should be quiet
-    init(testCases: [TestResult], printStats: Bool) {
+    ///   - onTestCaseSelected: A code block called when the user has selected a test case for
+    ///                         closer inspection. The first `TATimeseries` in the closure is
+    ///                         an unknown series, and the second `TATimeseries` is the most
+    ///                         closely matching labeled timeseries from the dataset.
+    init(testCases: [TestResult],
+         printStats: Bool,
+         onTestCaseSelected: ((TATimeseries, TATimeseries) -> Void)?) {
         self.title = "Tests"
         self.printStats = printStats
         self.testCases = testCases
+        self.onTestCaseSelected = onTestCaseSelected
 
         do {
             self.processor = try TAVideoProcessor(sampleLength: Params.clipLength,
@@ -110,6 +118,21 @@ class TestModel {
         }
     }
 
+    /// Call this function to notify the model that a test case has been selected
+    ///
+    /// - Parameters:
+    ///   - index: The index of the timeseries that was selected
+    func didSelect(atIndex index: Int) {
+        guard let testResult = testCases.element(atIndex: index),
+            testResult.status == .finished,
+            let unknown = testResult.unknownSeries,
+            let known = testResult.bestGuess else {
+                return
+        }
+
+        onTestCaseSelected?(unknown, known)
+    }
+
     // MARK: - Private Functions
 
     private func testNext() {
@@ -128,6 +151,7 @@ class TestModel {
                                   onFinish: { [weak self] timeseries in
                                     if let strongSelf = self,
                                         let series = timeseries.element(atIndex: strongSelf.selectedTimeseries) {
+                                        testCase.unknownSeries = series
                                         strongSelf.compare(series, forIndex: testIndex)
                                         strongSelf.testCaseIndex += 1
                                         strongSelf.testNext()
@@ -147,7 +171,6 @@ class TestModel {
         }
 
         known = known.filter { $0.meta.exerciseName == unknown.meta.exerciseName }
-        let testIndex = testCaseIndex
 
         algoQueue.async { [weak self] in
             if let results = self?.algo.nearestNeighbors(unknownItem: unknown,
@@ -155,9 +178,9 @@ class TestModel {
                                                          relevantBodyParts: unknown.bodyParts),
                 let testCase = self?.testCases.element(atIndex: testIndex) {
                 testCase.bestGuessScore = results.element(atIndex: 0)?.score
-                testCase.bestGuessMeta = results.element(atIndex: 0)?.series.meta
+                testCase.bestGuess = results.element(atIndex: 0)?.series
                 testCase.secondBestScore = results.element(atIndex: 1)?.score
-                testCase.secondBestMeta = results.element(atIndex: 1)?.series.meta
+                testCase.secondBest = results.element(atIndex: 1)?.series
                 testCase.status = .finished
                 StatisticsLogger.printRankings(unknown: unknown,
                                                rankings: results.map { ($0.0, $0.1) },

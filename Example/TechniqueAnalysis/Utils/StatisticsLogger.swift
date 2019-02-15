@@ -16,6 +16,7 @@ class StatisticsLogger {
 
     private let testResults: [TestResult]
     private let labeledSeries: [TATimeseries]
+    private let filler = TAPointEstimate(point: .zero, confidence: 0, bodyPart: nil)
 
     private lazy var labeledMeta: [TAMeta] = {
         return labeledSeries.map { $0.meta }
@@ -25,8 +26,10 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            fakeResult.bestGuessMeta = randomItem(for: result.testMeta.exerciseName)
-            fakeResults.append(fakeResult)
+            if let randomMeta = randomItem(for: result.testMeta.exerciseName) {
+                fakeResult.bestGuess = try? TATimeseries(data: [[filler]], meta: randomMeta)
+                fakeResults.append(fakeResult)
+            }
         }
         return fakeResults
     }
@@ -35,8 +38,10 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            fakeResult.bestGuessMeta = mostCommonType(for: result.testMeta.exerciseName)
-            fakeResults.append(fakeResult)
+            if let mostCommonMeta = mostCommonType(for: result.testMeta.exerciseName) {
+                fakeResult.bestGuess = try? TATimeseries(data: [[filler]], meta: mostCommonMeta)
+                fakeResults.append(fakeResult)
+            }
         }
         return fakeResults
     }

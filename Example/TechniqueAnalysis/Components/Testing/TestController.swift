@@ -44,6 +44,7 @@ class TestController: UIViewController {
         super.viewDidLoad()
 
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(UINib(nibName: String(describing: TestResultCell.self), bundle: nil),
                            forCellReuseIdentifier: TestResultCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
@@ -92,6 +93,15 @@ extension TestController: UITableViewDataSource {
 
         cell.configure(with: testCase)
         return cell
+    }
+
+}
+
+extension TestController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        model.didSelect(atIndex: indexPath.row)
     }
 
 }

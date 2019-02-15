@@ -131,6 +131,10 @@
 		691BD09322155C9A00DAE8D4 /* test_push-up_correct_side_c22b80db-12c2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 691BD08322155C9A00DAE8D4 /* test_push-up_correct_side_c22b80db-12c2.mov */; };
 		691BD09422155C9A00DAE8D4 /* test_pull-up_chin-below-bar_front_530279d3-fab6.mov in Resources */ = {isa = PBXBuildFile; fileRef = 691BD08422155C9A00DAE8D4 /* test_pull-up_chin-below-bar_front_530279d3-fab6.mov */; };
 		691BD2E02216ADD900DAE8D4 /* UIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BD2DF2216ADD900DAE8D4 /* UIImage+Additions.swift */; };
+		691BD2EC2216C59600DAE8D4 /* StepperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BD2EB2216C59600DAE8D4 /* StepperController.swift */; };
+		691BD2EE2216C60200DAE8D4 /* StepperModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BD2ED2216C60200DAE8D4 /* StepperModel.swift */; };
+		691BD2F02216C61700DAE8D4 /* StepperController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 691BD2EF2216C61700DAE8D4 /* StepperController.xib */; };
+		691BD2F22216E62400DAE8D4 /* TestCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BD2F12216E62400DAE8D4 /* TestCoordinator.swift */; };
 		692CF3DB2204708700FC5D00 /* TestResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692CF3DA2204708700FC5D00 /* TestResultCell.xib */; };
 		692CF3DD2204711100FC5D00 /* TestResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692CF3DC2204711100FC5D00 /* TestResultCell.swift */; };
 		6935FF222200A02D005E4FAA /* RecorderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935FF212200A02D005E4FAA /* RecorderController.swift */; };
@@ -289,6 +293,10 @@
 		691BD08322155C9A00DAE8D4 /* test_push-up_correct_side_c22b80db-12c2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "test_push-up_correct_side_c22b80db-12c2.mov"; sourceTree = "<group>"; };
 		691BD08422155C9A00DAE8D4 /* test_pull-up_chin-below-bar_front_530279d3-fab6.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "test_pull-up_chin-below-bar_front_530279d3-fab6.mov"; sourceTree = "<group>"; };
 		691BD2DF2216ADD900DAE8D4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
+		691BD2EB2216C59600DAE8D4 /* StepperController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperController.swift; sourceTree = "<group>"; };
+		691BD2ED2216C60200DAE8D4 /* StepperModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperModel.swift; sourceTree = "<group>"; };
+		691BD2EF2216C61700DAE8D4 /* StepperController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StepperController.xib; sourceTree = "<group>"; };
+		691BD2F12216E62400DAE8D4 /* TestCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCoordinator.swift; sourceTree = "<group>"; };
 		692CF3DA2204708700FC5D00 /* TestResultCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestResultCell.xib; sourceTree = "<group>"; };
 		692CF3DC2204711100FC5D00 /* TestResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultCell.swift; sourceTree = "<group>"; };
 		6935FF212200A02D005E4FAA /* RecorderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderController.swift; sourceTree = "<group>"; };
@@ -461,50 +469,19 @@
 			children = (
 				69E32C902209D68500EF84F0 /* CacheManager.swift */,
 				69E32C922209DDAE00EF84F0 /* FileNamer.swift */,
-				0F7E664C220E2EF4002679BD /* Params.swift */,
 				697D2C442214185800FFAF16 /* StatisticsLogger.swift */,
 				0F55CE942203B2BF00CAF55B /* VideoManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		0F9A693C21C7083A000502B7 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				0F7E6646220E2C18002679BD /* AnalysisController.swift */,
-				0F7CD87C220E1DE800377061 /* ExerciseSelectionController.swift */,
-				0F9A693E21C7083A000502B7 /* HeatmapController.swift */,
-				0F9A693F21C7083A000502B7 /* JointController.swift */,
-				6935FF212200A02D005E4FAA /* RecorderController.swift */,
-				0F9A693D21C7083A000502B7 /* RootController.swift */,
-				698CBB6F220C86F900C60015 /* TestController.swift */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
 		0F9A694021C7083A000502B7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				698CBB6C220C797B00C60015 /* Cells */,
-				0F7E6648220E2C31002679BD /* AnalysisController.xib */,
-				0F7CD880220E203B00377061 /* ExerciseSelectionController.xib */,
-				0F9A694521C7083A000502B7 /* HeatmapController.xib */,
-				0F9A694721C7083A000502B7 /* JointController.xib */,
 				0F9A694321C7083A000502B7 /* LaunchScreen.xib */,
-				6935FF232200AE00005E4FAA /* RecorderController.xib */,
-				0F9A694221C7083A000502B7 /* RootController.xib */,
-				698CBB71220C870500C60015 /* TestController.xib */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		0F9A694821C7083A000502B7 /* Coordinators */ = {
-			isa = PBXGroup;
-			children = (
-				0F7CD87A220E1D9700377061 /* AnalysisCoordinator.swift */,
-				0F9A694921C7083A000502B7 /* RootCoordinator.swift */,
-			);
-			path = Coordinators;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -532,11 +509,10 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				691BD2E82216C54000DAE8D4 /* Components */,
+				691BD2E92216C55F00DAE8D4 /* Data Structures */,
 				0F55CE922203B28D00CAF55B /* Extensions */,
-				0F9A693C21C7083A000502B7 /* Controllers */,
-				0F9A694821C7083A000502B7 /* Coordinators */,
 				0F9A694021C7083A000502B7 /* Views */,
-				698CBB5F220C628A00C60015 /* View Models */,
 				0F55CE932203B2A500CAF55B /* Utils */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -582,19 +558,111 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		698CBB5F220C628A00C60015 /* View Models */ = {
+		691BD2E12216C41500DAE8D4 /* Analysis */ = {
 			isa = PBXGroup;
 			children = (
+				0F7E6646220E2C18002679BD /* AnalysisController.swift */,
+				0F7E6648220E2C31002679BD /* AnalysisController.xib */,
+				0F7CD87A220E1D9700377061 /* AnalysisCoordinator.swift */,
 				0F7E664A220E2C62002679BD /* AnalysisModel.swift */,
-				0F7CD87E220E1E5000377061 /* ExerciseSelectionModel.swift */,
-				698CBB62220C62CA00C60015 /* HeatmapModel.swift */,
-				698CBB64220C62F600C60015 /* JointModel.swift */,
-				698CBB60220C62B300C60015 /* RecorderModel.swift */,
-				698CBB66220C630400C60015 /* RootModel.swift */,
+			);
+			path = Analysis;
+			sourceTree = "<group>";
+		};
+		691BD2E22216C42A00DAE8D4 /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				698CBB6F220C86F900C60015 /* TestController.swift */,
+				698CBB71220C870500C60015 /* TestController.xib */,
+				691BD2F12216E62400DAE8D4 /* TestCoordinator.swift */,
 				698CBB68220C632700C60015 /* TestModel.swift */,
+			);
+			path = Testing;
+			sourceTree = "<group>";
+		};
+		691BD2E32216C43C00DAE8D4 /* Joints */ = {
+			isa = PBXGroup;
+			children = (
+				0F9A693F21C7083A000502B7 /* JointController.swift */,
+				0F9A694721C7083A000502B7 /* JointController.xib */,
+				698CBB64220C62F600C60015 /* JointModel.swift */,
+			);
+			path = Joints;
+			sourceTree = "<group>";
+		};
+		691BD2E42216C44D00DAE8D4 /* Heatmap */ = {
+			isa = PBXGroup;
+			children = (
+				0F9A693E21C7083A000502B7 /* HeatmapController.swift */,
+				0F9A694521C7083A000502B7 /* HeatmapController.xib */,
+				698CBB62220C62CA00C60015 /* HeatmapModel.swift */,
+			);
+			path = Heatmap;
+			sourceTree = "<group>";
+		};
+		691BD2E52216C46800DAE8D4 /* Exercise Selection */ = {
+			isa = PBXGroup;
+			children = (
+				0F7CD87C220E1DE800377061 /* ExerciseSelectionController.swift */,
+				0F7CD880220E203B00377061 /* ExerciseSelectionController.xib */,
+				0F7CD87E220E1E5000377061 /* ExerciseSelectionModel.swift */,
+			);
+			path = "Exercise Selection";
+			sourceTree = "<group>";
+		};
+		691BD2E62216C48200DAE8D4 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				6935FF212200A02D005E4FAA /* RecorderController.swift */,
+				6935FF232200AE00005E4FAA /* RecorderController.xib */,
+				698CBB60220C62B300C60015 /* RecorderModel.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
+		691BD2E72216C4A300DAE8D4 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				0F9A693D21C7083A000502B7 /* RootController.swift */,
+				0F9A694221C7083A000502B7 /* RootController.xib */,
+				0F9A694921C7083A000502B7 /* RootCoordinator.swift */,
+				698CBB66220C630400C60015 /* RootModel.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		691BD2E82216C54000DAE8D4 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				691BD2EA2216C58400DAE8D4 /* Stepper */,
+				691BD2E12216C41500DAE8D4 /* Analysis */,
+				691BD2E52216C46800DAE8D4 /* Exercise Selection */,
+				691BD2E42216C44D00DAE8D4 /* Heatmap */,
+				691BD2E32216C43C00DAE8D4 /* Joints */,
+				691BD2E62216C48200DAE8D4 /* Recording */,
+				691BD2E72216C4A300DAE8D4 /* Root */,
+				691BD2E22216C42A00DAE8D4 /* Testing */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		691BD2E92216C55F00DAE8D4 /* Data Structures */ = {
+			isa = PBXGroup;
+			children = (
+				0F7E664C220E2EF4002679BD /* Params.swift */,
 				698CBB73220DF28E00C60015 /* TestResult.swift */,
 			);
-			path = "View Models";
+			path = "Data Structures";
+			sourceTree = "<group>";
+		};
+		691BD2EA2216C58400DAE8D4 /* Stepper */ = {
+			isa = PBXGroup;
+			children = (
+				691BD2EB2216C59600DAE8D4 /* StepperController.swift */,
+				691BD2ED2216C60200DAE8D4 /* StepperModel.swift */,
+				691BD2EF2216C61700DAE8D4 /* StepperController.xib */,
+			);
+			path = Stepper;
 			sourceTree = "<group>";
 		};
 		698CBB6C220C797B00C60015 /* Cells */ = {
@@ -785,6 +853,7 @@
 				692CF3DB2204708700FC5D00 /* TestResultCell.xib in Resources */,
 				691BD04822155C5200DAE8D4 /* bw-squat_not-low_side_5553a8ea-ffc8.mov in Resources */,
 				691BD08C22155C9A00DAE8D4 /* test_push-up_upper-body-first_side_d2b94cef-fdd9.mov in Resources */,
+				691BD2F02216C61700DAE8D4 /* StepperController.xib in Resources */,
 				691BD05B22155C5200DAE8D4 /* pull-up_chin-below-bar_back_77c35729-e5e3.mov in Resources */,
 				691BD03322155C5200DAE8D4 /* pull-up_chin-below-bar_front_6d1c3e19-2c97.mov in Resources */,
 				691BD03422155C5200DAE8D4 /* push-up_correct_side_18cd575d-dc79.mov in Resources */,
@@ -945,9 +1014,12 @@
 				0F7E6647220E2C18002679BD /* AnalysisController.swift in Sources */,
 				698CBB74220DF28E00C60015 /* TestResult.swift in Sources */,
 				0F7E664D220E2EF4002679BD /* Params.swift in Sources */,
+				691BD2EE2216C60200DAE8D4 /* StepperModel.swift in Sources */,
+				691BD2EC2216C59600DAE8D4 /* StepperController.swift in Sources */,
 				698CBB61220C62B300C60015 /* RecorderModel.swift in Sources */,
 				0F7CD87F220E1E5000377061 /* ExerciseSelectionModel.swift in Sources */,
 				691BCFD8221559BA00DAE8D4 /* TATimeseries+Additions.swift in Sources */,
+				691BD2F22216E62400DAE8D4 /* TestCoordinator.swift in Sources */,
 				0F9A694A21C7083A000502B7 /* RootController.swift in Sources */,
 				0F55CE952203B2BF00CAF55B /* VideoManager.swift in Sources */,
 				0F9A695321C7083A000502B7 /* RootCoordinator.swift in Sources */,
