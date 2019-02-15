@@ -22,9 +22,11 @@ class TestResultCell: UITableViewCell {
     @IBOutlet private weak var bestGuessScoreLabel: UILabel!
     @IBOutlet private weak var bestGuessExerciseName: UILabel!
     @IBOutlet private weak var bestGuessExerciseDetail: UILabel!
+    @IBOutlet private weak var bestCostMatrixImage: UIImageView!
     @IBOutlet private weak var secondBestScoreLabel: UILabel!
     @IBOutlet private weak var secondBestExerciseName: UILabel!
     @IBOutlet private weak var secondBestExerciseDetail: UILabel!
+    @IBOutlet private weak var secondBestCostMatrixImage: UIImageView!
     @IBOutlet private weak var loadingSpinner: UIActivityIndicatorView!
 
     // MARK: - Exposed Functions
@@ -37,6 +39,8 @@ class TestResultCell: UITableViewCell {
         configurePrediction(testResult.bestGuessMeta)
         configureSecondBest(testResult.secondBestMeta, secondBestScore: testResult.secondBestScore)
         configureLoadingSpinner(testResult.status)
+        bestCostMatrixImage.image = testResult.bestCostMatrix
+        secondBestCostMatrixImage.image = testResult.secondBestCostMatrix
     }
 
     // MARK: - Private Functions

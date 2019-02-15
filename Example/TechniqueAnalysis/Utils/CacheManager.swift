@@ -85,7 +85,7 @@ class CacheManager {
         let filename = FileNamer.dataFileName(from: timeseries.meta,
                                               ext: CacheManager.cachedTimeseriesExtension)
         let filePath = URL(fileURLWithPath: directory,
-                          isDirectory: true).appendingPathComponent(filename, isDirectory: false).relativePath
+                           isDirectory: true).appendingPathComponent(filename, isDirectory: false).relativePath
 
         _ = try? FileManager.default.removeItem(atPath: filePath)
 

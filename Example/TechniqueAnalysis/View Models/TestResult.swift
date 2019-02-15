@@ -32,8 +32,12 @@ class TestResult {
     var bestGuessScore: Double?
     /// Metadata of the `TATimeseries` that came in second place for most closely matching the test case
     var secondBestMeta: TAMeta?
+    /// A visual representation of the cost matrix for the best guess
+    var bestCostMatrix: UIImage?
     /// The score of the `TATimeseries` that came in second place for most closely matching the test case
     var secondBestScore: Double?
+    /// A visual representation of the cost matrix for the second best guess
+    var secondBestCostMatrix: UIImage?
     /// The status of the test case
     var status: Status = .notStarted
 

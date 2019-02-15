@@ -58,14 +58,15 @@ public struct TAKnnDtw {
     ///            passed in `knownItems`), so you probably want to execute this off of the main queue.
     public func nearestNeighbors(unknownItem: TATimeseries,
                                  knownItems: [TATimeseries],
-                                 relevantBodyParts: [TABodyPart] = TABodyPart.allCases) -> [(score: Double, series: TATimeseries)] {
+                                 relevantBodyParts: [TABodyPart] = TABodyPart.allCases)
+        -> [(score: Double, series: TATimeseries, matrix: [[Double]])] {
         let bodyPartsRaw = relevantBodyParts.map { $0.rawValue }
-        var rankings = [(score: Double, series: TATimeseries)]()
+        var rankings = [(score: Double, series: TATimeseries, matrix: [[Double]])]()
         
         for known in knownItems {
             do {
-                let score = try distance(timeseriesA: unknownItem, timeseriesB: known, relevantBodyParts: bodyPartsRaw)
-                rankings.append((score, known))
+                let result = try distance(timeseriesA: unknownItem, timeseriesB: known, relevantBodyParts: bodyPartsRaw)
+                rankings.append((result.score, known, result.matrix))
             } catch {
                 print("Error while comparing timeseries: \(error)")
             }
@@ -78,7 +79,7 @@ public struct TAKnnDtw {
 
     private func distance(timeseriesA: TATimeseries,
                           timeseriesB: TATimeseries,
-                          relevantBodyParts: [Int]) throws -> Double {
+                          relevantBodyParts: [Int]) throws -> (score: Double, matrix: [[Double]]) {
         let numRows = timeseriesA.numSamples
         let numCols = timeseriesB.numSamples
         let sampleCol = Array(repeating: Double.greatestFiniteMagnitude, count: numCols)
@@ -114,7 +115,7 @@ public struct TAKnnDtw {
             }
         }
 
-        return cost.last?.last ?? Double.greatestFiniteMagnitude
+        return (cost.last?.last ?? Double.greatestFiniteMagnitude, cost)
     }
 
     private func distance(sliceA: [TAPointEstimate],

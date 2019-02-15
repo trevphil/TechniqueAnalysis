@@ -159,11 +159,15 @@ class TestModel {
                 testCase.secondBestScore = results.element(atIndex: 1)?.score
                 testCase.secondBestMeta = results.element(atIndex: 1)?.series.meta
                 testCase.status = .finished
-                StatisticsLogger.printRankings(unknown: unknown, rankings: results, upTo: 5)
+                StatisticsLogger.printRankings(unknown: unknown,
+                                               rankings: results.map { ($0.0, $0.1) },
+                                               upTo: 5)
                 if testIndex == (self?.testCases.count ?? 0) - 1 {
                     self?.printTestStatistics()
                 }
                 DispatchQueue.main.async {
+                    testCase.bestCostMatrix = UIImage.image(from: results.element(atIndex: 0)?.matrix)
+                    testCase.secondBestCostMatrix = UIImage.image(from: results.element(atIndex: 1)?.matrix)
                     self?.delegate?.didFinishTestingCase(atIndex: testIndex)
                 }
             }
