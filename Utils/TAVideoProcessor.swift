@@ -218,6 +218,7 @@ public class TAVideoProcessor {
         let generator = AVAssetImageGenerator(asset: asset)
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
+        generator.appliesPreferredTrackTransform = true
 
         let dispatchGroup = DispatchGroup()
         _ = (0..<sampleTimes.count).forEach { _ in dispatchGroup.enter() }

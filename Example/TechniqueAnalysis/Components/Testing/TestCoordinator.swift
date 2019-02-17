@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TechniqueAnalysis
 
 /// Coordinates flow when testing sample videos
 class TestCoordinator {
@@ -34,7 +35,7 @@ class TestCoordinator {
         }
 
         let model = TestModel(testCases: testCases, printStats: true) { unknown, known in
-            let stepper = StepperModel(unknownSeries: unknown, knownSeries: known)
+            let stepper = self.configuredStepperModel(unknownSeries: unknown, knownSeries: known)
             let stepperController = StepperController(model: stepper)
             self.navController.pushViewController(stepperController, animated: true)
         }
@@ -43,6 +44,18 @@ class TestCoordinator {
         let testController = TestController(model: model)
         navController.setViewControllers([testController], animated: false)
         return navController
+    }
+
+    // MARK: - Private Functions
+
+    private func configuredStepperModel(unknownSeries: TATimeseries,
+                                        knownSeries: TATimeseries) -> StepperModel {
+        let stepper = StepperModel(unknownSeries: unknownSeries, knownSeries: knownSeries) {
+            let bodyPartsModel = BodyPartsModel(timeseries: unknownSeries)
+            let bodyPartsController = BodyPartsController(model: bodyPartsModel)
+            self.navController.pushViewController(bodyPartsController, animated: true)
+        }
+        return stepper
     }
 
 }

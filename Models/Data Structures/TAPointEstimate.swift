@@ -13,7 +13,7 @@ public struct TAPointEstimate: Codable {
     // MARK: - Properties
 
     /// The location of the point, normalized into [0, 1]. The point uses a coordinate space
-    /// similar to normal views, where the origin is the bottom-left corner.
+    /// similar to the Cartesian plane, where the origin is the bottom-left corner.
     public let point: CGPoint
     /// The confidence level that `bodyPart` is at `point`, normalized into [0, 1]
     public let confidence: Double
@@ -26,7 +26,7 @@ public struct TAPointEstimate: Codable {
     ///
     /// - Parameters:
     ///   - point: The location of the point, normalized into [0, 1]. The point uses a coordinate space
-    ///            similar to normal views, where the origin is the bottom-left corner.
+    ///            similar to the Cartesian plane, where the origin is the bottom-left corner.
     ///   - confidence: The confidence level that `bodyPart` is at `point`, normalized into [0, 1]
     ///   - bodyPart: The body part being referenced by `point`
     public init(point: CGPoint, confidence: Double, bodyPart: TABodyPart?) {

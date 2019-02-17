@@ -25,9 +25,9 @@ extension TABodyPart {
         case .rightElbow:
             return .cyan
         case .rightWrist:
-            return .white
+            return .red
         case .leftShoulder:
-            return .yellow
+            return .purple
         case .leftElbow:
             return .magenta
         case .leftWrist:
@@ -41,9 +41,9 @@ extension TABodyPart {
         case .leftHip:
             return .darkGray
         case .leftKnee:
-            return .lightGray
+            return .red
         case .leftAnkle:
-            return .gray
+            return .blue
         }
     }
 

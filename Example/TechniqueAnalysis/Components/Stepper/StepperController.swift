@@ -9,6 +9,8 @@
 import UIKit
 import TechniqueAnalysis
 
+/// A view controller which allows the user to "step through time" to see the
+/// motion of some unknown timeseries vs. the best guess comparison `TATimeseries`
 class StepperController: UIViewController {
 
     // MARK: - Properties
@@ -20,6 +22,7 @@ class StepperController: UIViewController {
     @IBOutlet private weak var unknownLabel: UILabel!
     @IBOutlet private weak var knownColorView: UIView!
     @IBOutlet private weak var knownLabel: UILabel!
+    @IBOutlet private weak var showBodyPartsButton: UIButton!
     private var poseViewUnknown: TAPoseView?
     private var poseViewKnown: TAPoseView?
     private let model: StepperModel
@@ -58,6 +61,7 @@ class StepperController: UIViewController {
         exerciseNameLabel.text = model.exerciseName
         setupPoseViews(unknownPoseModel: unknown, knownPoseModel: known)
 
+        showBodyPartsButton.layer.cornerRadius = 4.0
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedScreen))
         view.addGestureRecognizer(tapGesture)
     }
@@ -73,6 +77,10 @@ class StepperController: UIViewController {
     }
 
     // MARK: - Private Functions
+
+    @IBAction private func showBodyParts(_ sender: UIButton) {
+        model.showBodyParts()
+    }
 
     private func setupPoseViews(unknownPoseModel: TAPoseViewModel,
                                 knownPoseModel: TAPoseViewModel) {

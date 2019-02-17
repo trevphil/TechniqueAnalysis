@@ -16,6 +16,7 @@
                 <outlet property="knownColorView" destination="sfI-fK-ext" id="ogP-dZ-B8b"/>
                 <outlet property="knownLabel" destination="WGi-jy-IaA" id="Mhk-dt-4iF"/>
                 <outlet property="poseViewContainer" destination="usc-ub-QdY" id="ryC-E3-B40"/>
+                <outlet property="showBodyPartsButton" destination="guX-Na-7q5" id="dmv-Zk-C6a"/>
                 <outlet property="timeLabel" destination="9ZP-7g-pfJ" id="khv-dq-AX2"/>
                 <outlet property="unknownColorView" destination="DoW-uV-axm" id="3LL-a3-9ju"/>
                 <outlet property="unknownLabel" destination="UDL-gH-uff" id="Dlg-w7-kGK"/>
@@ -28,8 +29,8 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Push-Up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Co1-e5-U9V">
-                    <rect key="frame" x="153.5" y="28" width="68" height="20.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <rect key="frame" x="151.5" y="28" width="72.5" height="20.5"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -97,13 +98,28 @@
                         </stackView>
                     </subviews>
                 </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="guX-Na-7q5">
+                    <rect key="frame" x="242" y="24" width="125" height="30"/>
+                    <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="125" id="XnF-qP-S0p"/>
+                    </constraints>
+                    <state key="normal" title="View Body Parts">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <connections>
+                        <action selector="showBodyParts:" destination="-1" eventType="touchUpInside" id="pFl-gi-VIe"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="r88-c8-Gxu" secondAttribute="bottom" constant="8" id="0IN-jj-mp0"/>
                 <constraint firstItem="Co1-e5-U9V" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="9BT-3P-Y1T"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="usc-ub-QdY" secondAttribute="trailing" id="AIt-sc-bvc"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="guX-Na-7q5" secondAttribute="trailing" constant="8" id="BR6-r9-Ehg"/>
                 <constraint firstItem="usc-ub-QdY" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Myc-t2-nGB"/>
+                <constraint firstItem="guX-Na-7q5" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="4" id="cCg-qW-S8L"/>
                 <constraint firstAttribute="trailing" secondItem="r88-c8-Gxu" secondAttribute="trailing" constant="8" id="hqe-HF-0Vx"/>
                 <constraint firstItem="Co1-e5-U9V" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="mWC-ed-TR8"/>
                 <constraint firstItem="r88-c8-Gxu" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="8" id="oTj-vX-HXh"/>

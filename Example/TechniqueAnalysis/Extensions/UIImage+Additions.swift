@@ -64,7 +64,6 @@ private class MatrixView: UIView {
                 path.fill()
             }
         }
-
     }
 
     // MARK: - Exposed Functions
