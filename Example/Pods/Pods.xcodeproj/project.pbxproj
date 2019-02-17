@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F696BA92219ED0F007B16E7 /* TALoess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F696BA82219ED0F007B16E7 /* TALoess.swift */; };
 		0F9A692E21C707C9000502B7 /* TAVideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */; };
 		0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691E21C707C9000502B7 /* Array+Additions.swift */; };
 		0F9A693121C707C9000502B7 /* TAPerformanceTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9A691F21C707C9000502B7 /* TAPerformanceTool.swift */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		0243C7F3D9A6FBEBC2FAA467D7152585 /* TechniqueAnalysis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TechniqueAnalysis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0F696BA82219ED0F007B16E7 /* TALoess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TALoess.swift; sourceTree = "<group>"; };
 		0F6A58AF4BF33225ABF5048551F40371 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TAVideoCapture.swift; sourceTree = "<group>"; };
 		0F9A691E21C707C9000502B7 /* Array+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			children = (
 				0F9A691E21C707C9000502B7 /* Array+Additions.swift */,
 				69E32C8E2209B45700EF84F0 /* TAKnnDtw.swift */,
+				0F696BA82219ED0F007B16E7 /* TALoess.swift */,
 				0F9A691F21C707C9000502B7 /* TAPerformanceTool.swift */,
 				0F9A691C21C707C9000502B7 /* TAVideoCapture.swift */,
 				0FFCFF1921FCF4EF0034AF09 /* TAVideoProcessor.swift */,
@@ -500,6 +503,7 @@
 				0F9A693121C707C9000502B7 /* TAPerformanceTool.swift in Sources */,
 				0F9A693021C707C9000502B7 /* Array+Additions.swift in Sources */,
 				0FFCFF1A21FCF4EF0034AF09 /* TAVideoProcessor.swift in Sources */,
+				0F696BA92219ED0F007B16E7 /* TALoess.swift in Sources */,
 				0F9A693421C707C9000502B7 /* TAPoseView.swift in Sources */,
 				0F9A693821C707C9000502B7 /* hourglass_model.mlmodel in Sources */,
 				699B2AE022083FC300CE6B27 /* TACameraAngle.swift in Sources */,

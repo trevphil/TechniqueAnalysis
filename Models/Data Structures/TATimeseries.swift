@@ -76,14 +76,15 @@ public struct TATimeseries: Codable {
     /// - Throws: `TATimeseriesError` if the `MLMultiArray`s had an invalid shape
     public init(data: [MLMultiArray], meta: TAMeta) throws {
         let compressed = data.compactMap { TATimeseries.compress($0) }
-        let validData = compressed.count > 0 && compressed.count == data.count
+        let fitted = TATimeseries.fit(compressed)
+        let validData = fitted.count > 0 && fitted.count == data.count
 
         guard validData else {
             let message = "Timeseries initialized with invalid MLMultiArrays"
             throw TATimeseriesError.invalidShapeError(message)
         }
 
-        self.data = compressed
+        self.data = fitted
         self.meta = meta
     }
 
@@ -95,12 +96,13 @@ public struct TATimeseries: Codable {
     ///   - meta: Metadata describing the timeseries to be created
     /// - Throws: `TATimeseriesError` if `data` is empty
     public init(data: [[TAPointEstimate]], meta: TAMeta) throws {
-        guard data.count > 0 else {
+        let fitted = TATimeseries.fit(data)
+        guard fitted.count > 0 else {
             let message = "Timeseries initialized with empty data"
             throw TATimeseriesError.invalidShapeError(message)
         }
 
-        self.data = data
+        self.data = fitted
         self.meta = meta
     }
 
@@ -144,8 +146,8 @@ public struct TATimeseries: Codable {
                     if shouldReplace {
                         let point = CGPoint(x: CGFloat(col), y: CGFloat(row))
                         bodyPoints[pointIndex] = TAPointEstimate(point: point,
-                                                               confidence: confidence,
-                                                               bodyPart: TABodyPart(rawValue: pointIndex))
+                                                                 confidence: confidence,
+                                                                 bodyPart: TABodyPart(rawValue: pointIndex))
                     }
                 }
             }
@@ -167,6 +169,43 @@ public struct TATimeseries: Codable {
 
     private static func validHeatmap(_ heatmap: MLMultiArray, expectedShape: [Int]) -> Bool {
         return heatmap.shape.count == 3 && heatmap.shape.map({ $0.intValue }) == expectedShape
+    }
+
+    private static func fit(_ data: [[TAPointEstimate]]) -> [[TAPointEstimate]] {
+
+        // Flip order of 2D matrix so that outer index gives an array of `TAPointEstimate`
+        // objects which all have the same body part (ordered sequentially through time)
+        func tuple(for bodyPartIndex: Int) -> ([CGFloat], [CGFloat], [TAPointEstimate]) {
+            let estimates = data.compactMap({ $0.element(atIndex: bodyPartIndex) })
+            let xValues = estimates.map { $0.point.x }
+            let yValues = estimates.map { $0.point.y }
+            return (xValues, yValues, estimates)
+        }
+
+        let loess = TALoess()
+        let bodyPartArrays: [[TAPointEstimate]] = (0..<TABodyPart.allCases.count).map { index in
+            let tup = tuple(for: index)
+            let xFitted = loess.fit(data: tup.0)
+            let yFitted = loess.fit(data: tup.1)
+            let bodyPartEstimates = tup.2
+            return bodyPartEstimates.enumerated().compactMap { sampleIdx, estimate in
+                guard let xVal = xFitted.element(atIndex: sampleIdx),
+                    let yVal = yFitted.element(atIndex: sampleIdx) else {
+                        return nil
+                }
+
+                return TAPointEstimate(point: CGPoint(x: xVal, y: yVal),
+                                       confidence: estimate.confidence,
+                                       bodyPart: estimate.bodyPart)
+            }
+        }
+
+        // Flip order of 2D matrix again so that the outer index gives an array of `TAPointEstimate`
+        // objects, with 1 element each per body part
+        let numTimeSamples = bodyPartArrays.element(atIndex: 0)?.count ?? 0
+        return (0..<numTimeSamples).map { timeIndex in
+            return bodyPartArrays.compactMap { $0.element(atIndex: timeIndex) }
+        }
     }
 
 }
