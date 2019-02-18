@@ -182,9 +182,7 @@ class TestModel {
                 testCase.secondBestScore = results.element(atIndex: 1)?.score
                 testCase.secondBest = results.element(atIndex: 1)?.series
                 testCase.status = .finished
-                StatisticsLogger.printRankings(unknown: unknown,
-                                               rankings: results.map { ($0.0, $0.1) },
-                                               upTo: 5)
+                StatisticsLogger.printRankings(unknown: unknown, rankings: results, upTo: 5)
                 if testIndex == (self?.testCases.count ?? 0) - 1 {
                     self?.printTestStatistics()
                 }

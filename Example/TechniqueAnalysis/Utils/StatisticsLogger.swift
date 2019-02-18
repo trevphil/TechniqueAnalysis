@@ -113,7 +113,7 @@ class StatisticsLogger {
     }
 
     static func printRankings(unknown: TATimeseries,
-                              rankings: [(score: Double, series: TATimeseries)],
+                              rankings: [TAKnnDtw.Result],
                               upTo maxRank: Int) {
         print("\nFor \(unknown.meta.exerciseName), \(unknown.meta.exerciseDetail), " +
             "\(unknown.meta.angle.rawValue)\tthe top \(maxRank) results are:")

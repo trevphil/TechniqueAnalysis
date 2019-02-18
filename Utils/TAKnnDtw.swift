@@ -16,6 +16,19 @@ public enum TAKnnDtwError: Error {
 /// Dynamic Time Warping (DTW) algorithm with configurable parameters
 public struct TAKnnDtw {
 
+    /// Data structure storing a result from the kNN DTW algorithm
+    public struct Result {
+        /// The "distance score" of an unknown series relative to the `series` property.
+        /// A lower value implies a closer distance (and thus, closer match to the unknown).
+        public let score: Double
+        /// The `TATimeseries` which was compared to an unknown series and which the
+        /// `score` and `matrix` parameters are referencing.
+        public let series: TATimeseries
+        /// A cost matrix of the DTW cost between an unknown timeseries and the `series`
+        /// property. For further info, see [here](http://alumni.cs.ucr.edu/~xxi/495.pdf).
+        public let matrix: [[Double]]
+    }
+
     // MARK: - Properties
 
     /// The warping window used by the algorithm. Smaller values imply a closer fit
@@ -51,22 +64,21 @@ public struct TAKnnDtw {
     ///   - relevantBodyParts: A list of body parts which should be considered when computing the distances
     ///                        between timeseries. All other body parts will be ignored. By omitting this
     ///                        parameter, all body parts will be considered.
-    /// - Returns: Returns an array containing tuples where each tuple maps to an item from the original
-    ///            `knownItems` parameter plus its score with respect to "distance" from the unknown series.
+    /// - Returns: Returns an array of `Result` objects, each of which maps to an item from the original
+    ///            `knownItems` parameter.
     ///            The returned array is sorted from smallest to greatest score. Lower score implies closer distance.
     /// - Warning: This function will likely take non-trivial time to execute (depending on the number of items
     ///            passed in `knownItems`), so you probably want to execute this off of the main queue.
     public func nearestNeighbors(unknownItem: TATimeseries,
                                  knownItems: [TATimeseries],
-                                 relevantBodyParts: [TABodyPart] = TABodyPart.allCases)
-        -> [(score: Double, series: TATimeseries, matrix: [[Double]])] {
+                                 relevantBodyParts: [TABodyPart] = TABodyPart.allCases) -> [Result] {
         let bodyPartsRaw = relevantBodyParts.map { $0.rawValue }
-        var rankings = [(score: Double, series: TATimeseries, matrix: [[Double]])]()
+        var rankings = [Result]()
         
         for known in knownItems {
             do {
                 let result = try distance(timeseriesA: unknownItem, timeseriesB: known, relevantBodyParts: bodyPartsRaw)
-                rankings.append((result.score, known, result.matrix))
+                rankings.append(Result(score: result.score, series: known, matrix: result.matrix))
             } catch {
                 print("Error while comparing timeseries: \(error)")
             }

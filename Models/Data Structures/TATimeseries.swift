@@ -21,6 +21,11 @@ public struct TATimeseries: Codable {
 
     // MARK: - Properties
 
+    /// A smoothing parameter used to smooth data values when a `TATimeseries` is initialized.
+    /// This value should generally be between `0.25-0.50` and should always be within [0, 1].
+    /// Lower values result in less smoothing, and higher values result in greater smoothing.
+    public static var smoothing: CGFloat = 0.35
+
     /// The timeseries data, a 2D array where each outer index represents a sample point in time
     /// and gives an array of `TAPointEstimate` objects. Thus, each inner index is an array with
     /// data about the position and confidence level of various body parts at a point in time.
@@ -182,7 +187,8 @@ public struct TATimeseries: Codable {
             return (xValues, yValues, estimates)
         }
 
-        let loess = TALoess()
+        // Smooth the data with LOESS algorithm
+        let loess = TALoess(bandwidthPercent: smoothing)
         let bodyPartArrays: [[TAPointEstimate]] = (0..<TABodyPart.allCases.count).map { index in
             let tup = tuple(for: index)
             let xFitted = loess.fit(data: tup.0)
@@ -201,7 +207,7 @@ public struct TATimeseries: Codable {
         }
 
         // Flip order of 2D matrix again so that the outer index gives an array of `TAPointEstimate`
-        // objects, with 1 element each per body part
+        // objects with 14 elements (1 element per body part)
         let numTimeSamples = bodyPartArrays.element(atIndex: 0)?.count ?? 0
         return (0..<numTimeSamples).map { timeIndex in
             return bodyPartArrays.compactMap { $0.element(atIndex: timeIndex) }

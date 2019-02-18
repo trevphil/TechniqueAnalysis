@@ -7,17 +7,43 @@
 
 import Foundation
 
+/// A utility for fitting a smoothed curve between two variables, using a procedure called *LOESS*
+/// (LOcally wEighted Scatter-plot Smoother). The implementation here uses a polynomial of degree
+/// one for regression (i.e., locally weighted linear regression).
+///
+/// Each input point is mapped to an output point by taking nearby points and weighting them based
+/// on how close they are to the current point being considered. With these neighbor points and their
+/// respective weights, we perform a weighted linear regression and evaluate the line of best fit
+/// at the current point being considered. This is the smoothed estimate we use as as output point.
 struct TALoess {
-
-    // Explanatory variable = index of the data in the array (assumed to be "time units")
-    // Dependent variable = value of some element at an index
 
     // MARK: - Properties
 
-    let bandwidthPercent: CGFloat = 0.35 // recommended between 0.25-0.50
+    private let bandwidthPercent: CGFloat
+
+    // MARK: - Initialization
+
+    /// Create a new instance of `TALoess`
+    ///
+    /// - Parameter bandwidthPercent: This is the percentage of total data points which will be used
+    ///                               as a subset when we decide which points to use for performing
+    ///                               a weighted linear regression on a particular point. As a rule
+    ///                               of thumb, this value should generally be between `0.25-0.50`.
+    /// - Note: For example, say there are 100 data points, we are considering point 50, and
+    ///         `bandwidthPercent = 0.30`. Then points 35-65 will be used to perform a weighted linear
+    ///         regression on point 50.
+    init(bandwidthPercent: CGFloat) {
+        self.bandwidthPercent = bandwidthPercent
+    }
 
     // MARK: - Exposed Functions
 
+    /// Fit a data series using the LOESS algorithm. The explanatory variable is
+    /// assumed to be the index of each element in the array, with the dependent
+    /// variable being the value of the element at that index.
+    ///
+    /// - Parameter data: The data which should be smoothed
+    /// - Returns: Returns the input data mapped to output values using LOESS
     func fit(data: [CGFloat]) -> [CGFloat] {
         var fittedData = [CGFloat]()
 
@@ -32,9 +58,8 @@ struct TALoess {
             for sample in bounds.lower...bounds.upper {
                 xValues.append(CGFloat(sample))
                 yValues.append(data[sample])
-                // let sampleWeight = weight(for: sample, relativeTo: point, bounds: bounds)
-                // TODO: - weights.append(sampleWeight)
-                weights.append(1.0)
+                let sampleWeight = weight(for: sample, relativeTo: point, bounds: bounds)
+                weights.append(sampleWeight)
             }
 
             let linReg = weightedLinReg(xValues, yValues, weights)
@@ -76,19 +101,29 @@ struct TALoess {
     private func weightedLinReg(_ xValues: [CGFloat],
                                 _ yValues: [CGFloat],
                                 _ weights: [CGFloat]) -> (CGFloat) -> CGFloat {
-
-        func average(_ input: [CGFloat]) -> CGFloat {
-            return input.reduce(0, +) / CGFloat(input.count)
-        }
+        // The formulas for slope and intercept are derived by solving the minimization of
+        // sum( Wi * (Yi - (alpha + beta * Xi))^2 )
+        // for alpha and beta, where Xi, Yi, and Wi are the values of the arrays at index `i`
+        //
+        // It is solved by taking the partial derivates of the sum(...) function with respect
+        // to alpha and beta, and setting these partial derivates equal to zero. With this system
+        // of two equations, we can solve for alpha and beta in terms of arrays X, Y, and W
 
         func multiply(_ first: [CGFloat], _ second: [CGFloat]) -> [CGFloat] {
             return zip(first, second).map(*)
         }
 
-        let covarianceXY = average(multiply(yValues, xValues)) - average(xValues) * average(yValues)
-        let varianceX = average(multiply(xValues, xValues)) - pow(average(xValues), 2)
-        let slope = covarianceXY / varianceX
-        let intercept = average(yValues) - slope * average(xValues)
+        let sumW = weights.reduce(0, +)
+        let sumWX = multiply(weights, xValues).reduce(0, +)
+        let sumWY = multiply(weights, yValues).reduce(0, +)
+        let sumWX2 = multiply(weights, multiply(xValues, xValues)).reduce(0, +)
+        let sumWXY = multiply(multiply(weights, xValues), yValues).reduce(0, +)
+
+        let slopeNumerator = (sumWX * sumWY) - (sumW * sumWXY)
+        let slopeDenominator = (sumWX * sumWX) - (sumW * sumWX2)
+
+        let slope = slopeNumerator / slopeDenominator
+        let intercept = (sumWY - (slope * sumWX)) / sumW
         return { xValue in intercept + slope * xValue }
     }
 
