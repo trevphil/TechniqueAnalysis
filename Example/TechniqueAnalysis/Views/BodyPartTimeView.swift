@@ -14,7 +14,11 @@ class BodyPartTimeView: UIView {
 
     // MARK: - Properties
 
-    private var samples: [TAPointEstimate]?
+    private var samples: [TAPointEstimate]? {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     private weak var confidenceLabel: UILabel?
 
     private var xSeries: [CGPoint] {
