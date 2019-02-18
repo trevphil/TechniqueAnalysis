@@ -11,6 +11,10 @@ import UIKit
 
 extension UIImage {
 
+    /// Generate a visualization of a cost matrix from kNN DTW
+    ///
+    /// - Parameter matrix: The matrix to visualize
+    /// - Returns: An image representation of the cost matrix, colored by matrix values
     static func image(from matrix: [[Double]]?) -> UIImage? {
         guard let matrix = matrix else {
             return nil
