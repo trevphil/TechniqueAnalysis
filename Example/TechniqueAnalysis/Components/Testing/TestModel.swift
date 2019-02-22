@@ -174,8 +174,7 @@ class TestModel {
 
         algoQueue.async { [weak self] in
             if let results = self?.algo.nearestNeighbors(unknownItem: unknown,
-                                                         knownItems: known,
-                                                         relevantBodyParts: unknown.bodyParts),
+                                                         knownItems: known),
                 let testCase = self?.testCases.element(atIndex: testIndex) {
                 testCase.bestGuessScore = results.element(atIndex: 0)?.score
                 testCase.bestGuess = results.element(atIndex: 0)?.series
