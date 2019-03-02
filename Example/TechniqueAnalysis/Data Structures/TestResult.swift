@@ -65,16 +65,6 @@ class TestResult {
         return secondBest?.series.meta
     }
 
-    /// Visualization of the Knn DTW cost matrix for the best-guess prediction of the unknown series
-    lazy var bestCostMatrix: UIImage? = {
-        return UIImage.image(from: bestPrediction?.matrix)
-    }()
-
-    /// Visualization of the Knn DTW cost matrix for the second best guess prediction of the unknown series
-    lazy var secondBestCostMatrix: UIImage? = {
-        return UIImage.image(from: secondBest?.matrix)
-    }()
-
     // MARK: - Initialization
 
     /// Create a new instance of `TestResult`

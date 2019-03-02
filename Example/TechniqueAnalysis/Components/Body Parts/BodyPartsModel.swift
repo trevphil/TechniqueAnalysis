@@ -64,7 +64,7 @@ class BodyPartsModel {
     /// - Returns: An array of `TAPointEstimate` objects which are ordered sequentially
     ///            through time. Each point estimate is for the same body part.
     func bodyPartOverTime(_ bodyPartIndex: Int, seriesType: SeriesType) -> [TAPointEstimate]? {
-        guard let bodyPart = TABodyPart.allCases.element(atIndex: bodyPartIndex) else {
+        guard let bodyPart = TABodyPart(rawValue: bodyPartIndex) else {
             return nil
         }
 
@@ -77,23 +77,12 @@ class BodyPartsModel {
         case .secondBestGuess:
             selectedSeries = testResult.secondBest?.series
         }
+
         guard let series = selectedSeries else {
             return nil
         }
 
-        var pointEstimates = [TAPointEstimate]()
-        var time = 0
-        var currentSlice = try? series.timeSlice(forSample: time)
-
-        while currentSlice != nil {
-            if let point = currentSlice?.first(where: { $0.bodyPart == bodyPart }) {
-                pointEstimates.append(point)
-            }
-            time += 1
-            currentSlice = try? series.timeSlice(forSample: time)
-        }
-
-        return pointEstimates.isEmpty ? nil : pointEstimates
+        return series.bodyPartOverTime(bodyPart)
     }
 
 }

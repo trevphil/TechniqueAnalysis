@@ -12,13 +12,15 @@ import TechniqueAnalysis
 struct Params {
 
     /// The warping window used by `TAKnnDTW`
-    static let warpingWindow: Int = 75
-    /// The minimum confidence level used by `TAPoseViewModel`
-    static let minConfidence: Double = 0.1
+    static var warpingWindow: Int {
+        return Int(clipLength * fps * 0.7)
+    }
+    /// The minimum confidence level used by `TAKnnDtw`
+    static let minConfidence: Double = 0.08
     /// The frames per second used when sampling videos
     static let fps: Double = 35
     /// The length of sub-clips taken from a video when it is processed
-    static let clipLength: TimeInterval = 4.5
+    static let clipLength: TimeInterval = 6
     /// The inset percentage from the "edges" of a video when it is being processed into sub-clips
     static let insetPercent: Double = 0.15
     /// The ML model type used for pose/posture recognition

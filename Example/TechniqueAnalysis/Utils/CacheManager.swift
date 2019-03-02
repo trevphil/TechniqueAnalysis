@@ -141,10 +141,8 @@ class CacheManager {
 
         processor.makeTimeseries(videoURL: next.url,
                                  meta: next.meta,
-                                 onFinish: { results in
-                                    for timeseries in results {
-                                        _ = self.cache(timeseries)
-                                    }
+                                 onFinish: { timeseries in
+                                    _ = self.cache(timeseries)
 
                                     if self.processingQueue.isEmpty {
                                         self.generateAndCacheReflections()

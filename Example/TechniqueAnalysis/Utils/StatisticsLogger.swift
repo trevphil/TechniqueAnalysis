@@ -34,7 +34,7 @@ class StatisticsLogger {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
             if let randomMeta = randomItem(for: result.testMeta.exerciseName),
                 let series = try? TATimeseries(data: filler, meta: randomMeta) {
-                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series, matrix: [])
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series)
                 fakeResults.append(fakeResult)
             }
         }
@@ -47,7 +47,7 @@ class StatisticsLogger {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
             if let mostCommonMeta = mostCommonType(for: result.testMeta.exerciseName),
                 let series = try? TATimeseries(data: filler, meta: mostCommonMeta) {
-                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series, matrix: [])
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series)
                 fakeResults.append(fakeResult)
             }
         }

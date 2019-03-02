@@ -43,7 +43,6 @@ class TestModel {
     let title: String
     private let printStats: Bool
     private let onTestCaseSelected: ((TestResult, TATimeseries) -> Void)?
-    private let selectedTimeseries = 0
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
     private var testCaseIndex = 0
@@ -63,7 +62,8 @@ class TestModel {
     /// Worker queue for running the Knn DTW algorithm
     private let algoQueue = DispatchQueue(label: "KnnDTW")
     /// Algorithm instance
-    private let algo = TAKnnDtw(warpingWindow: Params.warpingWindow)
+    private let algo = TAKnnDtw(warpingWindow: Params.warpingWindow,
+                                minConfidence: Params.minConfidence)
 
     // MARK: - Initialization
 
@@ -147,10 +147,9 @@ class TestModel {
         processor?.makeTimeseries(videoURL: testCase.url,
                                   meta: testCase.testMeta,
                                   onFinish: { [weak self] timeseries in
-                                    if let strongSelf = self,
-                                        let series = timeseries.element(atIndex: strongSelf.selectedTimeseries) {
-                                        testCase.unknownSeries = series
-                                        strongSelf.compare(series, forIndex: testIndex)
+                                    if let strongSelf = self {
+                                        testCase.unknownSeries = timeseries
+                                        strongSelf.compare(timeseries, forIndex: testIndex)
                                         strongSelf.testCaseIndex += 1
                                         strongSelf.testNext()
                                     }
@@ -172,7 +171,8 @@ class TestModel {
 
         algoQueue.async { [weak self] in
             if let results = self?.algo.nearestNeighbors(unknownItem: unknown,
-                                                         knownItems: known),
+                                                         knownItems: known,
+                                                         relevantBodyParts: unknown.bodyParts),
                 let testCase = self?.testCases.element(atIndex: testIndex) {
                 testCase.bestPrediction = results.element(atIndex: 0)
                 testCase.secondBest = results.element(atIndex: 1)

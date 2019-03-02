@@ -16,7 +16,7 @@ extension TATimeseries {
         case "Push Up":
             return [.top, .leftHip, .rightHip, .leftShoulder, .rightShoulder]
         case "Pull Up":
-            return [.top, .neck, .leftWrist, .rightWrist]
+            return [.top, .neck, .leftAnkle, .rightAnkle, .leftShoulder, .rightShoulder]
         case "Bw Squat":
             return [.top, .leftHip, .leftKnee, .rightHip, .rightKnee]
         default:

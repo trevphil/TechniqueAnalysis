@@ -9,7 +9,9 @@ import Foundation
 
 /// Error condition thrown by `TAKnnDtw`
 public enum TAKnnDtwError: Error {
+    case emptyArrayError
     case shapeMismatchError
+    case lowConfidenceError
 }
 
 /// A wrapper struct for using the k-Nearest Neighbor (kNN)
@@ -24,9 +26,6 @@ public struct TAKnnDtw {
         /// The `TATimeseries` which was compared to an unknown series and which the
         /// `score` and `matrix` parameters are referencing.
         public let series: TATimeseries
-        /// A cost matrix of the DTW cost between an unknown timeseries and the `series`
-        /// property. For further info, see [here](http://alumni.cs.ucr.edu/~xxi/495.pdf).
-        public let matrix: [[Double]]
 
         /// Create a new instance of `Result`
         ///
@@ -35,12 +34,9 @@ public struct TAKnnDtw {
         ///            A lower value implies a closer distance (and thus, closer match to the unknown).
         ///   - series: The `TATimeseries` which was compared to an unknown series and which the
         ///             `score` and `matrix` parameters are referencing.
-        ///   - matrix: A cost matrix of the DTW cost between an unknown timeseries and the `series`
-        ///             property. For further info, see [here](http://alumni.cs.ucr.edu/~xxi/495.pdf).
-        public init(score: Double, series: TATimeseries, matrix: [[Double]]) {
+        public init(score: Double, series: TATimeseries) {
             self.score = score
             self.series = series
-            self.matrix = matrix
         }
     }
 
@@ -51,6 +47,11 @@ public struct TAKnnDtw {
     /// may also actually improve algorithm accuracy (up to a point, otherwise accuracy
     /// begins to degrade quite rapidly).
     public let warpingWindow: Int
+    
+    /// The minimum average confidence allowed for a body part in a `TATimeseries`. If the average
+    /// confidence (sampled over time) for the body part falls short of this threshold, the body
+    /// part will not be included in the kNN DTW comparison.
+    public let minConfidence: Double
 
     // MARK: - Initialization
 
@@ -58,8 +59,10 @@ public struct TAKnnDtw {
     ///
     /// - Parameters:
     ///   - warpingWindow: The warping window used by the algorithm
-    public init(warpingWindow: Int) {
+    ///   - minConfidence: The minimum average confidence allowed for a body part in a `TATimeseries`
+    public init(warpingWindow: Int, minConfidence: Double) {
         self.warpingWindow = warpingWindow
+        self.minConfidence = minConfidence
     }
 
     // MARK: - Public Functions
@@ -80,13 +83,14 @@ public struct TAKnnDtw {
     public func nearestNeighbors(unknownItem: TATimeseries,
                                  knownItems: [TATimeseries],
                                  relevantBodyParts: [TABodyPart] = TABodyPart.allCases) -> [Result] {
-        let bodyPartsRaw = relevantBodyParts.map { $0.rawValue }
         var rankings = [Result]()
         
         for known in knownItems {
             do {
-                let result = try distance(timeseriesA: unknownItem, timeseriesB: known, relevantBodyParts: bodyPartsRaw)
-                rankings.append(Result(score: result.score, series: known, matrix: result.matrix))
+                let score = try distance(timeseriesA: unknownItem,
+                                         timeseriesB: known,
+                                         relevantBodyParts: relevantBodyParts)
+                rankings.append(Result(score: score, series: known))
             } catch {
                 print("Error while comparing timeseries: \(error)")
             }
@@ -99,25 +103,64 @@ public struct TAKnnDtw {
 
     private func distance(timeseriesA: TATimeseries,
                           timeseriesB: TATimeseries,
-                          relevantBodyParts: [Int]) throws -> (score: Double, matrix: [[Double]]) {
-        let numRows = timeseriesA.numSamples
-        let numCols = timeseriesB.numSamples
+                          relevantBodyParts: [TABodyPart]) throws -> Double {
+
+        let raw = relevantBodyParts.map { $0.rawValue }
+        let avgConfidencesA = averageConfidences(timeseriesA)
+            .enumerated().compactMap({ raw.contains($0) ? $1 : nil })
+        let avgConfidencesB = averageConfidences(timeseriesB)
+            .enumerated().compactMap({ raw.contains($0) ? $1 : nil })
+
+        guard avgConfidencesA.count == avgConfidencesB.count else {
+            throw TAKnnDtwError.shapeMismatchError
+        }
+
+        let distances: [Double] = try relevantBodyParts.map { bodyPart in
+            let pointsA = timeseriesA.bodyPartOverTime(bodyPart)
+            let pointsB = timeseriesB.bodyPartOverTime(bodyPart)
+            return try distance(pointEstimatesA: pointsA, pointEstimatesB: pointsB)
+        }
+
+        guard distances.count == avgConfidencesA.count else {
+            throw TAKnnDtwError.shapeMismatchError
+        }
+
+        let filtered = distances
+            .enumerated()
+            .compactMap({ avgConfidencesA[$0] >= minConfidence && avgConfidencesB[$0] >= minConfidence ? $1 : nil })
+            .reduce(0, +)
+
+        guard filtered != 0 else {
+            // All of the relevant body parts had an average confidence below the threshold,
+            // so no relevant data was able to be extracted
+            throw TAKnnDtwError.lowConfidenceError
+        }
+        return filtered
+    }
+
+    private func distance(pointEstimatesA: [TAPointEstimate],
+                          pointEstimatesB: [TAPointEstimate]) throws -> Double {
+        let numRows = pointEstimatesA.count
+        let numCols = pointEstimatesB.count
         let sampleCol = Array(repeating: Double.greatestFiniteMagnitude, count: numCols)
         var cost = Array(repeating: sampleCol, count: numRows)
 
-        let firstSliceA = try timeseriesA.timeSlice(forSample: 0)
-        let firstSliceB = try timeseriesB.timeSlice(forSample: 0)
-        cost[0][0] = try distance(sliceA: firstSliceA, sliceB: firstSliceB, relevantBodyParts: relevantBodyParts)
+        guard let firstA = pointEstimatesA.element(atIndex: 0),
+            let firstB = pointEstimatesB.element(atIndex: 0) else {
+                throw TAKnnDtwError.emptyArrayError
+        }
+
+        cost[0][0] = distance(pointA: firstA, pointB: firstB)
 
         for rowIndex in 1..<numRows {
-            let sliceA = try timeseriesA.timeSlice(forSample: rowIndex)
-            let dist = try distance(sliceA: sliceA, sliceB: firstSliceB, relevantBodyParts: relevantBodyParts)
+            let pointA = pointEstimatesA[rowIndex]
+            let dist = distance(pointA: pointA, pointB: firstB)
             cost[rowIndex][0] = cost[rowIndex - 1][0] + dist
         }
 
         for colIndex in 1..<numCols {
-            let sliceB = try timeseriesB.timeSlice(forSample: colIndex)
-            let dist = try distance(sliceA: firstSliceA, sliceB: sliceB, relevantBodyParts: relevantBodyParts)
+            let pointB = pointEstimatesB[colIndex]
+            let dist = distance(pointA: firstA, pointB: pointB)
             cost[0][colIndex] = cost[0][colIndex - 1] + dist
         }
 
@@ -128,43 +171,28 @@ public struct TAKnnDtw {
                     cost[row][col - 1],
                     cost[row - 1][col]
                 ]
-                let sliceA = try timeseriesA.timeSlice(forSample: row)
-                let sliceB = try timeseriesB.timeSlice(forSample: col)
-                let dist = try distance(sliceA: sliceA, sliceB: sliceB, relevantBodyParts: relevantBodyParts)
+                let pointA = pointEstimatesA[row]
+                let pointB = pointEstimatesB[col]
+                let dist = distance(pointA: pointA, pointB: pointB)
                 cost[row][col] = (choices.min() ?? 0) + dist
             }
         }
 
-        return (cost.last?.last ?? Double.greatestFiniteMagnitude, cost)
-    }
-
-    private func distance(sliceA: [TAPointEstimate],
-                          sliceB: [TAPointEstimate],
-                          relevantBodyParts: [Int]) throws -> Double {
-        guard sliceA.count == sliceB.count else {
-            throw TAKnnDtwError.shapeMismatchError
-        }
-
-        let numBodyPoints = sliceA.count
-        var distances = [Double]()
-        for bodyPoint in 0..<numBodyPoints {
-            guard relevantBodyParts.contains(bodyPoint) else {
-                continue
-            }
-
-            let pointA = sliceA[bodyPoint]
-            let pointB = sliceB[bodyPoint]
-            let dist = distance(pointA: pointA, pointB: pointB)
-            distances.append(dist)
-        }
-
-        return distances.reduce(0, +)
+        return cost.last?.last ?? Double.greatestFiniteMagnitude
     }
 
     private func distance(pointA: TAPointEstimate, pointB: TAPointEstimate) -> Double {
-        let euclideanDistance = Double(sqrt(pow(pointB.point.x - pointA.point.x, 2) +
-            pow(pointB.point.y - pointA.point.y, 2)))
-        return euclideanDistance
+        let xDistSquared = pow(pointB.point.x - pointA.point.x, 2)
+        let yDistSquared = pow(pointB.point.y - pointA.point.y, 2)
+        return Double(sqrt(xDistSquared + yDistSquared))
+    }
+
+    private func averageConfidences(_ timeseries: TATimeseries) -> [Double] {
+        return TABodyPart.allCases.map {
+            let points = timeseries.bodyPartOverTime($0)
+            let confidenceSum = points.map({ $0.confidence }).reduce(0, +)
+            return confidenceSum / Double(points.count)
+        }
     }
 
 }

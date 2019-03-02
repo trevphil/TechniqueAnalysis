@@ -13,6 +13,7 @@ public enum TAVideoProcessorError: Error {
     case initializationError(String)
     case noDataError(String)
     case filesystemAccessError(String)
+    case subclipError(String)
 }
 
 /// Video processor for converting video inta `TATimeseries`
@@ -71,7 +72,6 @@ public class TAVideoProcessor {
     ///   - videoURL: The URL of the video that will be processed
     ///   - meta: Meta-information about the video, such as name and detail
     ///   - onFinish: Callback when the video has been processed and a timeseries has been created.
-    ///               One `TATimeseries` object is passed for each sub-clip sampled from the video.
     ///               The callback will not be executed on the main queue.
     ///   - onFailure: Callback when problems occurred during processing. An array of errors is passed.
     ///                The callback will not be executed on the main queue.
@@ -79,11 +79,11 @@ public class TAVideoProcessor {
     ///            this function if a previous call to the function has not finished.
     public func makeTimeseries(videoURL: URL,
                                meta: TAMeta,
-                               onFinish: @escaping (([TATimeseries]) -> ()),
+                               onFinish: @escaping ((TATimeseries) -> ()),
                                onFailure: @escaping (([Error]) -> ())) {
         workerQueue.async {
             self.processVideo(videoURL: videoURL, meta: meta) { series, errors in
-                if errors.isEmpty {
+                if let series = series, errors.isEmpty {
                     onFinish(series)
                 } else {
                     onFailure(errors)
@@ -96,103 +96,85 @@ public class TAVideoProcessor {
 
     private func processVideo(videoURL: URL,
                               meta: TAMeta,
-                              onFinish: @escaping (([TATimeseries], [Error]) -> ())) {
-        var timeseries = [Int: TATimeseries]()
-        var errors = [Int: Error]()
+                              onFinish: @escaping ((TATimeseries?, [Error]) -> ())) {
+        var timeseries: TATimeseries?
+        var errors = [Error]()
         let dispatchGroup = DispatchGroup()
         
         dispatchGroup.enter() // ENTER 1
-        makeSections(from: videoURL) { sectionURLs in
-            
-            for (idx, url) in sectionURLs.enumerated() {
-                let asset = AVAsset(url: url)
-                
-                dispatchGroup.enter() // ENTER 2
-                self.makeImages(from: asset) { images in
+        makeSubclip(from: videoURL) { subclipURL in
 
-                    dispatchGroup.enter() // ENTER 3
-                    self.makeTimeseries(from: &images, meta: meta) { series, error in
-                        if let series = series { timeseries[idx] = series }
-                        if let error = error { errors[idx] = error }
-                        dispatchGroup.leave() // LEAVE 3
-                    }
-
-                    dispatchGroup.leave() // LEAVE 2
-                }
+            guard let subclipURL = subclipURL else {
+                errors.append(TAVideoProcessorError.subclipError("Unable to make subclip from video"))
+                dispatchGroup.leave() // LEAVE 1
+                return
             }
-            self.cleanupSections(sectionURLs)
+            
+            let asset = AVAsset(url: subclipURL)
+
+            dispatchGroup.enter() // ENTER 2
+            self.makeImages(from: asset) { images in
+
+                dispatchGroup.enter() // ENTER 3
+                self.makeTimeseries(from: &images, meta: meta) { series, error in
+                    if let series = series { timeseries = series }
+                    if let error = error { errors.append(error) }
+                    dispatchGroup.leave() // LEAVE 3
+                }
+
+                dispatchGroup.leave() // LEAVE 2
+            }
+            self.cleanupSubclip(subclipURL)
 
             dispatchGroup.leave() // LEAVE 1
         }
         
         dispatchGroup.notify(queue: workerQueue) {
-            let sortedSeries = timeseries.keys.sorted().compactMap { timeseries[$0] }
-            let sortedErrors = errors.keys.sorted().compactMap { errors[$0] }
-            onFinish(sortedSeries, sortedErrors)
+            onFinish(timeseries, errors)
         }
     }
 
-    private func subclipIntervals(totalLength: TimeInterval) -> [(start: TimeInterval, end: TimeInterval)] {
-        let sections: [(TimeInterval, TimeInterval)]
+    private func subclipBounds(totalLength: TimeInterval) -> (start: TimeInterval, end: TimeInterval) {
         let inset = totalLength * insetPercent
-        if totalLength <= sampleLength {
-            sections = [(0, totalLength)]
-        } else if totalLength <= (inset * 2) + (sampleLength * 2) {
-            sections = [(totalLength/2 - sampleLength/2, totalLength/2 + sampleLength/2)]
+        if totalLength <= sampleLength + inset {
+            return (0, sampleLength)
         } else {
-            sections = [
-                (inset, inset + sampleLength),
-                (totalLength - inset - sampleLength, totalLength - inset)
-            ]
+            return (inset, inset + sampleLength)
         }
-        return sections
     }
 
-    private func makeSections(from videoURL: URL, onFinish: @escaping (([URL]) -> ())) {
-        var sectionURLs = [Int: URL]()
+    private func makeSubclip(from videoURL: URL, onFinish: @escaping ((URL?) -> ())) {
         let video = AVAsset(url: videoURL)
-        let dispatchGroup = DispatchGroup()
-
         let videoExtension = videoURL.pathExtension
         let videoName = videoURL.lastPathComponent.replacingOccurrences(of: ".\(videoExtension)", with: "")
         let duration = TimeInterval(video.duration.value) / TimeInterval(video.duration.timescale)
-        let sections = subclipIntervals(totalLength: duration)
+        let bounds = subclipBounds(totalLength: duration)
 
-        for (idx, section) in sections.enumerated() {
-            let preset = AVAssetExportPresetMediumQuality
-            guard let exportSession = AVAssetExportSession(asset: video, presetName: preset) else {
-                continue
-            }
-
-            let sectionURL = generatedVideosPath.appendingPathComponent("\(videoName)_section\(idx).\(videoExtension)")
-            _ = try? FileManager.default.removeItem(at: sectionURL)
-            exportSession.outputURL = sectionURL
-            exportSession.outputFileType = .mp4
-            let startTime = CMTime(seconds: section.start, preferredTimescale: video.duration.timescale)
-            let endTime = CMTime(seconds: section.end, preferredTimescale: video.duration.timescale)
-            let timeRange = CMTimeRange(start: startTime, end: endTime)
-            exportSession.timeRange = timeRange
-            sectionURLs[idx] = sectionURL
-
-            dispatchGroup.enter()
-            exportSession.exportAsynchronously {
-                dispatchGroup.leave()
-            }
+        let preset = AVAssetExportPresetMediumQuality
+        guard let exportSession = AVAssetExportSession(asset: video, presetName: preset) else {
+            onFinish(nil)
+            return
         }
 
-        dispatchGroup.notify(queue: workerQueue) {
-            let sorted = sectionURLs.keys.sorted().compactMap { sectionURLs[$0] }
-            onFinish(sorted)
+        let subclipURL = generatedVideosPath.appendingPathComponent("\(videoName).\(videoExtension)")
+        _ = try? FileManager.default.removeItem(at: subclipURL)
+        exportSession.outputURL = subclipURL
+        exportSession.outputFileType = .mp4
+        let startTime = CMTime(seconds: bounds.start, preferredTimescale: video.duration.timescale)
+        let endTime = CMTime(seconds: bounds.end, preferredTimescale: video.duration.timescale)
+        let timeRange = CMTimeRange(start: startTime, end: endTime)
+        exportSession.timeRange = timeRange
+
+        exportSession.exportAsynchronously {
+            onFinish(subclipURL)
         }
     }
 
-    private func cleanupSections(_ sectionURLs: [URL]) {
-        for url in sectionURLs {
-            do {
-                try FileManager.default.removeItem(at: url)
-            } catch {
-                print("Error: Unable to remove generated section subclip: \(error)")
-            }
+    private func cleanupSubclip(_ subclipURL: URL) {
+        do {
+            try FileManager.default.removeItem(at: subclipURL)
+        } catch {
+            print("Error: Unable to remove generated section subclip: \(error)")
         }
     }
 
