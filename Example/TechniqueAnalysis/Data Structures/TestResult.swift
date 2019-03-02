@@ -24,32 +24,25 @@ class TestResult {
 
     /// URL of the video used in the test case
     let url: URL
+
     /// Metadata extracted from the filename in the original URL
     let testMeta: TAMeta
 
     /// The `TATimeseries` with unknown data being tested
     var unknownSeries: TATimeseries?
 
-    /// The `TATimeseries` most closely matching that of the test case
-    var bestGuess: TATimeseries?
-    /// The score of the `TATimeseries` most closely matching that of the test case
-    var bestGuessScore: Double?
-    /// A visual representation of the cost matrix for the best guess
-    var bestCostMatrix: UIImage?
+    /// The best guess from the results of `TAKnnDtw`
+    var bestPrediction: TAKnnDtw.Result?
 
-    /// The `TATimeseries` that came in second place for most closely matching the test case
-    var secondBest: TATimeseries?
-    /// The score of the `TATimeseries` that came in second place for most closely matching the test case
-    var secondBestScore: Double?
-    /// A visual representation of the cost matrix for the second best guess
-    var secondBestCostMatrix: UIImage?
+    /// The second best guess from the results of `TAKnnDtw`
+    var secondBest: TAKnnDtw.Result?
 
     /// The status of the test case
     var status: Status = .notStarted
 
     /// `true` if the test case correctly predicted the unknown data, and `false` otherwise
     var predictedCorrectly: Bool? {
-        guard let bestGuessMeta = bestGuessMeta else {
+        guard let bestGuessMeta = bestPrediction?.series.meta else {
             return nil
         }
 
@@ -64,13 +57,23 @@ class TestResult {
 
     /// Metadata of the `TATimeseries` most closely matching that of the test case
     var bestGuessMeta: TAMeta? {
-        return bestGuess?.meta
+        return bestPrediction?.series.meta
     }
 
     /// Metadata of the `TATimeseries` that came in second place for most closely matching the test case
     var secondBestMeta: TAMeta? {
-        return secondBest?.meta
+        return secondBest?.series.meta
     }
+
+    /// Visualization of the Knn DTW cost matrix for the best-guess prediction of the unknown series
+    lazy var bestCostMatrix: UIImage? = {
+        return UIImage.image(from: bestPrediction?.matrix)
+    }()
+
+    /// Visualization of the Knn DTW cost matrix for the second best guess prediction of the unknown series
+    lazy var secondBestCostMatrix: UIImage? = {
+        return UIImage.image(from: secondBest?.matrix)
+    }()
 
     // MARK: - Initialization
 

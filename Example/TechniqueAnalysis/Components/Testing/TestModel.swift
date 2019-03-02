@@ -42,7 +42,7 @@ class TestModel {
     /// The model's title
     let title: String
     private let printStats: Bool
-    private let onTestCaseSelected: ((TATimeseries, TATimeseries) -> Void)?
+    private let onTestCaseSelected: ((TestResult, TATimeseries) -> Void)?
     private let selectedTimeseries = 0
     private let processor: TAVideoProcessor?
     private var labeledSeries: [TATimeseries]?
@@ -63,8 +63,7 @@ class TestModel {
     /// Worker queue for running the Knn DTW algorithm
     private let algoQueue = DispatchQueue(label: "KnnDTW")
     /// Algorithm instance
-    private let algo = TAKnnDtw(warpingWindow: Params.warpingWindow,
-                                minConfidence: Params.minConfidence)
+    private let algo = TAKnnDtw(warpingWindow: Params.warpingWindow)
 
     // MARK: - Initialization
 
@@ -75,12 +74,12 @@ class TestModel {
     ///   - printStats: `true` if the model should print total statistics on failure and
     ///                 success rates at the end of testing, and `false` if it should be quiet
     ///   - onTestCaseSelected: A code block called when the user has selected a test case for
-    ///                         closer inspection. The first `TATimeseries` in the closure is
-    ///                         an unknown series, and the second `TATimeseries` is the most
-    ///                         closely matching labeled timeseries from the dataset.
+    ///                         closer inspection. The first object in the closure is
+    ///                         a `TestResult`, and the second is a `TATimeseries` for the
+    ///                         unknown video being tested.
     init(testCases: [TestResult],
          printStats: Bool,
-         onTestCaseSelected: ((TATimeseries, TATimeseries) -> Void)?) {
+         onTestCaseSelected: ((TestResult, TATimeseries) -> Void)?) {
         self.title = "Tests"
         self.printStats = printStats
         self.testCases = testCases
@@ -125,12 +124,11 @@ class TestModel {
     func didSelect(atIndex index: Int) {
         guard let testResult = testCases.element(atIndex: index),
             testResult.status == .finished,
-            let unknown = testResult.unknownSeries,
-            let known = testResult.bestGuess else {
+            let unknown = testResult.unknownSeries else {
                 return
         }
 
-        onTestCaseSelected?(unknown, known)
+        onTestCaseSelected?(testResult, unknown)
     }
 
     // MARK: - Private Functions
@@ -176,18 +174,14 @@ class TestModel {
             if let results = self?.algo.nearestNeighbors(unknownItem: unknown,
                                                          knownItems: known),
                 let testCase = self?.testCases.element(atIndex: testIndex) {
-                testCase.bestGuessScore = results.element(atIndex: 0)?.score
-                testCase.bestGuess = results.element(atIndex: 0)?.series
-                testCase.secondBestScore = results.element(atIndex: 1)?.score
-                testCase.secondBest = results.element(atIndex: 1)?.series
+                testCase.bestPrediction = results.element(atIndex: 0)
+                testCase.secondBest = results.element(atIndex: 1)
                 testCase.status = .finished
                 StatisticsLogger.printRankings(unknown: unknown, rankings: results, upTo: 5)
                 if testIndex == (self?.testCases.count ?? 0) - 1 {
                     self?.printTestStatistics()
                 }
                 DispatchQueue.main.async {
-                    testCase.bestCostMatrix = UIImage.image(from: results.element(atIndex: 0)?.matrix)
-                    testCase.secondBestCostMatrix = UIImage.image(from: results.element(atIndex: 1)?.matrix)
                     self?.delegate?.didFinishTestingCase(atIndex: testIndex)
                 }
             }

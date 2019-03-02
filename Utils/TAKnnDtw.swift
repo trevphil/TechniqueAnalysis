@@ -27,6 +27,21 @@ public struct TAKnnDtw {
         /// A cost matrix of the DTW cost between an unknown timeseries and the `series`
         /// property. For further info, see [here](http://alumni.cs.ucr.edu/~xxi/495.pdf).
         public let matrix: [[Double]]
+
+        /// Create a new instance of `Result`
+        ///
+        /// - Parameters:
+        ///   - score: The "distance score" of an unknown series relative to the `series` property.
+        ///            A lower value implies a closer distance (and thus, closer match to the unknown).
+        ///   - series: The `TATimeseries` which was compared to an unknown series and which the
+        ///             `score` and `matrix` parameters are referencing.
+        ///   - matrix: A cost matrix of the DTW cost between an unknown timeseries and the `series`
+        ///             property. For further info, see [here](http://alumni.cs.ucr.edu/~xxi/495.pdf).
+        public init(score: Double, series: TATimeseries, matrix: [[Double]]) {
+            self.score = score
+            self.series = series
+            self.matrix = matrix
+        }
     }
 
     // MARK: - Properties
@@ -36,11 +51,6 @@ public struct TAKnnDtw {
     /// may also actually improve algorithm accuracy (up to a point, otherwise accuracy
     /// begins to degrade quite rapidly).
     public let warpingWindow: Int
-    
-    /// The minimum confidence allowed for two `TAPointEstimate` objects being compared
-    /// by the algorithm. If either point falls short of the threshold, the comparison
-    /// is discarded.
-    public let minConfidence: Double
 
     // MARK: - Initialization
 
@@ -48,10 +58,8 @@ public struct TAKnnDtw {
     ///
     /// - Parameters:
     ///   - warpingWindow: The warping window used by the algorithm
-    ///   - minConfidence: The minimum confidence allowed for two `TAPointEstimate` objects being compared by the algorithm.
-    public init(warpingWindow: Int, minConfidence: Double) {
+    public init(warpingWindow: Int) {
         self.warpingWindow = warpingWindow
-        self.minConfidence = minConfidence
     }
 
     // MARK: - Public Functions
@@ -150,17 +158,13 @@ public struct TAKnnDtw {
             distances.append(dist)
         }
 
-        let validNums = distances.filter { !$0.isNaN }
-        let nanFill = validNums.max() ?? 1.0
-        distances = distances.map { $0.isNaN ? nanFill : $0 }
         return distances.reduce(0, +)
     }
 
     private func distance(pointA: TAPointEstimate, pointB: TAPointEstimate) -> Double {
         let euclideanDistance = Double(sqrt(pow(pointB.point.x - pointA.point.x, 2) +
             pow(pointB.point.y - pointA.point.y, 2)))
-        return pointA.confidence >= minConfidence && pointB.confidence >= minConfidence ?
-            euclideanDistance : Double.nan
+        return euclideanDistance
     }
 
 }

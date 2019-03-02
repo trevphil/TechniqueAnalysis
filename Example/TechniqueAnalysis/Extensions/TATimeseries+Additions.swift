@@ -18,7 +18,7 @@ extension TATimeseries {
         case "Pull Up":
             return [.top, .neck, .leftWrist, .rightWrist]
         case "Bw Squat":
-            return [.leftHip, .leftKnee, .rightHip, .rightKnee]
+            return [.top, .leftHip, .leftKnee, .rightHip, .rightKnee]
         default:
             return TABodyPart.allCases
         }

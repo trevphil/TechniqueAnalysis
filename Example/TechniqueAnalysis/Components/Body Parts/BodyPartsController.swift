@@ -58,11 +58,13 @@ extension BodyPartsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BodyPartCell.identifier,
                                                        for: indexPath) as? BodyPartCell,
-            let samples = model.bodyPartOverTime(indexPath.row) else {
+            let unknown = model.bodyPartOverTime(indexPath.row, seriesType: .unknown),
+            let bestGuess = model.bodyPartOverTime(indexPath.row, seriesType: .bestGuess),
+            let secondBest = model.bodyPartOverTime(indexPath.row, seriesType: .secondBestGuess) else {
                 return UITableViewCell()
         }
 
-        cell.configure(with: samples)
+        cell.configure(with: unknown, bestGuess: bestGuess, secondBest: secondBest)
         return cell
     }
 

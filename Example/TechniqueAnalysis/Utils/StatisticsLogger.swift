@@ -32,8 +32,9 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            if let randomMeta = randomItem(for: result.testMeta.exerciseName) {
-                fakeResult.bestGuess = try? TATimeseries(data: filler, meta: randomMeta)
+            if let randomMeta = randomItem(for: result.testMeta.exerciseName),
+                let series = try? TATimeseries(data: filler, meta: randomMeta) {
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series, matrix: [])
                 fakeResults.append(fakeResult)
             }
         }
@@ -44,8 +45,9 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            if let mostCommonMeta = mostCommonType(for: result.testMeta.exerciseName) {
-                fakeResult.bestGuess = try? TATimeseries(data: filler, meta: mostCommonMeta)
+            if let mostCommonMeta = mostCommonType(for: result.testMeta.exerciseName),
+                let series = try? TATimeseries(data: filler, meta: mostCommonMeta) {
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series, matrix: [])
                 fakeResults.append(fakeResult)
             }
         }
@@ -70,13 +72,13 @@ class StatisticsLogger {
     func printResults() {
         let results = testResults
         let correct = results.filter({ $0.predictedCorrectly == true })
-        let correctScores = correct.compactMap({ $0.bestGuessScore }).map({ Int($0) }).sorted()
-        let minScoreCorrect = correct.compactMap({ $0.bestGuessScore }).min() ?? Double.nan
-        let maxScoreCorrect = correct.compactMap({ $0.bestGuessScore }).max() ?? Double.nan
+        let correctScores = correct.compactMap({ $0.bestPrediction?.score }).map({ Int($0) }).sorted()
+        let minScoreCorrect = correct.compactMap({ $0.bestPrediction?.score }).min() ?? Double.nan
+        let maxScoreCorrect = correct.compactMap({ $0.bestPrediction?.score }).max() ?? Double.nan
         let incorrect = results.filter({ $0.predictedCorrectly == false })
-        let incorrectScores = incorrect.compactMap({ $0.bestGuessScore }).map({ Int($0) }).sorted()
-        let minScoreIncorrect = incorrect.compactMap({ $0.bestGuessScore }).min() ?? Double.nan
-        let maxScoreIncorrect = incorrect.compactMap({ $0.bestGuessScore }).max() ?? Double.nan
+        let incorrectScores = incorrect.compactMap({ $0.bestPrediction?.score }).map({ Int($0) }).sorted()
+        let minScoreIncorrect = incorrect.compactMap({ $0.bestPrediction?.score }).min() ?? Double.nan
+        let maxScoreIncorrect = incorrect.compactMap({ $0.bestPrediction?.score }).max() ?? Double.nan
         let total = Double(results.count)
         print("\n-------------- RESULTS (\(Int(total)) total test cases) --------------")
         print("\(Int(round(Double(correct.count) / total * 100.0)))% classified perfectly.\n")

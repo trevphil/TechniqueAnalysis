@@ -34,8 +34,8 @@ class TestCoordinator {
             TestResult(url: $0.url, testMeta: $0.meta)
         }
 
-        let model = TestModel(testCases: testCases, printStats: true) { unknown, known in
-            let stepper = self.configuredStepperModel(unknownSeries: unknown, knownSeries: known)
+        let model = TestModel(testCases: testCases, printStats: true) { testResult, unknown in
+            let stepper = self.configuredStepperModel(testResult: testResult, unknownSeries: unknown)
             let stepperController = StepperController(model: stepper)
             self.navController.pushViewController(stepperController, animated: true)
         }
@@ -48,10 +48,10 @@ class TestCoordinator {
 
     // MARK: - Private Functions
 
-    private func configuredStepperModel(unknownSeries: TATimeseries,
-                                        knownSeries: TATimeseries) -> StepperModel {
-        let stepper = StepperModel(unknownSeries: unknownSeries, knownSeries: knownSeries) {
-            let bodyPartsModel = BodyPartsModel(timeseries: unknownSeries)
+    private func configuredStepperModel(testResult: TestResult,
+                                        unknownSeries: TATimeseries) -> StepperModel {
+        let stepper = StepperModel(testResult: testResult, unknownSeries: unknownSeries) {
+            let bodyPartsModel = BodyPartsModel(testResult: testResult, unknownSeries: unknownSeries)
             let bodyPartsController = BodyPartsController(model: bodyPartsModel)
             self.navController.pushViewController(bodyPartsController, animated: true)
         }

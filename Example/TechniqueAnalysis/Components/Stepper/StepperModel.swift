@@ -17,13 +17,13 @@ class StepperModel {
     /// The model's title
     let title: String
 
+    private let testResult: TestResult
     private let unknownSeries: TATimeseries
-    private let knownSeries: TATimeseries
     private let onShowBodyParts: (() -> Void)?
 
     /// The name of the exercise being compared
     var exerciseName: String {
-        return unknownSeries.meta.exerciseName.uppercased()
+        return testResult.testMeta.exerciseName.uppercased()
     }
 
     // MARK: - Initialization
@@ -31,16 +31,16 @@ class StepperModel {
     /// Create a new instance of `StepperModel`
     ///
     /// - Parameters:
-    ///   - unknownSeries: A `TATimeseries` which we are trying to predict
-    ///   - knownSeries: A `TATimeseries` which is the best guess comparison for the unknown
+    ///   - testResult: The `TestResult` object which should be visualized
+    ///   - unknownSeries: The unknown timeseries for the `TestResult`
     ///   - onShowBodyParts: A callback which is executed when the user wants to see specific
     ///                      isolated body parts and their movement through time
-    init(unknownSeries: TATimeseries,
-         knownSeries: TATimeseries,
+    init(testResult: TestResult,
+         unknownSeries: TATimeseries,
          onShowBodyParts: (() -> Void)?) {
         self.title = "Stepper"
+        self.testResult = testResult
         self.unknownSeries = unknownSeries
-        self.knownSeries = knownSeries
         self.onShowBodyParts = onShowBodyParts
     }
 
@@ -69,11 +69,12 @@ class StepperModel {
     /// - Parameter time: The time at which we want to determine the user's pose
     /// - Returns: A configured `TAPoseViewModel` for the known `TATimeseries`
     func knownSeriesSlice(atTime time: Int) -> TAPoseViewModel? {
-        guard let known = try? knownSeries.timeSlice(forSample: time) else {
-            return nil
+        guard let known = testResult.bestPrediction?.series,
+            let slice = try? known.timeSlice(forSample: time) else {
+                return nil
         }
 
-        return TAPoseViewModel(bodyPoints: known, confidenceThreshold: Params.minConfidence)
+        return TAPoseViewModel(bodyPoints: slice, confidenceThreshold: Params.minConfidence)
     }
 
 }

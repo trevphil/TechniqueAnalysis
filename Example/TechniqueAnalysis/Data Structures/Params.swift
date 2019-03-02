@@ -13,8 +13,8 @@ struct Params {
 
     /// The warping window used by `TAKnnDTW`
     static let warpingWindow: Int = 75
-    /// The minimum confidence level used by `TAKnnDTW`
-    static let minConfidence: Double = 0.08
+    /// The minimum confidence level used by `TAPoseViewModel`
+    static let minConfidence: Double = 0.1
     /// The frames per second used when sampling videos
     static let fps: Double = 35
     /// The length of sub-clips taken from a video when it is processed
