@@ -35,7 +35,7 @@ class TestResultCell: UITableViewCell {
     func configure(with testResult: TestResult) {
         configureResults(testResult)
         configurePrediction(testResult.bestGuessMeta)
-        configureSecondBest(testResult.secondBestMeta, secondBestScore: testResult.secondBestScore)
+        configureSecondBest(testResult.secondBestMeta, secondBestScore: testResult.secondBest?.score)
         configureLoadingSpinner(testResult.status)
     }
 
@@ -52,7 +52,7 @@ class TestResultCell: UITableViewCell {
             correctPredictionIcon.text = ""
         }
 
-        if let score = testResult.bestGuessScore {
+        if let score = testResult.bestPrediction?.score {
             bestGuessScoreLabel.text = "\(Int(score))"
         } else {
             bestGuessScoreLabel.text = "--"

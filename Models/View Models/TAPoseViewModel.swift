@@ -45,7 +45,12 @@ public struct TAPoseViewModel {
     ///                          have a confidence below this threshold will not be rendered.
     public init(bodyPoints: [TAPointEstimate], confidenceThreshold: Double = 0.5) {
         self.confidenceThreshold = confidenceThreshold
-        self.bodyPoints = bodyPoints
+        self.bodyPoints = bodyPoints.map { estimate in
+            let shiftedPoint = CGPoint(x: estimate.point.x + 0.5, y: 1 - (estimate.point.y + 0.5))
+            return TAPointEstimate(point: shiftedPoint,
+                                   confidence: estimate.confidence,
+                                   bodyPart: estimate.bodyPart)
+        }
     }
 
     // MARK: - Exposed Functions

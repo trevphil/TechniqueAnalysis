@@ -21,6 +21,11 @@ public struct TATimeseries: Codable {
 
     // MARK: - Properties
 
+    /// A smoothing parameter used to smooth data values when a `TATimeseries` is initialized.
+    /// This value should generally be between `0.25-0.50` and should always be within [0, 1].
+    /// Lower values result in less smoothing, and higher values result in greater smoothing.
+    public static var smoothing: CGFloat = 0.35
+
     /// The timeseries data, a 2D array where each outer index represents a sample point in time
     /// and gives an array of `TAPointEstimate` objects. Thus, each inner index is an array with
     /// data about the position and confidence level of various body parts at a point in time.
@@ -56,8 +61,8 @@ public struct TATimeseries: Codable {
             let flippedPoints: [TAPointEstimate] = sample.map { pointEstimate in
                 let flippedPoint = CGPoint(x: 1.0 - pointEstimate.point.x, y: pointEstimate.point.y)
                 return TAPointEstimate(point: flippedPoint,
-                                     confidence: pointEstimate.confidence,
-                                     bodyPart: pointEstimate.bodyPart)
+                                       confidence: pointEstimate.confidence,
+                                       bodyPart: pointEstimate.bodyPart)
             }
             reflections.append(flippedPoints)
         }
@@ -76,14 +81,17 @@ public struct TATimeseries: Codable {
     /// - Throws: `TATimeseriesError` if the `MLMultiArray`s had an invalid shape
     public init(data: [MLMultiArray], meta: TAMeta) throws {
         let compressed = data.compactMap { TATimeseries.compress($0) }
-        let validData = compressed.count > 0 && compressed.count == data.count
+        let relativePositioned = compressed.map { TATimeseries.relativePosition($0) }
+        let fitted = TATimeseries.fit(relativePositioned)
+
+        let validData = fitted.count > 0 && fitted.count == data.count
 
         guard validData else {
             let message = "Timeseries initialized with invalid MLMultiArrays"
             throw TATimeseriesError.invalidShapeError(message)
         }
 
-        self.data = compressed
+        self.data = fitted
         self.meta = meta
     }
 
@@ -120,8 +128,33 @@ public struct TATimeseries: Codable {
         return slice
     }
 
+    /// Determine the point estimates over time for a particular body part in the timeseries
+    ///
+    /// - Parameter bodyPart: The relevant body part
+    /// - Returns: An array of `TAPointEstimate` objects describing the position of `bodyPart` over time
+    public func bodyPartOverTime(_ bodyPart: TABodyPart) -> [TAPointEstimate] {
+        var time = 0
+        var currentSlice = try? timeSlice(forSample: time)
+        var result = [TAPointEstimate]()
+
+        while currentSlice != nil {
+            if let point = currentSlice?.first(where: { $0.bodyPart == bodyPart }) {
+                result.append(point)
+            }
+            time += 1
+            currentSlice = try? timeSlice(forSample: time)
+        }
+
+        return result
+    }
+
     // MARK: - Exposed Functions
 
+    /// Converts a `MLMultiArray` heatmap into an array of `TAPointEstimate`s
+    ///
+    /// - Parameter heatmap: The heatmap to convert
+    /// - Returns: A compressed representation of the heatmap (using less memory), which takes only the point
+    ///            with the _highest_ confidence for each body part's "slice" within the 3D heatmap
     static func compress(_ heatmap: MLMultiArray) -> [TAPointEstimate]? {
         guard validHeatmap(heatmap, expectedShape: TAPoseEstimationModel.ModelType.cpm.outputShape) ||
             validHeatmap(heatmap, expectedShape: TAPoseEstimationModel.ModelType.hourglass.outputShape) else {
@@ -144,29 +177,96 @@ public struct TATimeseries: Codable {
                     if shouldReplace {
                         let point = CGPoint(x: CGFloat(col), y: CGFloat(row))
                         bodyPoints[pointIndex] = TAPointEstimate(point: point,
-                                                               confidence: confidence,
-                                                               bodyPart: TABodyPart(rawValue: pointIndex))
+                                                                 confidence: confidence,
+                                                                 bodyPart: TABodyPart(rawValue: pointIndex))
                     }
                 }
             }
         }
 
-        return normalize(bodyPoints, maxWidth: width, maxHeight: height)
+        return normalize(bodyPoints, maxSize: CGSize(width: CGFloat(width), height: CGFloat(height)))
     }
 
     // MARK: - Private Functions
 
-    private static func normalize(_ points: [TAPointEstimate], maxWidth: Int, maxHeight: Int) -> [TAPointEstimate] {
+    /// Normalize data into [0, 1] space based on some `maxSize`
+    private static func normalize(_ points: [TAPointEstimate], maxSize: CGSize) -> [TAPointEstimate] {
         return points.map { point -> TAPointEstimate in
-            // Add 0.5 to align points "in between" 1-unit step size
-            let newPoint = CGPoint(x: (point.point.x + 0.5) / CGFloat(maxWidth),
-                                   y: (point.point.y + 0.5) / CGFloat(maxHeight))
+            let newPoint = CGPoint(x: point.point.x / CGFloat(maxSize.width),
+                                   y: point.point.y / CGFloat(maxSize.height))
             return TAPointEstimate(point: newPoint, confidence: point.confidence, bodyPart: point.bodyPart)
         }
     }
 
+    /// Check if the shape of a heatmap is valid
     private static func validHeatmap(_ heatmap: MLMultiArray, expectedShape: [Int]) -> Bool {
         return heatmap.shape.count == 3 && heatmap.shape.map({ $0.intValue }) == expectedShape
+    }
+
+    /// Convert absolute coordinates of body points into coordinates relative to each other
+    private static func relativePosition(_ pointEstimates: [TAPointEstimate]) -> [TAPointEstimate] {
+
+        func pointsOfTypes(_ types: [TABodyPart]) -> [TAPointEstimate] {
+            return pointEstimates.filter { point in
+                return types.contains(where: { $0 == point.bodyPart })
+            }
+        }
+
+        // Find average position of these central points, weighted by confidence level
+        let centralPoints = pointsOfTypes([.leftHip, .rightHip, .leftShoulder, .rightShoulder, .neck])
+        let totalConfidence = CGFloat(centralPoints.map({ $0.confidence }).reduce(0, +))
+        let meanX = centralPoints.map({ $0.point.x * CGFloat($0.confidence) / totalConfidence }).reduce(0, +)
+        let meanY = centralPoints.map({ $0.point.y * CGFloat($0.confidence) / totalConfidence }).reduce(0, +)
+
+        var relativeEstimates = [TAPointEstimate]()
+        for estimate in pointEstimates {
+            let vector = CGPoint(x: meanX - estimate.point.x, y: meanY - estimate.point.y)
+            let relativeEstimate = TAPointEstimate(point: vector,
+                                                   confidence: estimate.confidence,
+                                                   bodyPart: estimate.bodyPart)
+            relativeEstimates.append(relativeEstimate)
+        }
+
+        return relativeEstimates
+    }
+
+    /// Smooth out noisy data
+    private static func fit(_ data: [[TAPointEstimate]]) -> [[TAPointEstimate]] {
+
+        // Flip order of 2D matrix so that outer index gives an array of `TAPointEstimate`
+        // objects which all have the same body part (ordered sequentially through time)
+        func tuple(for bodyPartIndex: Int) -> ([CGFloat], [CGFloat], [TAPointEstimate]) {
+            let estimates = data.compactMap({ $0.element(atIndex: bodyPartIndex) })
+            let xValues = estimates.map { $0.point.x }
+            let yValues = estimates.map { $0.point.y }
+            return (xValues, yValues, estimates)
+        }
+
+        // Smooth the data with LOESS algorithm
+        let loess = TALoess(bandwidthPercent: smoothing)
+        let bodyPartArrays: [[TAPointEstimate]] = (0..<TABodyPart.allCases.count).map { index in
+            let tup = tuple(for: index)
+            let xFitted = loess.fit(data: tup.0)
+            let yFitted = loess.fit(data: tup.1)
+            let bodyPartEstimates = tup.2
+            return bodyPartEstimates.enumerated().compactMap { sampleIdx, estimate in
+                guard let xVal = xFitted.element(atIndex: sampleIdx),
+                    let yVal = yFitted.element(atIndex: sampleIdx) else {
+                        return nil
+                }
+
+                return TAPointEstimate(point: CGPoint(x: xVal, y: yVal),
+                                       confidence: estimate.confidence,
+                                       bodyPart: estimate.bodyPart)
+            }
+        }
+
+        // Flip order of 2D matrix again so that the outer index gives an array of `TAPointEstimate`
+        // objects with 14 elements (1 element per body part)
+        let numTimeSamples = bodyPartArrays.element(atIndex: 0)?.count ?? 0
+        return (0..<numTimeSamples).map { timeIndex in
+            return bodyPartArrays.compactMap { $0.element(atIndex: timeIndex) }
+        }
     }
 
 }

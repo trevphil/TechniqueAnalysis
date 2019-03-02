@@ -20,11 +20,13 @@ public struct TAMeta: Codable {
     public let exerciseDetail: String
     /// The camera angle used in the video or timeseries that this metadata is referencing
     public let angle: TACameraAngle
+    /// A UUID uniquely identifying the meta object
+    public let uuid = UUID()
 
     /// String describing all properties of the `TAMeta` object
     public var debugDescription: String {
         return "<TAMeta: labeled=\(isLabeled); name=\(exerciseName); " +
-        "detail=\(exerciseDetail); angle=\(angle.rawValue)>"
+        "detail=\(exerciseDetail); angle=\(angle.rawValue); uuid=\(uuid)>"
     }
 
     // MARK: - Initialization

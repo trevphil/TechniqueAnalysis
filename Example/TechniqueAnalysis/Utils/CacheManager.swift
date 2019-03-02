@@ -85,7 +85,7 @@ class CacheManager {
         let filename = FileNamer.dataFileName(from: timeseries.meta,
                                               ext: CacheManager.cachedTimeseriesExtension)
         let filePath = URL(fileURLWithPath: directory,
-                          isDirectory: true).appendingPathComponent(filename, isDirectory: false).relativePath
+                           isDirectory: true).appendingPathComponent(filename, isDirectory: false).relativePath
 
         _ = try? FileManager.default.removeItem(atPath: filePath)
 
@@ -141,10 +141,8 @@ class CacheManager {
 
         processor.makeTimeseries(videoURL: next.url,
                                  meta: next.meta,
-                                 onFinish: { results in
-                                    for timeseries in results {
-                                        _ = self.cache(timeseries)
-                                    }
+                                 onFinish: { timeseries in
+                                    _ = self.cache(timeseries)
 
                                     if self.processingQueue.isEmpty {
                                         self.generateAndCacheReflections()

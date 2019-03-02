@@ -16,6 +16,13 @@ class StatisticsLogger {
 
     private let testResults: [TestResult]
     private let labeledSeries: [TATimeseries]
+    private let fillerSlice = TABodyPart.allCases.map {
+        TAPointEstimate(point: .zero, confidence: 1, bodyPart: $0)
+    }
+
+    private lazy var filler: [[TAPointEstimate]] = {
+        return Array(repeating: fillerSlice, count: 100)
+    }()
 
     private lazy var labeledMeta: [TAMeta] = {
         return labeledSeries.map { $0.meta }
@@ -25,8 +32,11 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            fakeResult.bestGuessMeta = randomItem(for: result.testMeta.exerciseName)
-            fakeResults.append(fakeResult)
+            if let randomMeta = randomItem(for: result.testMeta.exerciseName),
+                let series = try? TATimeseries(data: filler, meta: randomMeta) {
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series)
+                fakeResults.append(fakeResult)
+            }
         }
         return fakeResults
     }
@@ -35,8 +45,11 @@ class StatisticsLogger {
         var fakeResults = [TestResult]()
         for result in testResults {
             let fakeResult = TestResult(url: result.url, testMeta: result.testMeta)
-            fakeResult.bestGuessMeta = mostCommonType(for: result.testMeta.exerciseName)
-            fakeResults.append(fakeResult)
+            if let mostCommonMeta = mostCommonType(for: result.testMeta.exerciseName),
+                let series = try? TATimeseries(data: filler, meta: mostCommonMeta) {
+                fakeResult.bestPrediction = TAKnnDtw.Result(score: 0, series: series)
+                fakeResults.append(fakeResult)
+            }
         }
         return fakeResults
     }
@@ -59,13 +72,13 @@ class StatisticsLogger {
     func printResults() {
         let results = testResults
         let correct = results.filter({ $0.predictedCorrectly == true })
-        let correctScores = correct.compactMap({ $0.bestGuessScore }).map({ Int($0) }).sorted()
-        let minScoreCorrect = correct.compactMap({ $0.bestGuessScore }).min() ?? Double.nan
-        let maxScoreCorrect = correct.compactMap({ $0.bestGuessScore }).max() ?? Double.nan
+        let correctScores = correct.compactMap({ $0.bestPrediction?.score }).map({ Int($0) }).sorted()
+        let minScoreCorrect = correct.compactMap({ $0.bestPrediction?.score }).min() ?? Double.nan
+        let maxScoreCorrect = correct.compactMap({ $0.bestPrediction?.score }).max() ?? Double.nan
         let incorrect = results.filter({ $0.predictedCorrectly == false })
-        let incorrectScores = incorrect.compactMap({ $0.bestGuessScore }).map({ Int($0) }).sorted()
-        let minScoreIncorrect = incorrect.compactMap({ $0.bestGuessScore }).min() ?? Double.nan
-        let maxScoreIncorrect = incorrect.compactMap({ $0.bestGuessScore }).max() ?? Double.nan
+        let incorrectScores = incorrect.compactMap({ $0.bestPrediction?.score }).map({ Int($0) }).sorted()
+        let minScoreIncorrect = incorrect.compactMap({ $0.bestPrediction?.score }).min() ?? Double.nan
+        let maxScoreIncorrect = incorrect.compactMap({ $0.bestPrediction?.score }).max() ?? Double.nan
         let total = Double(results.count)
         print("\n-------------- RESULTS (\(Int(total)) total test cases) --------------")
         print("\(Int(round(Double(correct.count) / total * 100.0)))% classified perfectly.\n")
@@ -99,6 +112,20 @@ class StatisticsLogger {
         let results = mostCommonResults
         let header = "\n----------- RESULTS FROM MOST COMMON SELECTION (\(results.count) total test cases) -----------"
         printGenericResults(results, headerMessage: header)
+    }
+
+    static func printRankings(unknown: TATimeseries,
+                              rankings: [TAKnnDtw.Result],
+                              upTo maxRank: Int) {
+        print("\nFor \(unknown.meta.exerciseName), \(unknown.meta.exerciseDetail), " +
+            "\(unknown.meta.angle.rawValue)\tthe top \(maxRank) results are:")
+        var idx = 0
+        while idx < rankings.count && idx < maxRank {
+            guard let ranking = rankings.element(atIndex: idx) else { continue }
+            idx += 1
+            let score = Double(Int(ranking.score * 1000)) / 1000.0
+            print("\tScore \(score);\t\(ranking.series.meta.debugDescription)")
+        }
     }
 
     // MARK: - Private Functions
