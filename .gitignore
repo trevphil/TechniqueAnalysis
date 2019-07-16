@@ -12,3 +12,6 @@
 *.pyc
 *.xcworkspacedata
 Example/build*
+video-classifier/videos
+video-classifier/__pycache__
+

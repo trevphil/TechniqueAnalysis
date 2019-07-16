@@ -1,0 +1,6 @@
+bw-squat_correct
+bw-squat_not-low
+pull-up_chin-below-bar
+pull-up_correct
+push-up_correct
+push-up_upper-body-first
