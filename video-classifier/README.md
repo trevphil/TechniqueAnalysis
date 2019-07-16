@@ -14,6 +14,8 @@ The i3D model is a version of Inception-v1 with batch normalization which has be
 
 The i3D model uses a two-stream architecture in which a video is pre-processed into two streams: *RGB* and *optical flow*. There is a separate model for each stream, and the output of the models are combined only at the logit-level. Then, class predictions are formed using the combined logits.
 
+![visualization](./assets/visualization.gif)
+
 Given the similarity between the Kinetics dataset and the task at hand (classifying videos of people doing exercises), there is a strong opportunity for **transfer learning** using the publicly released i3D model.
 
 ## Implementation
@@ -52,7 +54,7 @@ After trying various hyperparameter combinations for learning rate and regulariz
 - In the best case, the average loss of the last 100 iterations was `0.035058`
 - Test accuracy reached `69.23%` although this is not particularly significant given the small size of the dataset
 
-## Feasability
+## Feasibility
 
 The results of this project are limited by the small dataset size, but with more videos, I believe that a fine-tuned version of the i3D model can achieve much higher test accuracy.
 
