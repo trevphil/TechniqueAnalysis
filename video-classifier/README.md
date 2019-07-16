@@ -6,7 +6,7 @@ The code implemented in the `TechniqueAnalysis` CocoaPod uses a pose estimation 
 
 This has numerous drawbacks, most notably the requirement of the *k-Nearest Neighbors* algorithm to compare an unlabeled sample with **every** labeled item in the dataset to find the best match. Thus, inference time grows proportionally with the dataset size.
 
-The Python code in this directory is an attempt to train an end-to-end ML model such that inference time is **constant**. The code is based on an [Inflated 3D Convnet](https://github.com/deepmind/kinetics-i3d) architecture (i3D) from the paper "[Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](https://arxiv.org/abs/1705.07750)."
+The Python code in this directory is an attempt to train an end-to-end ML model such that inference time is **constant**. The code is based on an [Inflated 3D ConvNet](https://github.com/deepmind/kinetics-i3d) architecture (i3D) from the paper "[Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](https://arxiv.org/abs/1705.07750)."
 
 ## Background
 
@@ -14,13 +14,13 @@ The i3D model is a version of Inception-v1 with batch normalization which has be
 
 The i3D model uses a two-stream architecture in which a video is pre-processed into two streams: *RGB* and *optical flow*. There is a separate model for each stream, and the output of the models are combined only at the logit-level. Then, class predictions are formed using the combined logits.
 
-![visualization](./assets/visualization.gif)
+![visualization](../assets/visualization.gif)
 
 Given the similarity between the Kinetics dataset and the task at hand (classifying videos of people doing exercises), there is a strong opportunity for **transfer learning** using the publicly released i3D model.
 
 ## Implementation
 
-![graph](./assets/graph.png)
+![graph](../assets/graph.png)
 
 I stripped off the last two layers of the i3D model (logits and predictions) and replaced them with similar layers. The new logit-layer has the correct number of `output_channels` for this use case (6 classes). Logits for each stream, *RGB* and *optical flow*, are combined and used to form predictions like in the original implementation.
 
